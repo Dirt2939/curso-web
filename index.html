@@ -205,6 +205,36 @@
           </div>
         </div>
 
+        <!-- MULTIPLAYER -->
+        <div class="gcard gcard-multiplayer" id="pg-multiplayer" role="button" aria-label="Multiplayer">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--pink)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="20" y="20" width="36" height="30" rx="3" fill="rgba(255,45,120,.1)" stroke="currentColor"
+                  stroke-width="2.5" />
+                <path d="M26 28H50M26 42H50" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  opacity=".32" />
+                <path d="M38 43L31 36C28.2 33.2 29.4 28.5 33.5 28.5C35.6 28.5 37.2 29.8 38 31.7C38.8 29.8 40.4 28.5 42.5 28.5C46.6 28.5 47.8 33.2 45 36Z"
+                  fill="#ff4040" />
+                <path d="M20 35H12M56 35H64M38 20V12M26 50L18 59M50 50L58 59" stroke="#00f5c4"
+                  stroke-width="2.2" stroke-linecap="round" />
+                <circle cx="12" cy="35" r="6" fill="rgba(0,245,196,.12)" stroke="#00f5c4" stroke-width="2.2" />
+                <circle cx="64" cy="35" r="6" fill="rgba(0,245,196,.12)" stroke="#00f5c4" stroke-width="2.2" />
+                <circle cx="38" cy="12" r="6" fill="rgba(0,245,196,.12)" stroke="#00f5c4" stroke-width="2.2" />
+                <circle cx="18" cy="59" r="5" fill="rgba(255,45,120,.12)" stroke="currentColor" stroke-width="2" />
+                <circle cx="58" cy="59" r="5" fill="rgba(255,45,120,.12)" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="35" r="2" fill="#ffee44" />
+                <circle cx="64" cy="35" r="2" fill="#ffee44" />
+                <circle cx="38" cy="12" r="2" fill="#ffee44" />
+              </svg>
+            </div>
+            <div class="gcard-name" style="color: var(--pink)">MULTIPLAYER</div>
+            <div class="gcard-desc">Salas online<br>em tempo real.</div>
+            <div class="gcard-cta" style="border-color: var(--pink); color: var(--pink)">ENTRAR</div>
+          </div>
+        </div>
+
         <!-- CASSINO -->
         <div class="gcard" id="pg-casino" role="button" aria-label="Cassino">
           <div class="gcard-inner">
@@ -424,6 +454,192 @@
   </section>
 
   <!-- =====================================================================
+     MULTIPLAYER -- Hub
+     ===================================================================== -->
+  <section id="multiplayer-hub" class="screen">
+    <div class="arcade-wrap multiplayer-wrap">
+      <nav class="nav">
+        <div class="nav-back" id="multiplayer-back" role="button">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo" style="color:var(--pink)">MULTIPLAYER</span>
+        <div class="spacer"></div>
+      </nav>
+
+      <div class="hub-hero compacted">
+        <h1 class="hub-title multiplayer-title">MULTIPLAYER</h1>
+        <p class="hub-sub multiplayer-sub">SALAS ONLINE</p>
+      </div>
+
+      <div class="game-grid multiplayer-game-grid show" id="multiplayer-grid" aria-hidden="false">
+        <div class="gcard ut-pg-card" id="mp-undertale-card" data-goto="undertale-multiplayer"
+          aria-label="Undertale Multiplayer">
+          <div class="gcard-inner">
+            <div class="gcard-glow"
+              style="background:radial-gradient(ellipse at 50% 0%,rgba(255,64,64,0.16),transparent 70%)"></div>
+            <div class="gcard-icon" style="color:#ff4040">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="9" y="16" width="58" height="46" rx="2" fill="rgba(255,64,64,.08)" stroke="currentColor"
+                  stroke-width="2.5" />
+                <path d="M38 54 L25 41 C19 35 21 25 29 25 C34 25 37 29 38 33 C39 29 42 25 47 25 C55 25 57 35 51 41 Z"
+                  fill="currentColor" />
+                <path d="M16 23H23M53 23H60M16 55H23M53 55H60" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" opacity=".72" />
+                <circle cx="25" cy="34" r="3" fill="#ffee44" />
+                <circle cx="51" cy="34" r="3" fill="#00f5c4" />
+              </svg>
+            </div>
+            <div class="gcard-name" style="color:#ff4040">UNDERTALE<br>MP</div>
+            <div class="gcard-desc">1 Boss contra<br>1 a 4 Almas.</div>
+            <div class="gcard-cta" style="border-color:#ff4040;color:#ff4040">JOGAR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kb-hint-hub show" id="multiplayer-play-hint" style="margin-top: 16px">
+        <span class="key">&larr;</span>
+        <span class="key">&rarr;</span>
+        navegar &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        selecionar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     UNDERTALE MULTIPLAYER
+     ===================================================================== -->
+  <section id="undertale-multiplayer" class="screen">
+    <nav class="nav utm-nav">
+      <div class="nav-back" id="utm-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color:#ff4040">UNDERTALE MP</span>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill" style="border-color:rgba(255,64,64,0.45);color:#ff4040">
+          <span class="lbl">SALA</span>
+          <span class="val" id="utm-room-pill">----</span>
+        </div>
+        <div class="score-pill win">
+          <span class="lbl">BOSS</span>
+          <span class="val" id="utm-time-pill">--</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="utm-shell">
+      <aside class="utm-panel utm-lobby-panel" id="utm-lobby-panel">
+        <div class="utm-panel-head">
+          <span>LOBBY</span>
+          <strong id="utm-connection-badge">OFFLINE</strong>
+        </div>
+
+        <label class="utm-field">
+          <span>Servidor</span>
+          <input id="utm-server-url" type="text" placeholder="mesma origem ou URL do ngrok" maxlength="120" />
+        </label>
+        <label class="utm-field">
+          <span>Nome</span>
+          <input id="utm-player-name" type="text" maxlength="18" value="Jogador" />
+        </label>
+
+        <div class="utm-actions-grid">
+          <button class="utm-btn primary" id="utm-create-room" type="button">CRIAR SALA</button>
+          <label class="utm-field compact">
+            <span>Codigo</span>
+            <input id="utm-room-code" type="text" maxlength="4" placeholder="ABCD" />
+          </label>
+          <button class="utm-btn" id="utm-join-room" type="button">ENTRAR</button>
+        </div>
+
+        <div class="utm-room-display">
+          <span>CODIGO DA SALA</span>
+          <strong id="utm-current-room">----</strong>
+        </div>
+
+        <button class="utm-btn start" id="utm-start-game" type="button">INICIAR PARTIDA</button>
+
+        <div class="utm-status" id="utm-status">Conecte ao servidor para criar uma sala.</div>
+      </aside>
+
+      <main class="utm-stage">
+        <section class="utm-lobby-hero" id="utm-lobby-hero" aria-label="Lobby Undertale Multiplayer">
+          <div class="utm-lobby-kicker">SALA ONLINE</div>
+          <h2>Lobby de batalha</h2>
+          <p>O host inicia quando todos estiverem prontos. O Boss e as Almas sao definidos por sorteio.</p>
+          <div class="utm-lobby-code">
+            <span>Codigo</span>
+            <strong id="utm-hero-room-code">----</strong>
+          </div>
+          <div class="utm-control-cards">
+            <div>
+              <span>Boss</span>
+              <strong>Setas/WASD movem e miram</strong>
+              <small>Z tiro · X leque · C ossos</small>
+            </div>
+            <div>
+              <span>Almas</span>
+              <strong>Setas/WASD para desviar</strong>
+              <small>Z tiro · Shift dash</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="utm-carousel-panel" id="utm-carousel-panel" aria-label="Sorteio do Boss">
+          <div class="utm-lobby-kicker">SORTEIO DO BOSS</div>
+          <div class="utm-carousel-window">
+            <div class="utm-carousel-track" id="utm-carousel-track"></div>
+            <div class="utm-carousel-focus" aria-hidden="true">BOSS</div>
+          </div>
+          <strong class="utm-carousel-result" id="utm-carousel-result">Girando...</strong>
+        </section>
+
+        <div class="utm-stage-top">
+          <div class="utm-bossplate">
+            <span>BOSS</span>
+            <strong id="utm-boss-name">AGUARDANDO</strong>
+          </div>
+          <div class="utm-result" id="utm-result">LOBBY</div>
+        </div>
+
+        <canvas id="utm-canvas" width="720" height="420" aria-label="Arena Undertale Multiplayer"></canvas>
+
+        <div class="ut-dialog utm-dialog">
+          <div class="ut-dialog-text" id="utm-dialog-text">Crie uma sala, espere os jogadores e inicie o sorteio do Boss.</div>
+        </div>
+
+        <div class="utm-ability-row">
+          <button class="utm-btn" id="utm-action-shot" type="button">Z TIRO</button>
+          <button class="utm-btn" id="utm-action-ring" type="button">X LEQUE</button>
+          <button class="utm-btn" id="utm-action-wall" type="button">C OSSOS</button>
+          <button class="utm-btn soul" id="utm-action-dash" type="button">SHIFT DASH</button>
+        </div>
+      </main>
+
+      <aside class="utm-panel utm-roster-panel">
+        <div class="utm-panel-head">
+          <span>JOGADORES</span>
+          <strong id="utm-player-count">0/5</strong>
+        </div>
+        <div class="utm-roster" id="utm-roster"></div>
+        <div class="utm-mini-help">
+          <span><b>Boss</b> e sorteado quando o host inicia.</span>
+          <span><b>Almas</b> vencem ao zerar o HP do Boss.</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- =====================================================================
      CONTROLE DE LUZ
      ===================================================================== -->
   <section id="light-switch" class="screen eval-screen light-room">
@@ -562,7 +778,6 @@
         <button class="eval-btn" id="pomo-start" type="button">INICIAR</button>
         <button class="eval-btn" id="pomo-pause" type="button">PAUSAR</button>
         <button class="eval-btn" id="pomo-reset" type="button">RESETAR</button>
-        <button class="eval-btn" id="pomo-theme" type="button">MODO NOTURNO</button>
       </div>
       <div class="pomo-config">
         <label>Foco <input class="eval-input" id="pomo-focus" type="number" min="1" max="90" value="25" /></label>
@@ -601,40 +816,55 @@
         <div class="synth-leds" aria-hidden="true">
           <span></span><span></span><span></span><span></span><span></span>
         </div>
-        <div class="synth-keys" id="synth-keys" aria-label="Teclas musicais">
-          <button class="synth-key" type="button" data-note="do" data-key="A">
-            <span class="note">DO</span><span class="kbd">A</span>
-          </button>
-          <button class="synth-key" type="button" data-note="re" data-key="S">
-            <span class="note">RE</span><span class="kbd">S</span>
-          </button>
-          <button class="synth-key" type="button" data-note="mi" data-key="D">
-            <span class="note">MI</span><span class="kbd">D</span>
-          </button>
-          <button class="synth-key" type="button" data-note="fa" data-key="F">
-            <span class="note">FA</span><span class="kbd">F</span>
-          </button>
-          <button class="synth-key" type="button" data-note="sol" data-key="G">
-            <span class="note">SOL</span><span class="kbd">G</span>
-          </button>
-          <button class="synth-key" type="button" data-note="la" data-key="H">
-            <span class="note">LA</span><span class="kbd">H</span>
-          </button>
-          <button class="synth-key" type="button" data-note="si" data-key="J">
-            <span class="note">SI</span><span class="kbd">J</span>
-          </button>
+        <div class="synth-keys synth-piano" id="synth-keys" aria-label="Teclado musical de piano">
+          <div class="synth-piano-bank" aria-label="Oitava grave">
+            <div class="synth-white-row">
+              <button class="synth-key piano-white" type="button" data-synth-key="z" data-synth-index="0"><span class="note">DO</span><span class="kbd">Z</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="x" data-synth-index="2"><span class="note">RE</span><span class="kbd">X</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="c" data-synth-index="4"><span class="note">MI</span><span class="kbd">C</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="v" data-synth-index="5"><span class="note">FA</span><span class="kbd">V</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="b" data-synth-index="7"><span class="note">SOL</span><span class="kbd">B</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="n" data-synth-index="9"><span class="note">LA</span><span class="kbd">N</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="m" data-synth-index="11"><span class="note">SI</span><span class="kbd">M</span></button>
+            </div>
+            <button class="synth-key piano-black" style="left: 10.2%" type="button" data-synth-key="s" data-synth-index="1"><span class="note">DO#</span><span class="kbd">S</span></button>
+            <button class="synth-key piano-black" style="left: 24.45%" type="button" data-synth-key="d" data-synth-index="3"><span class="note">RE#</span><span class="kbd">D</span></button>
+            <button class="synth-key piano-black" style="left: 53.05%" type="button" data-synth-key="g" data-synth-index="6"><span class="note">FA#</span><span class="kbd">G</span></button>
+            <button class="synth-key piano-black" style="left: 67.25%" type="button" data-synth-key="h" data-synth-index="8"><span class="note">SOL#</span><span class="kbd">H</span></button>
+            <button class="synth-key piano-black" style="left: 81.55%" type="button" data-synth-key="j" data-synth-index="10"><span class="note">LA#</span><span class="kbd">J</span></button>
+          </div>
+
+          <div class="synth-piano-bank" aria-label="Oitava aguda">
+            <div class="synth-white-row">
+              <button class="synth-key piano-white" type="button" data-synth-key="q" data-synth-index="12"><span class="note">DO</span><span class="kbd">Q</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="w" data-synth-index="14"><span class="note">RE</span><span class="kbd">W</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="e" data-synth-index="16"><span class="note">MI</span><span class="kbd">E</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="r" data-synth-index="17"><span class="note">FA</span><span class="kbd">R</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="t" data-synth-index="19"><span class="note">SOL</span><span class="kbd">T</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="y" data-synth-index="21"><span class="note">LA</span><span class="kbd">Y</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="u" data-synth-index="23"><span class="note">SI</span><span class="kbd">U</span></button>
+            </div>
+            <button class="synth-key piano-black" style="left: 10.2%" type="button" data-synth-key="2" data-synth-index="13"><span class="note">DO#</span><span class="kbd">2</span></button>
+            <button class="synth-key piano-black" style="left: 24.45%" type="button" data-synth-key="3" data-synth-index="15"><span class="note">RE#</span><span class="kbd">3</span></button>
+            <button class="synth-key piano-black" style="left: 53.05%" type="button" data-synth-key="5" data-synth-index="18"><span class="note">FA#</span><span class="kbd">5</span></button>
+            <button class="synth-key piano-black" style="left: 67.25%" type="button" data-synth-key="6" data-synth-index="20"><span class="note">SOL#</span><span class="kbd">6</span></button>
+            <button class="synth-key piano-black" style="left: 81.55%" type="button" data-synth-key="7" data-synth-index="22"><span class="note">LA#</span><span class="kbd">7</span></button>
+          </div>
         </div>
       </div>
 
       <div class="synth-controls">
         <button class="synth-btn" id="synth-record" type="button">GRAVAR</button>
         <button class="synth-btn" id="synth-play" type="button">REPRODUZIR</button>
-        <button class="synth-btn" id="synth-theme" type="button">MODO CLARO</button>
+        <button class="synth-btn" id="synth-clear" type="button">LIMPAR</button>
+        <button class="synth-btn" id="synth-oct-down" type="button">OITAVA -</button>
+        <div class="synth-octave" id="synth-octave">OITAVA 4</div>
+        <button class="synth-btn" id="synth-oct-up" type="button">OITAVA +</button>
       </div>
       <div class="kb-hint-game">
-        <span class="key">A</span><span class="key">S</span><span class="key">D</span><span class="key">F</span>
-        <span class="key">G</span><span class="key">H</span><span class="key">J</span>
-        tocar &nbsp;|&nbsp; <span class="key">R</span> gravar &nbsp;|&nbsp; <span class="key">P</span> reproduzir
+        toque no piano ou use <span class="key">Z</span><span class="key">S</span><span class="key">X</span><span class="key">D</span>...
+        &nbsp;|&nbsp; <span class="key">CAPS</span> gravar
+        &nbsp;|&nbsp; <span class="key">ENTER</span> reproduzir &nbsp;|&nbsp; <span class="key">TAB</span>/<span class="key">SHIFT</span> oitava
         &nbsp;|&nbsp; <span class="key">ESC</span> voltar
       </div>
     </div>
@@ -2108,6 +2338,8 @@
      JAVASCRIPT
      ===================================================================== -->
   <script src="https://js.puter.com/v2/"></script>
+  <script src="/vendor/phaser/phaser.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="js/script.js"></script>
 </body>
 

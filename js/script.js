@@ -139,6 +139,8 @@
     CC: "caraCoroa",
     GEO: "geometry-race",
     CYBER: "cyber-maze",
+    MP_HUB: "multiplayer-hub",
+    UT_MULTI: "undertale-multiplayer",
     PROJECTS: "projects-hub",
     LIGHT: "light-switch",
     PIGGY: "piggy-bank",
@@ -159,6 +161,7 @@
   });
   telasPersistiveis["modal-idade"] = false;
   telasPersistiveis[TELA.UT_BATTLE] = false;
+  telasPersistiveis[TELA.UT_MULTI] = false;
   var telaInicialPersistida = "";
   try {
     telaInicialPersistida = localStorage.getItem(STORAGE_TELA_ATIVA) || "";
@@ -166,6 +169,7 @@
 
   function bloquearCliqueMouse(e) {
     if (!e.isTrusted) return;
+    if (e.target && e.target.closest && e.target.closest("#undertale-multiplayer")) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
@@ -205,6 +209,8 @@
     }
     t.scrollTop = 0;
     if (id === TELA.ARCADE_GAMES) setTimeout(function () { arcadeGamesEnter(); }, 60);
+    if (id === TELA.MP_HUB) setTimeout(function () { multiplayerSetFoco(0); }, 60);
+    if (id === TELA.UT_MULTI) setTimeout(function () { utmEnter(); }, 60);
     if (id === TELA.JKP) setTimeout(function () { jkpSetFoco(0); }, 60);
     if (id === TELA.CC) setTimeout(function () { ccSetFoco(0); }, 60);
     if (id === TELA.GEO) setTimeout(function () { geoEnter(); }, 60);
@@ -286,6 +292,11 @@
     arcadeGamesBooted = false;
     arcadeGamesAnimating = false;
     irPara(TELA.ARCADE_GAMES);
+  });
+
+  document.getElementById("pg-multiplayer").addEventListener("click", function () {
+    somNav();
+    irPara(TELA.MP_HUB);
   });
 
   document.getElementById("pg-projects").addEventListener("click", function () {
@@ -996,6 +1007,1273 @@
     });
   }
 
+  /* =====================================================================
+   MULTIPLAYER HUB
+   ===================================================================== */
+  var multiplayerIdx = 0;
+
+  function getMultiplayerCards() {
+    return Array.from(document.querySelectorAll("#multiplayer-grid .gcard"));
+  }
+
+  function multiplayerSetFoco(idx) {
+    var cards = getMultiplayerCards();
+    if (!cards.length) return;
+    idx = ((idx % cards.length) + cards.length) % cards.length;
+    cards.forEach(function (card) {
+      card.classList.remove("kb-focus");
+    });
+    cards[idx].classList.add("kb-focus");
+    multiplayerIdx = idx;
+  }
+
+  function multiplayerSelect() {
+    var cards = getMultiplayerCards();
+    var card = cards[multiplayerIdx];
+    var goto = card && card.getAttribute("data-goto");
+    if (!goto) return;
+    somNav();
+    irPara(goto);
+  }
+
+  var multiplayerGrid = document.getElementById("multiplayer-grid");
+  if (multiplayerGrid) {
+    multiplayerGrid.addEventListener("click", function (e) {
+      var card = e.target.closest(".gcard");
+      var goto = card && card.getAttribute("data-goto");
+      if (!goto) return;
+      somNav();
+      irPara(goto);
+    });
+  }
+  getMultiplayerCards().forEach(function (card, index) {
+    card.addEventListener("mouseenter", function () {
+      multiplayerSetFoco(index);
+    });
+  });
+
+  /* =====================================================================
+   UNDERTALE MULTIPLAYER -- Cliente Socket.IO
+   ===================================================================== */
+  var UTM = {
+    socket: null,
+    socketUrl: "",
+    selfId: "",
+    room: null,
+    state: null,
+    raf: null,
+    t: 0,
+    keys: {
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+      dash: false,
+      attack: false,
+      pattern1: false,
+      pattern2: false,
+    },
+    pulse: {
+      dash: false,
+      attack: false,
+      pattern1: false,
+      pattern2: false,
+    },
+    phaser: null,
+    phaserScene: null,
+    menuIdx: 0,
+    carouselRaf: null,
+    renderCache: {},
+    hpMemory: {},
+    hitFx: {},
+  };
+
+  function utmEl(id) {
+    return document.getElementById(id);
+  }
+
+  function utmSetStatus(message, kind) {
+    var el = utmEl("utm-status");
+    if (!el) return;
+    el.textContent = message;
+    el.setAttribute("data-kind", kind || "");
+  }
+
+  function utmGetName() {
+    var el = utmEl("utm-player-name");
+    return el && el.value.trim() ? el.value.trim() : "Jogador";
+  }
+
+  function utmGetRoomCode() {
+    var el = utmEl("utm-room-code");
+    return el ? el.value.trim().toUpperCase() : "";
+  }
+
+  function utmGetServerUrl() {
+    var el = utmEl("utm-server-url");
+    return el ? el.value.trim().replace(/\/$/, "") : "";
+  }
+
+  function utmSetConnectionBadge(text, online) {
+    var badge = utmEl("utm-connection-badge");
+    if (!badge) return;
+    badge.textContent = text;
+    badge.classList.toggle("online", !!online);
+  }
+
+  var UTM_MENU_CONTROLS = [
+    "utm-server-url",
+    "utm-player-name",
+    "utm-create-room",
+    "utm-room-code",
+    "utm-join-room",
+    "utm-start-game",
+  ];
+
+  function utmGetMenuControls() {
+    return UTM_MENU_CONTROLS.map(function (id) {
+      return utmEl(id);
+    }).filter(function (el) {
+      return !!el && !el.disabled;
+    });
+  }
+
+  function utmSetMenuFocus(idx) {
+    var controls = utmGetMenuControls();
+    if (!controls.length) return;
+    idx = ((idx % controls.length) + controls.length) % controls.length;
+    controls.forEach(function (el) {
+      el.classList.remove("kb-focus");
+    });
+    controls[idx].classList.add("kb-focus");
+    UTM.menuIdx = idx;
+  }
+
+  function utmGetFocusedMenuControl() {
+    var controls = utmGetMenuControls();
+    return controls[UTM.menuIdx] || null;
+  }
+
+  function utmFocusControl(id) {
+    var controls = utmGetMenuControls();
+    var idx = controls.findIndex(function (el) {
+      return el.id === id;
+    });
+    utmSetMenuFocus(idx >= 0 ? idx : 0);
+  }
+
+  function utmConfirmTextField(input, nextId) {
+    if (!input) return;
+    input.blur();
+    if (input.id === "utm-player-name") {
+      utmEmit("utm:set-name", { name: utmGetName() });
+    }
+    setTimeout(function () {
+      utmFocusControl(nextId || "utm-create-room");
+    }, 0);
+  }
+
+  function utmActivateFocusedControl() {
+    var controls = utmGetMenuControls();
+    var el = controls[UTM.menuIdx];
+    if (!el) {
+      utmSetMenuFocus(0);
+      return;
+    }
+    if (el.tagName === "INPUT") {
+      el.focus();
+      if (typeof el.select === "function") el.select();
+      return;
+    }
+    el.click();
+  }
+
+  function utmSetActionFocus(delta) {
+    utmSetMenuFocus(UTM.menuIdx + delta);
+  }
+
+  function utmConnect() {
+    var url = utmGetServerUrl();
+    if (!window.io) {
+      utmSetStatus("Socket.IO Client nao foi carregado. Rode pelo servidor Node.", "error");
+      utmSetConnectionBadge("SEM IO", false);
+      return null;
+    }
+
+    if (UTM.socket && UTM.socketUrl === url) return UTM.socket;
+    if (UTM.socket) UTM.socket.disconnect();
+
+    UTM.socketUrl = url;
+    UTM.socket = url
+      ? window.io(url, { transports: ["websocket", "polling"], reconnection: true })
+      : window.io({ transports: ["websocket", "polling"], reconnection: true });
+
+    UTM.socket.on("connect", function () {
+      UTM.selfId = UTM.socket.id;
+      utmSetConnectionBadge("ONLINE", true);
+      utmSetStatus("Servidor conectado. Crie ou entre em uma sala.", "ok");
+      UTM.socket.emit("utm:set-name", { name: utmGetName() });
+    });
+
+    UTM.socket.on("disconnect", function () {
+      utmSetConnectionBadge("OFFLINE", false);
+      utmSetStatus("Conexao perdida com o servidor.", "error");
+    });
+
+    UTM.socket.on("utm:hello", function (payload) {
+      UTM.selfId = payload && payload.selfId ? payload.selfId : UTM.selfId;
+    });
+
+    UTM.socket.on("utm:joined", function (payload) {
+      if (payload && payload.roomId) {
+        var codeInput = utmEl("utm-room-code");
+        if (codeInput) codeInput.value = payload.roomId;
+        utmSetStatus("Sala " + payload.roomId + " conectada.", "ok");
+      }
+    });
+
+    UTM.socket.on("utm:room", function (room) {
+      UTM.room = room;
+      utmRenderRoom();
+    });
+
+    UTM.socket.on("utm:state", function (state) {
+      utmTrackDamage(state);
+      UTM.state = state;
+      utmRenderStateHud();
+    });
+
+    UTM.socket.on("utm:damage", function (payload) {
+      utmTriggerDamage(payload);
+    });
+
+    UTM.socket.on("utm:error", function (payload) {
+      somErro();
+      utmSetStatus((payload && payload.message) || "Erro multiplayer.", "error");
+    });
+
+    return UTM.socket;
+  }
+
+  function utmEmit(eventName, payload) {
+    var socket = utmConnect();
+    if (!socket) return;
+    var send = function () {
+      socket.emit(eventName, payload || {});
+    };
+    if (socket.connected) send();
+    else socket.once("connect", send);
+  }
+
+  function utmCreateRoom() {
+    somNav();
+    utmEmit("utm:create-room", { name: utmGetName() });
+  }
+
+  function utmJoinRoom() {
+    var roomId = utmGetRoomCode();
+    if (!roomId) {
+      somErro();
+      utmSetStatus("Digite o codigo da sala.", "error");
+      return;
+    }
+    somNav();
+    utmEmit("utm:join-room", { roomId: roomId, name: utmGetName() });
+  }
+
+  function utmChooseRole(role) {
+    somNav();
+    utmEmit("utm:choose-role", { role: role });
+  }
+
+  function utmStartGame() {
+    somNav();
+    utmEmit("utm:start-game");
+  }
+
+  function utmLeaveRoom() {
+    utmResetKeys();
+    if (UTM.socket && UTM.socket.connected) {
+      UTM.socket.emit("utm:leave-room");
+    }
+    UTM.room = null;
+    UTM.state = null;
+    UTM.renderCache = {};
+    UTM.hpMemory = {};
+    UTM.hitFx = {};
+    utmRenderRoom();
+    utmRenderStateHud();
+  }
+
+  function utmGetSelf() {
+    if (!UTM.room || !UTM.room.players) return null;
+    return UTM.room.players.find(function (player) {
+      return player.id === UTM.selfId;
+    }) || null;
+  }
+
+  function utmGetSelfLive() {
+    if (!UTM.state || !UTM.selfId) return utmGetSelf();
+    if (UTM.state.boss && UTM.state.boss.id === UTM.selfId) return UTM.state.boss;
+    var souls = UTM.state.souls || [];
+    return souls.find(function (player) { return player.id === UTM.selfId; }) || utmGetSelf();
+  }
+
+  function utmCooldownLabel(value) {
+    return value > 0 ? value.toFixed(1) + "s" : "OK";
+  }
+
+  function utmTrackDamage(state) {
+    if (!state || state.status !== "playing") {
+      if (state && state.status !== "ended") UTM.hpMemory = {};
+      return;
+    }
+    var now = performance.now();
+    var actors = [];
+    if (state.boss) actors.push({ actor: state.boss, kind: "boss", color: "#ff4040" });
+    (state.souls || []).forEach(function (soul, index) {
+      actors.push({ actor: soul, kind: "soul", color: utmSoulColor(index, soul) });
+    });
+    actors.forEach(function (entry) {
+      var actor = entry.actor;
+      if (!actor || !actor.id) return;
+      var previous = UTM.hpMemory[actor.id];
+      if (typeof previous === "number" && actor.hp < previous) {
+        utmTriggerDamage({
+          targetId: actor.id,
+          targetRole: entry.kind,
+          color: entry.color,
+        });
+      }
+      UTM.hpMemory[actor.id] = actor.hp;
+    });
+  }
+
+  function utmTriggerDamage(payload) {
+    if (!payload || !payload.targetId) return;
+    var now = performance.now();
+    var kind = payload.targetRole || "soul";
+    UTM.hitFx[payload.targetId] = {
+      start: now,
+      until: now + (kind === "boss" ? 460 : 360),
+      color: payload.color || (kind === "boss" ? "#ff4040" : "#00f5c4"),
+      kind: kind,
+    };
+  }
+
+  function utmHitPower(id) {
+    var fx = id && UTM.hitFx[id];
+    if (!fx) return 0;
+    var now = performance.now();
+    if (now >= fx.until) {
+      delete UTM.hitFx[id];
+      return 0;
+    }
+    return 1 - (now - fx.start) / (fx.until - fx.start);
+  }
+
+  function utmHitShake(id, amount) {
+    var power = utmHitPower(id);
+    if (!power) return 0;
+    return Math.round(Math.sin(UTM.t * 1.9) * amount * power);
+  }
+
+  function utmSoulColor(index, soul) {
+    var palette = ["#ff4040", "#00f5c4", "#ffee44", "#9d5cff"];
+    return (soul && soul.color) || palette[index % palette.length];
+  }
+
+  function utmSmoothEntity(key, entity, factor) {
+    if (!entity) return entity;
+    var cache = UTM.renderCache[key];
+    if (!cache || Math.abs(cache.x - entity.x) > 90 || Math.abs(cache.y - entity.y) > 90) {
+      cache = { x: entity.x, y: entity.y };
+    } else {
+      cache.x += (entity.x - cache.x) * factor;
+      cache.y += (entity.y - cache.y) * factor;
+    }
+    UTM.renderCache[key] = cache;
+    var copy = {};
+    Object.keys(entity).forEach(function (prop) {
+      copy[prop] = entity[prop];
+    });
+    copy.x = cache.x;
+    copy.y = cache.y;
+    return copy;
+  }
+
+  function utmSmoothBoss(boss) {
+    return boss ? utmSmoothEntity("boss:" + boss.id, boss, 0.34) : null;
+  }
+
+  function utmSmoothSoul(soul) {
+    return soul ? utmSmoothEntity("soul:" + soul.id, soul, 0.38) : null;
+  }
+
+  function utmSmoothBullet(bullet) {
+    return bullet ? utmSmoothEntity("bullet:" + bullet.id, bullet, 0.52) : null;
+  }
+
+  function utmGetMode() {
+    var status = (UTM.state && UTM.state.status) || (UTM.room && UTM.room.status) || "lobby";
+    if (status === "playing") return "playing";
+    if (status === "ended") return "ended";
+    if (status === "selecting") return "selecting";
+    return "lobby";
+  }
+
+  function utmSyncMode() {
+    var screen = utmEl("undertale-multiplayer");
+    if (!screen) return;
+    var mode = utmGetMode();
+    screen.classList.remove("utm-mode-lobby", "utm-mode-selecting", "utm-mode-playing", "utm-mode-ended");
+    screen.classList.add("utm-mode-" + mode);
+  }
+
+  function utmGetSelection() {
+    return (UTM.room && UTM.room.selection) || (UTM.state && UTM.state.selection) || null;
+  }
+
+  function utmSelectionName(id) {
+    var selection = utmGetSelection();
+    var order = selection && selection.order ? selection.order : [];
+    var match = order.find(function (player) { return player.id === id; });
+    if (match) return match.name;
+    if (UTM.room && UTM.room.players) {
+      match = UTM.room.players.find(function (player) { return player.id === id; });
+      if (match) return match.name;
+    }
+    return "Boss";
+  }
+
+  function utmStopCarousel() {
+    if (UTM.carouselRaf) cancelAnimationFrame(UTM.carouselRaf);
+    UTM.carouselRaf = null;
+  }
+
+  function utmRenderCarouselFrame() {
+    var track = utmEl("utm-carousel-track");
+    var result = utmEl("utm-carousel-result");
+    var selection = utmGetSelection();
+    if (!track || !selection || !selection.order || !selection.order.length) {
+      if (track) track.innerHTML = "";
+      if (result) result.textContent = "Aguardando jogadores...";
+      utmStopCarousel();
+      return;
+    }
+
+    var elapsed = Math.max(0, Date.now() - selection.startedAt);
+    var duration = selection.durationMs || 4200;
+    var done = elapsed >= duration;
+    var names = selection.order;
+    var finalIndex = names.findIndex(function (player) { return player.id === selection.selectedBossId; });
+    if (finalIndex < 0) finalIndex = 0;
+
+    var progress = Math.min(1, elapsed / duration);
+    var spin = Math.floor(progress * progress * names.length * 12);
+    var centerIndex = done ? finalIndex : spin % names.length;
+    track.innerHTML = "";
+
+    for (var offset = -2; offset <= 2; offset++) {
+      var player = names[(centerIndex + offset + names.length * 10) % names.length];
+      var card = document.createElement("div");
+      card.className = "utm-carousel-card" + (offset === 0 ? " center" : "");
+      card.textContent = player.name + (player.host ? " HOST" : "");
+      track.appendChild(card);
+    }
+
+    if (result) {
+      result.textContent = done
+        ? utmSelectionName(selection.selectedBossId) + " virou o Boss"
+        : "Girando...";
+    }
+
+    if (!done && utmGetMode() === "selecting") {
+      UTM.carouselRaf = requestAnimationFrame(utmRenderCarouselFrame);
+    } else {
+      UTM.carouselRaf = null;
+    }
+  }
+
+  function utmStartCarousel() {
+    if (UTM.carouselRaf) return;
+    utmRenderCarouselFrame();
+  }
+
+  function utmRenderRoom() {
+    var room = UTM.room;
+    var code = room && room.id ? room.id : "----";
+    var currentRoom = utmEl("utm-current-room");
+    var heroRoom = utmEl("utm-hero-room-code");
+    var roomPill = utmEl("utm-room-pill");
+    var roster = utmEl("utm-roster");
+    var count = utmEl("utm-player-count");
+    utmSyncMode();
+    if (currentRoom) currentRoom.textContent = code;
+    if (heroRoom) heroRoom.textContent = code;
+    if (roomPill) roomPill.textContent = code;
+    if (count) count.textContent = room && room.players ? room.players.length + "/5" : "0/5";
+    if (roster) {
+      roster.innerHTML = "";
+      if (!room || !room.players || !room.players.length) {
+        var empty = document.createElement("div");
+        empty.className = "utm-roster-empty";
+        empty.textContent = "Nenhum jogador na sala.";
+        roster.appendChild(empty);
+      } else {
+        room.players.forEach(function (player) {
+          var row = document.createElement("div");
+          row.className = "utm-roster-row " + (player.role || "none");
+          if (player.id === UTM.selfId) row.classList.add("self");
+          var name = document.createElement("strong");
+          name.textContent = player.name + (player.id === room.hostId ? " HOST" : "");
+          var meta = document.createElement("span");
+          if (room.status === "selecting") meta.textContent = "NO SORTEIO";
+          else if (player.role === "boss") meta.textContent = "BOSS HP " + player.hp + "/" + player.maxHp;
+          else if (player.role === "soul") meta.textContent = "ALMA HP " + player.hp;
+          else meta.textContent = "AGUARDANDO";
+          row.appendChild(name);
+          row.appendChild(meta);
+          roster.appendChild(row);
+        });
+      }
+    }
+
+    if (utmGetMode() === "selecting") utmStartCarousel();
+    else utmStopCarousel();
+    utmSetMenuFocus(UTM.menuIdx);
+  }
+
+  function utmRenderStateHud() {
+    var state = UTM.state;
+    var time = utmEl("utm-time-pill");
+    var bossName = utmEl("utm-boss-name");
+    var result = utmEl("utm-result");
+    var dialog = utmEl("utm-dialog-text");
+    utmSyncMode();
+
+    if (time) time.textContent = state && state.boss ? state.boss.hp + "/" + state.boss.maxHp : "--";
+    if (bossName) bossName.textContent = state && state.boss ? state.boss.name : "AGUARDANDO";
+
+    if (!state) {
+      if (result) result.textContent = "LOBBY";
+      if (dialog) dialog.textContent = "Crie uma sala, espere os jogadores e inicie o sorteio do Boss.";
+      return;
+    }
+
+    if (state.status === "selecting") {
+      if (result) result.textContent = "SORTEIO";
+      if (dialog) dialog.textContent = "O Boss esta sendo sorteado.";
+      utmStartCarousel();
+      return;
+    }
+
+    if (state.status === "playing") {
+      if (result) result.textContent = "PARTIDA";
+      var self = utmGetSelf();
+      if (dialog) {
+        if (self && self.role === "boss") dialog.textContent = "Boss: WASD/setas movem e miram. Z tiro, X leque, C ossos.";
+        else if (self && self.role === "soul") dialog.textContent = "Alma: WASD/setas desviam. Z atira, Shift da dash.";
+        else dialog.textContent = "Partida em andamento.";
+      }
+      utmStopCarousel();
+      return;
+    }
+
+    if (state.status === "ended") {
+      if (result) result.textContent = state.winner === "boss" ? "BOSS VENCEU" : "ALMAS VENCERAM";
+      if (dialog) {
+        dialog.textContent =
+          state.winner === "boss"
+            ? "Todas as Almas foram derrotadas."
+            : "As Almas derrotaram o Boss.";
+      }
+      utmStopCarousel();
+      return;
+    }
+
+    if (result) result.textContent = "LOBBY";
+    utmStopCarousel();
+  }
+
+  function utmResetKeys() {
+    Object.keys(UTM.keys).forEach(function (key) {
+      UTM.keys[key] = false;
+    });
+    Object.keys(UTM.pulse).forEach(function (key) {
+      UTM.pulse[key] = false;
+    });
+    utmSendInput(true);
+  }
+
+  function utmKeyTargetIsText(target) {
+    return (
+      target &&
+      (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+    );
+  }
+
+  function utmSetKey(key, isDown) {
+    var k = String(key || "").toLowerCase();
+    var handled = true;
+    if (k === "arrowup" || k === "w") UTM.keys.up = isDown;
+    else if (k === "arrowdown" || k === "s") UTM.keys.down = isDown;
+    else if (k === "arrowleft" || k === "a") UTM.keys.left = isDown;
+    else if (k === "arrowright" || k === "d") UTM.keys.right = isDown;
+    else if (k === "shift") UTM.keys.dash = isDown;
+    else if (k === "z" || k === " " || k === "spacebar") UTM.keys.attack = isDown;
+    else if (k === "x") UTM.keys.pattern1 = isDown;
+    else if (k === "c") UTM.keys.pattern2 = isDown;
+    else handled = false;
+    return handled;
+  }
+
+  function utmBuildInput() {
+    var self = utmGetSelf();
+    var payload = {
+      up: UTM.keys.up,
+      down: UTM.keys.down,
+      left: UTM.keys.left,
+      right: UTM.keys.right,
+      dash: UTM.keys.dash || UTM.pulse.dash,
+      attack: UTM.keys.attack || UTM.pulse.attack,
+      pattern1: UTM.keys.pattern1 || UTM.pulse.pattern1,
+      pattern2: UTM.keys.pattern2 || UTM.pulse.pattern2,
+    };
+
+    if (!self || self.role !== "boss") {
+      payload.pattern1 = false;
+      payload.pattern2 = false;
+    }
+    if (!self || self.role !== "soul") {
+      payload.dash = false;
+    }
+    return payload;
+  }
+
+  function utmSendInput(force) {
+    if (!UTM.socket || !UTM.socket.connected) return;
+    if (!UTM.state || UTM.state.status !== "playing") {
+      if (!force) return;
+    }
+    UTM.socket.emit("utm:input", utmBuildInput());
+    UTM.pulse.dash = false;
+    UTM.pulse.attack = false;
+    UTM.pulse.pattern1 = false;
+    UTM.pulse.pattern2 = false;
+  }
+
+  function utmPulseAction(action) {
+    if (!Object.prototype.hasOwnProperty.call(UTM.pulse, action)) return;
+    UTM.pulse[action] = true;
+    utmSendInput(true);
+  }
+
+  setInterval(function () {
+    utmSendInput(false);
+  }, 50);
+
+  function utmHeartPath(ctx, cx, cy, s) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - s * 0.2);
+    ctx.bezierCurveTo(cx, cy - s, cx - s * 1.1, cy - s, cx - s * 1.1, cy - s * 0.2);
+    ctx.bezierCurveTo(cx - s * 1.1, cy + s * 0.4, cx, cy + s * 0.9, cx, cy + s * 0.9);
+    ctx.bezierCurveTo(cx + s * 1.1, cy + s * 0.4, cx + s * 1.1, cy - s * 0.2, cx + s * 1.1, cy - s * 0.2);
+    ctx.bezierCurveTo(cx + s * 1.1, cy - s, cx, cy - s, cx, cy - s * 0.2);
+    ctx.closePath();
+  }
+
+  function utmDrawBossHpBarCanvas(ctx, state, w) {
+    if (!state || !state.boss) return;
+    var boss = state.boss;
+    var souls = state.souls || [];
+    var pct = boss.maxHp ? Math.max(0, Math.min(1, boss.hp / boss.maxHp)) : 0;
+    var barW = Math.min(w - 70, 280 + souls.length * 68);
+    var x = (w - barW) / 2;
+    var y = 22;
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,0.76)";
+    ctx.strokeStyle = "rgba(255,255,255,0.88)";
+    ctx.lineWidth = 2;
+    ctx.fillRect(x, y, barW, 22);
+    ctx.strokeRect(x, y, barW, 22);
+    var grad = ctx.createLinearGradient(x, y, x + barW, y);
+    grad.addColorStop(0, "#ff4040");
+    grad.addColorStop(0.55, "#ff8844");
+    grad.addColorStop(1, "#ffee44");
+    ctx.fillStyle = grad;
+    ctx.fillRect(x + 3, y + 3, Math.max(0, (barW - 6) * pct), 16);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "8px 'Press Start 2P', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText((boss.name || "BOSS") + " HP " + boss.hp + "/" + boss.maxHp, w / 2, y + 15);
+    ctx.restore();
+  }
+
+  function utmDrawDamagePixels(ctx, x, y, color, power, scale) {
+    if (!power) return;
+    scale = scale || 1;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, power + 0.1);
+    ctx.shadowColor = color || "#ffffff";
+    ctx.shadowBlur = 10 * scale;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(x - 28 * scale, y - 22 * scale, 7 * scale, 7 * scale);
+    ctx.fillRect(x + 21 * scale, y - 30 * scale, 6 * scale, 6 * scale);
+    ctx.fillRect(x + 30 * scale, y + 10 * scale, 8 * scale, 5 * scale);
+    ctx.fillRect(x - 36 * scale, y + 14 * scale, 6 * scale, 6 * scale);
+    ctx.fillStyle = color || "#ff4040";
+    ctx.fillRect(x - 18 * scale, y - 34 * scale, 5 * scale, 5 * scale);
+    ctx.fillRect(x + 12 * scale, y + 24 * scale, 5 * scale, 5 * scale);
+    ctx.restore();
+  }
+
+  function utmDrawBoss(ctx, boss) {
+    if (!boss) return;
+    ctx.save();
+    var hitPower = utmHitPower(boss.id);
+    var hitFlash = hitPower > 0 && Math.floor(UTM.t / 2) % 2 === 0;
+    ctx.translate(boss.x + utmHitShake(boss.id, 5), boss.y);
+    var bob = Math.sin(UTM.t * 0.07) * 3;
+    ctx.translate(0, bob);
+    ctx.shadowColor = hitFlash ? "#ffffff" : "#ff4040";
+    ctx.shadowBlur = hitPower ? 28 : 16;
+    ctx.fillStyle = hitFlash ? "#ffffff" : "#241022";
+    ctx.fillRect(-32, -8, 64, 56);
+    ctx.fillStyle = hitFlash ? "#ffb0b0" : "#d8d4ff";
+    ctx.fillRect(-28, -48, 56, 44);
+    ctx.fillStyle = hitFlash ? "#05030e" : "#ff4040";
+    ctx.fillRect(-18, -32, 12, 12);
+    ctx.fillRect(6, -32, 12, 12);
+    ctx.fillStyle = "#05030e";
+    ctx.fillRect(-14, -28, 5, 5);
+    ctx.fillRect(10, -28, 5, 5);
+    ctx.fillStyle = "#ff8844";
+    ctx.fillRect(-48, 8, 18, 12);
+    ctx.fillRect(30, 8, 18, 12);
+    ctx.fillStyle = "#ffee44";
+    ctx.fillRect(-44, 11, 10, 6);
+    ctx.fillRect(34, 11, 10, 6);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "10px 'Press Start 2P', monospace";
+    ctx.textAlign = "center";
+    ctx.shadowBlur = 0;
+    ctx.fillText(boss.name || "BOSS", 0, 66);
+    utmDrawDamagePixels(ctx, 0, 0, "#ff4040", hitPower, 1);
+    ctx.restore();
+  }
+
+  function utmDrawSoul(ctx, soul, index) {
+    ctx.save();
+    ctx.globalAlpha = soul.alive ? (soul.invuln > 0 ? 0.48 + Math.sin(UTM.t * 0.5) * 0.24 : 1) : 0.28;
+    var color = utmSoulColor(index, soul);
+    var bob = Math.sin(UTM.t * 0.08 + index) * 2;
+    var hitPower = utmHitPower(soul.id);
+    var hitFlash = hitPower > 0 && Math.floor(UTM.t / 2) % 2 === 0;
+    var x = Math.round(soul.x + utmHitShake(soul.id, 4));
+    var y = Math.round(soul.y + bob);
+    ctx.shadowColor = hitFlash ? "#ffffff" : color;
+    ctx.shadowBlur = hitPower ? 24 : soul.alive ? 14 : 0;
+    ctx.fillStyle = "rgba(255,255,255,0.86)";
+    ctx.fillRect(x - 8, y - 16, 16, 4);
+    ctx.fillRect(x - 14, y - 10, 4, 18);
+    ctx.fillRect(x + 10, y - 10, 4, 18);
+    ctx.fillRect(x - 8, y + 10, 16, 4);
+    ctx.fillStyle = hitFlash ? "#ffffff" : color;
+    ctx.fillRect(x - 10, y - 12, 20, 6);
+    ctx.fillRect(x - 14, y - 6, 28, 12);
+    ctx.fillRect(x - 10, y + 6, 20, 8);
+    ctx.fillRect(x - 4, y + 14, 8, 5);
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
+    ctx.fillRect(x - 6, y - 8, 12, 4);
+    ctx.fillRect(x - 3, y - 3, 6, 8);
+    ctx.fillStyle = "#05030e";
+    ctx.fillRect(x - 3, y - 1, 6, 6);
+    ctx.fillStyle = hitFlash ? "#ff4040" : color;
+    ctx.fillRect(x - 1, y + 1, 2, 2);
+    ctx.shadowBlur = 0;
+    utmDrawDamagePixels(ctx, x, y, color, hitPower, 0.58);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "9px 'Press Start 2P', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(soul.name || "ALMA", x, y + 31);
+    ctx.fillStyle = "#ffff00";
+    for (var i = 0; i < soul.maxHp; i++) {
+      ctx.globalAlpha = i < soul.hp ? 1 : 0.22;
+      ctx.fillRect(x - soul.maxHp * 5 + i * 10, y + 39, 7, 5);
+    }
+    ctx.restore();
+  }
+
+  function utmDrawBullet(ctx, bullet) {
+    ctx.save();
+    if (bullet.type === "soul-shot") {
+      var shotColor = bullet.color || "#00f5c4";
+      var r = bullet.r || 6;
+      var bx = Math.round(bullet.x);
+      var by = Math.round(bullet.y);
+      ctx.shadowColor = shotColor;
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = shotColor;
+      ctx.fillRect(bx - r * 2, by - 2, r * 4, 4);
+      ctx.fillRect(bx - 2, by - r * 2, 4, r * 4);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(bx - r, by - 1, r * 2, 2);
+      ctx.fillRect(bx - 1, by - r, 2, r * 2);
+      ctx.shadowBlur = 0;
+    } else if (bullet.type === "bone") {
+      ctx.translate(bullet.x, bullet.y);
+      ctx.shadowColor = "#ffffff";
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = "#e9e9d8";
+      ctx.fillRect(-7, -20, 14, 40);
+      ctx.beginPath();
+      ctx.arc(-7, -18, 7, 0, Math.PI * 2);
+      ctx.arc(7, -18, 7, 0, Math.PI * 2);
+      ctx.arc(-7, 18, 7, 0, Math.PI * 2);
+      ctx.arc(7, 18, 7, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.shadowColor = bullet.color || "#ff4040";
+      ctx.shadowBlur = bullet.type === "ring" ? 14 : 10;
+      ctx.fillStyle = bullet.color || "#ff4040";
+      ctx.beginPath();
+      ctx.arc(bullet.x, bullet.y, bullet.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,0.75)";
+      ctx.beginPath();
+      ctx.arc(bullet.x - bullet.r * 0.25, bullet.y - bullet.r * 0.25, Math.max(2, bullet.r * 0.32), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function utmPhaserColor(hex, fallback) {
+    var value = String(hex || fallback || "#ffffff").replace("#", "");
+    var parsed = parseInt(value.length === 3 ? value.replace(/(.)/g, "$1$1") : value, 16);
+    return isNaN(parsed) ? 0xffffff : parsed;
+  }
+
+  function utmPhaserLabel(scene, x, y, text, size, color) {
+    if (!scene.utmLabels) scene.utmLabels = [];
+    var label = scene.add
+      .text(x, y, text, {
+        fontFamily: '"Press Start 2P", monospace',
+        fontSize: size + "px",
+        color: color || "#ffffff",
+      })
+      .setOrigin(0.5);
+    scene.utmLabels.push(label);
+  }
+
+  function utmHeartPoints(cx, cy, s) {
+    var points = [];
+    function cubic(p0, p1, p2, p3, t) {
+      var mt = 1 - t;
+      return mt * mt * mt * p0 + 3 * mt * mt * t * p1 + 3 * mt * t * t * p2 + t * t * t * p3;
+    }
+    function addCurve(x0, y0, x1, y1, x2, y2, x3, y3) {
+      for (var i = 0; i <= 14; i++) {
+        var t = i / 14;
+        points.push({
+          x: cubic(x0, x1, x2, x3, t),
+          y: cubic(y0, y1, y2, y3, t),
+        });
+      }
+    }
+    var x0 = cx;
+    var y0 = cy - s * 0.2;
+    addCurve(x0, y0, cx, cy - s, cx - s * 1.1, cy - s, cx - s * 1.1, cy - s * 0.2);
+    addCurve(cx - s * 1.1, cy - s * 0.2, cx - s * 1.1, cy + s * 0.4, cx, cy + s * 0.9, cx, cy + s * 0.9);
+    addCurve(cx, cy + s * 0.9, cx + s * 1.1, cy + s * 0.4, cx + s * 1.1, cy - s * 0.2, cx + s * 1.1, cy - s * 0.2);
+    addCurve(cx + s * 1.1, cy - s * 0.2, cx + s * 1.1, cy - s, cx, cy - s, x0, y0);
+    return points;
+  }
+
+  function utmPhaserHeart(g, cx, cy, s, fill, alpha, stroke) {
+    var a = alpha == null ? 1 : alpha;
+    var points = utmHeartPoints(cx, cy, s);
+    g.fillStyle(fill, a);
+    if (typeof g.fillPoints === "function") {
+      g.fillPoints(points, true);
+    } else {
+      g.fillCircle(cx - s * 0.45, cy - s * 0.15, s * 0.55);
+      g.fillCircle(cx + s * 0.45, cy - s * 0.15, s * 0.55);
+      g.fillTriangle(cx - s * 1.03, cy, cx + s * 1.03, cy, cx, cy + s * 1.16);
+    }
+    if (stroke) {
+      g.lineStyle(1.5, 0xffffff, a);
+      if (typeof g.strokePoints === "function") {
+        g.strokePoints(points, true);
+      } else {
+        g.strokeCircle(cx - s * 0.45, cy - s * 0.15, s * 0.55);
+        g.strokeCircle(cx + s * 0.45, cy - s * 0.15, s * 0.55);
+        g.strokeTriangle(cx - s * 1.03, cy, cx + s * 1.03, cy, cx, cy + s * 1.16);
+      }
+    }
+  }
+
+  function utmDrawPhaserSoul(g, soul, index, alpha) {
+    var a = alpha == null ? 1 : alpha;
+    var color = utmPhaserColor(utmSoulColor(index, soul), "#ff4040");
+    var hitPower = utmHitPower(soul.id);
+    var hitFlash = hitPower > 0 && Math.floor(UTM.t / 2) % 2 === 0;
+    var x = Math.round(soul.x + utmHitShake(soul.id, 4));
+    var y = Math.round(soul.y + Math.sin(UTM.t * 0.08 + index) * 2);
+    g.fillStyle(0xffffff, a * 0.86);
+    g.fillRect(x - 8, y - 16, 16, 4);
+    g.fillRect(x - 14, y - 10, 4, 18);
+    g.fillRect(x + 10, y - 10, 4, 18);
+    g.fillRect(x - 8, y + 10, 16, 4);
+    g.fillStyle(hitFlash ? 0xffffff : color, a);
+    g.fillRect(x - 10, y - 12, 20, 6);
+    g.fillRect(x - 14, y - 6, 28, 12);
+    g.fillRect(x - 10, y + 6, 20, 8);
+    g.fillRect(x - 4, y + 14, 8, 5);
+    g.fillStyle(0xffffff, a * 0.5);
+    g.fillRect(x - 6, y - 8, 12, 4);
+    g.fillRect(x - 3, y - 3, 6, 8);
+    g.fillStyle(0x05030e, a * 0.76);
+    g.fillRect(x - 3, y - 1, 6, 6);
+    g.fillStyle(hitFlash ? 0xff4040 : color, a);
+    g.fillRect(x - 1, y + 1, 2, 2);
+    utmDrawPhaserDamagePixels(g, x, y, color, hitPower, 0.58);
+  }
+
+  function utmDrawPhaserSoulBolt(g, bullet) {
+    var color = utmPhaserColor(bullet.color, "#00f5c4");
+    var r = bullet.r || 6;
+    var x = Math.round(bullet.x);
+    var y = Math.round(bullet.y);
+    g.fillStyle(color, 1);
+    g.fillRect(x - r * 2, y - 2, r * 4, 4);
+    g.fillRect(x - 2, y - r * 2, 4, r * 4);
+    g.fillStyle(0xffffff, 0.82);
+    g.fillRect(x - r, y - 1, r * 2, 2);
+    g.fillRect(x - 1, y - r, 2, r * 2);
+  }
+
+  function utmDrawPhaserDamagePixels(g, x, y, color, power, scale) {
+    if (!power) return;
+    scale = scale || 1;
+    var a = Math.min(1, power + 0.1);
+    g.fillStyle(0xffffff, a);
+    g.fillRect(x - 28 * scale, y - 22 * scale, 7 * scale, 7 * scale);
+    g.fillRect(x + 21 * scale, y - 30 * scale, 6 * scale, 6 * scale);
+    g.fillRect(x + 30 * scale, y + 10 * scale, 8 * scale, 5 * scale);
+    g.fillRect(x - 36 * scale, y + 14 * scale, 6 * scale, 6 * scale);
+    g.fillStyle(color || 0xff4040, a);
+    g.fillRect(x - 18 * scale, y - 34 * scale, 5 * scale, 5 * scale);
+    g.fillRect(x + 12 * scale, y + 24 * scale, 5 * scale, 5 * scale);
+  }
+
+  function utmDrawPhaserBossHp(scene, g, state, w) {
+    if (!state || !state.boss) return;
+    var boss = state.boss;
+    var souls = state.souls || [];
+    var pct = boss.maxHp ? Math.max(0, Math.min(1, boss.hp / boss.maxHp)) : 0;
+    var barW = Math.min(w - 70, 280 + souls.length * 68);
+    var x = (w - barW) / 2;
+    var y = 22;
+    g.fillStyle(0x000000, 0.76);
+    g.fillRect(x, y, barW, 22);
+    g.lineStyle(2, 0xffffff, 0.88);
+    g.strokeRect(x, y, barW, 22);
+    g.fillStyle(0xff4040, 1);
+    g.fillRect(x + 3, y + 3, Math.max(0, (barW - 6) * pct), 16);
+    g.fillStyle(0xffee44, 0.34);
+    g.fillRect(x + 3, y + 3, Math.max(0, (barW - 6) * pct), 4);
+    utmPhaserLabel(scene, w / 2, y + 12, (boss.name || "BOSS") + " HP " + boss.hp + "/" + boss.maxHp, 8, "#ffffff");
+  }
+
+  function utmDrawPhaser(scene) {
+    var g = scene.utmGraphics;
+    if (!g) return;
+    if (scene.utmLabels) {
+      scene.utmLabels.forEach(function (label) { label.destroy(); });
+      scene.utmLabels = [];
+    }
+
+    var w = 720;
+    var h = 420;
+    g.clear();
+    g.fillStyle(0x000000, 1);
+    g.fillRect(0, 0, w, h);
+    g.lineStyle(4, 0xffffff, 1);
+    g.strokeRect(8, 8, w - 16, h - 16);
+    g.fillStyle(0xffffff, 0.035);
+    for (var y = 18; y < h; y += 10) g.fillRect(10, y, w - 20, 1);
+
+    var state = UTM.state;
+    if (!state) {
+      utmPhaserLabel(scene, w / 2, h / 2 - 8, "UNDERTALE MP", 18, "#ff4040");
+      utmPhaserLabel(scene, w / 2, h / 2 + 22, "AGUARDANDO SALA", 10, "#d8e0ff");
+      return;
+    }
+
+    var selfLive = utmGetSelfLive();
+    if (state.status === "playing" && selfLive) {
+      var controlText = selfLive.role === "boss"
+        ? "Z TIRO " + utmCooldownLabel(selfLive.attackCooldown) + "   X LEQUE " + utmCooldownLabel(selfLive.ringCooldown) + "   C OSSOS " + utmCooldownLabel(selfLive.wallCooldown)
+        : "Z TIRO " + utmCooldownLabel(selfLive.attackCooldown) + "   SHIFT DASH " + utmCooldownLabel(selfLive.dashCooldown);
+      utmPhaserLabel(scene, w / 2, h - 18, controlText, 8, selfLive.role === "boss" ? "#ff8844" : "#00f5c4");
+    }
+
+    utmDrawPhaserBossHp(scene, g, state, w);
+
+    if (state.boss) {
+      var boss = utmSmoothBoss(state.boss);
+      var bossHit = utmHitPower(boss.id);
+      var bossFlash = bossHit > 0 && Math.floor(UTM.t / 2) % 2 === 0;
+      var bob = Math.sin(UTM.t * 0.07) * 3;
+      var bx = boss.x + utmHitShake(boss.id, 5);
+      var by = boss.y + bob;
+      g.fillStyle(bossFlash ? 0xffffff : 0x241022, 1);
+      g.fillRect(bx - 32, by - 8, 64, 56);
+      g.fillStyle(bossFlash ? 0xffb0b0 : 0xd8d4ff, 1);
+      g.fillRect(bx - 28, by - 48, 56, 44);
+      g.fillStyle(bossFlash ? 0x05030e : 0xff4040, 1);
+      g.fillRect(bx - 18, by - 32, 12, 12);
+      g.fillRect(bx + 6, by - 32, 12, 12);
+      g.fillStyle(0x05030e, 1);
+      g.fillRect(bx - 14, by - 28, 5, 5);
+      g.fillRect(bx + 10, by - 28, 5, 5);
+      g.fillStyle(0xff8844, 1);
+      g.fillRect(bx - 48, by + 8, 18, 12);
+      g.fillRect(bx + 30, by + 8, 18, 12);
+      g.fillStyle(0xffee44, 1);
+      g.fillRect(bx - 44, by + 11, 10, 6);
+      g.fillRect(bx + 34, by + 11, 10, 6);
+      utmPhaserLabel(scene, bx, by + 66, boss.name || "BOSS", 10, "#ffffff");
+      utmDrawPhaserDamagePixels(g, bx, by, 0xff4040, bossHit, 1);
+    }
+
+    (state.bullets || []).forEach(function (rawBullet) {
+      var bullet = utmSmoothBullet(rawBullet);
+      if (bullet.type === "soul-shot") {
+        utmDrawPhaserSoulBolt(g, bullet);
+      } else if (bullet.type === "bone") {
+        g.fillStyle(0xe9e9d8, 1);
+        g.fillRect(bullet.x - 7, bullet.y - 20, 14, 40);
+        g.fillCircle(bullet.x - 7, bullet.y - 18, 7);
+        g.fillCircle(bullet.x + 7, bullet.y - 18, 7);
+        g.fillCircle(bullet.x - 7, bullet.y + 18, 7);
+        g.fillCircle(bullet.x + 7, bullet.y + 18, 7);
+      } else {
+        var color = utmPhaserColor(bullet.color, "#ff4040");
+        g.fillStyle(color, 1);
+        g.fillCircle(bullet.x, bullet.y, bullet.r);
+        g.fillStyle(0xffffff, 0.75);
+        g.fillCircle(bullet.x - bullet.r * 0.25, bullet.y - bullet.r * 0.25, Math.max(2, bullet.r * 0.32));
+      }
+    });
+
+    (state.souls || []).forEach(function (rawSoul, index) {
+      var soul = utmSmoothSoul(rawSoul);
+      var alpha = soul.alive ? (soul.invuln > 0 ? 0.58 : 1) : 0.28;
+      utmDrawPhaserSoul(g, soul, index, alpha);
+      utmPhaserLabel(scene, soul.x, soul.y + 28, soul.name || "ALMA", 9, "#ffffff");
+      for (var i = 0; i < soul.maxHp; i++) {
+        g.fillStyle(0xffff00, i < soul.hp ? 1 : 0.22);
+        g.fillRect(soul.x - soul.maxHp * 5 + i * 10, soul.y + 36, 7, 5);
+      }
+    });
+
+    if (state.status === "ended") {
+      g.fillStyle(0x000000, 0.72);
+      g.fillRect(0, 0, w, h);
+      utmPhaserLabel(scene, w / 2, h / 2, state.winner === "boss" ? "BOSS VENCEU" : "ALMAS VENCERAM", 18, state.winner === "boss" ? "#ff4040" : "#ffff00");
+    }
+  }
+
+  function utmStartPhaser() {
+    if (UTM.phaser || !window.Phaser) return !!UTM.phaser;
+    var canvas = utmEl("utm-canvas");
+    if (!canvas) return false;
+    UTM.phaser = new window.Phaser.Game({
+      type: window.Phaser.CANVAS,
+      canvas: canvas,
+      width: 720,
+      height: 420,
+      backgroundColor: "#000000",
+      audio: { noAudio: true },
+      scene: {
+        create: function () {
+          UTM.phaserScene = this;
+          this.utmGraphics = this.add.graphics();
+          this.utmLabels = [];
+        },
+        update: function () {
+          if (telaAtiva !== TELA.UT_MULTI) return;
+          UTM.t += 1;
+          utmDrawPhaser(this);
+        },
+      },
+    });
+    return true;
+  }
+
+  function utmDrawArena() {
+    var canvas = utmEl("utm-canvas");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var w = canvas.width;
+    var h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(8, 8, w - 16, h - 16);
+    ctx.fillStyle = "rgba(255,255,255,0.035)";
+    for (var y = 18; y < h; y += 10) ctx.fillRect(10, y, w - 20, 1);
+
+    var state = UTM.state;
+    if (!state) {
+      ctx.fillStyle = "#ff4040";
+      ctx.font = "18px 'Press Start 2P', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("UNDERTALE MP", w / 2, h / 2 - 8);
+      ctx.fillStyle = "#d8e0ff";
+      ctx.font = "10px 'Press Start 2P', monospace";
+      ctx.fillText("AGUARDANDO SALA", w / 2, h / 2 + 22);
+      return;
+    }
+
+    var selfLive = utmGetSelfLive();
+    if (state.status === "playing" && selfLive) {
+      ctx.fillStyle = selfLive.role === "boss" ? "#ff8844" : "#00f5c4";
+      ctx.font = "8px 'Press Start 2P', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        selfLive.role === "boss"
+          ? "Z TIRO " + utmCooldownLabel(selfLive.attackCooldown) + "   X LEQUE " + utmCooldownLabel(selfLive.ringCooldown) + "   C OSSOS " + utmCooldownLabel(selfLive.wallCooldown)
+          : "Z TIRO " + utmCooldownLabel(selfLive.attackCooldown) + "   SHIFT DASH " + utmCooldownLabel(selfLive.dashCooldown),
+        w / 2,
+        h - 17,
+      );
+    }
+
+    utmDrawBossHpBarCanvas(ctx, state, w);
+
+    if (state.boss) utmDrawBoss(ctx, utmSmoothBoss(state.boss));
+    (state.bullets || []).forEach(function (bullet) {
+      utmDrawBullet(ctx, utmSmoothBullet(bullet));
+    });
+    (state.souls || []).forEach(function (soul, index) {
+      utmDrawSoul(ctx, utmSmoothSoul(soul), index);
+    });
+
+    if (state.status === "ended") {
+      ctx.save();
+      ctx.fillStyle = "rgba(0,0,0,0.72)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = state.winner === "boss" ? "#ff4040" : "#ffff00";
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = 18;
+      ctx.font = "18px 'Press Start 2P', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(state.winner === "boss" ? "BOSS VENCEU" : "ALMAS VENCERAM", w / 2, h / 2);
+      ctx.restore();
+    }
+  }
+
+  function utmLoop() {
+    if (UTM.phaser) {
+      UTM.raf = null;
+      return;
+    }
+    if (telaAtiva !== TELA.UT_MULTI) {
+      UTM.raf = null;
+      return;
+    }
+    UTM.t += 1;
+    utmDrawArena();
+    UTM.raf = requestAnimationFrame(utmLoop);
+  }
+
+  function utmEnter() {
+    utmRenderRoom();
+    utmRenderStateHud();
+    if (!utmStartPhaser() && !UTM.raf) UTM.raf = requestAnimationFrame(utmLoop);
+    if (!UTM.room) UTM.menuIdx = 1;
+    setTimeout(function () { utmSetMenuFocus(UTM.menuIdx); }, 80);
+  }
+
+  function utmBindButton(id, handler) {
+    var btn = utmEl(id);
+    if (!btn) return;
+    btn.addEventListener("click", handler);
+  }
+
+  utmBindButton("utm-create-room", utmCreateRoom);
+  utmBindButton("utm-join-room", utmJoinRoom);
+  utmBindButton("utm-role-boss", function () { utmChooseRole("boss"); });
+  utmBindButton("utm-role-soul", function () { utmChooseRole("soul"); });
+  utmBindButton("utm-start-game", utmStartGame);
+  utmBindButton("utm-action-shot", function () { utmPulseAction("attack"); });
+  utmBindButton("utm-action-ring", function () { utmPulseAction("pattern1"); });
+  utmBindButton("utm-action-wall", function () { utmPulseAction("pattern2"); });
+  utmBindButton("utm-action-dash", function () { utmPulseAction("dash"); });
+
+  var utmRoomCodeInput = utmEl("utm-room-code");
+  if (utmRoomCodeInput) {
+    utmRoomCodeInput.addEventListener("input", function () {
+      utmRoomCodeInput.value = utmRoomCodeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
+    });
+    utmRoomCodeInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        utmConfirmTextField(utmRoomCodeInput, "utm-join-room");
+      }
+    });
+  }
+
+  var utmNameInput = utmEl("utm-player-name");
+  if (utmNameInput) {
+    utmNameInput.addEventListener("change", function () {
+      utmEmit("utm:set-name", { name: utmGetName() });
+    });
+    utmNameInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        utmConfirmTextField(utmNameInput, "utm-create-room");
+      }
+    });
+  }
+
+  var utmServerInput = utmEl("utm-server-url");
+  if (utmServerInput) {
+    utmServerInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        utmConfirmTextField(utmServerInput, "utm-player-name");
+      }
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (telaAtiva !== TELA.UT_MULTI || utmKeyTargetIsText(e.target)) return;
+    if (utmSetKey(e.key, true)) {
+      e.preventDefault();
+      if (UTM.state && UTM.state.status === "playing") e.stopImmediatePropagation();
+      utmSendInput(true);
+    }
+  }, true);
+
+  document.addEventListener("keyup", function (e) {
+    if (telaAtiva !== TELA.UT_MULTI || utmKeyTargetIsText(e.target)) return;
+    if (utmSetKey(e.key, false)) {
+      e.preventDefault();
+      if (UTM.state && UTM.state.status === "playing") e.stopImmediatePropagation();
+      utmSendInput(true);
+    }
+  }, true);
+
   /* Nav-back centralizado */
   document.addEventListener("click", function (e) {
     var back = e.target.closest(".nav-back");
@@ -1010,6 +2288,11 @@
     } else if (id === "cyber-back") {
       cyberStop();
       irPara(TELA.ARCADE_GAMES);
+    } else if (id === "multiplayer-back") {
+      irPara(TELA.HUB);
+    } else if (id === "utm-back") {
+      utmLeaveRoom();
+      irPara(TELA.MP_HUB);
     } else if (id === "light-back" || id === "piggy-back" || id === "pomo-back" || id === "synth-back") {
       irPara(TELA.PROJECTS);
     } else if (id === "projects-back") {
@@ -1391,14 +2674,13 @@
   var pomoMode = "focus";
   var pomoRemaining = 25 * 60;
   var pomoIdx = 0;
-  var pomoControls = ["pomo-start", "pomo-pause", "pomo-reset", "pomo-theme", "pomo-focus", "pomo-break"];
+  var pomoControls = ["pomo-start", "pomo-pause", "pomo-reset", "pomo-focus", "pomo-break"];
   function pomoInit() {
     if (!pomoReady) {
       pomoReady = true;
       document.getElementById("pomo-start").addEventListener("click", pomoStart);
       document.getElementById("pomo-pause").addEventListener("click", pomoPause);
       document.getElementById("pomo-reset").addEventListener("click", pomoReset);
-      document.getElementById("pomo-theme").addEventListener("click", pomoTheme);
       document.getElementById("pomo-focus").addEventListener("change", pomoReset);
       document.getElementById("pomo-break").addEventListener("change", pomoReset);
       pomoControls.forEach(function (id, index) {
@@ -1450,12 +2732,6 @@
     pomoRemaining = pomoDuration();
     pomoRender("Timer resetado.");
   }
-  function pomoTheme() {
-    var screen = document.getElementById("pomodoro");
-    screen.classList.toggle("night");
-    document.getElementById("pomo-theme").textContent = screen.classList.contains("night") ? "MODO CLARO" : "MODO NOTURNO";
-    somNav();
-  }
   function pomoRender(message) {
     var m = Math.floor(pomoRemaining / 60);
     var s = pomoRemaining % 60;
@@ -1476,34 +2752,48 @@
   var synthRecordStarted = 0;
   var synthSequence = [];
   var synthIdx = 0;
-  var synthControls = ["synth-record", "synth-play", "synth-theme"];
-  var synthNotes = {
-    do: { label: "DO", freq: 261.63, key: "a" },
-    re: { label: "RE", freq: 293.66, key: "s" },
-    mi: { label: "MI", freq: 329.63, key: "d" },
-    fa: { label: "FA", freq: 349.23, key: "f" },
-    sol: { label: "SOL", freq: 392.0, key: "g" },
-    la: { label: "LA", freq: 440.0, key: "h" },
-    si: { label: "SI", freq: 493.88, key: "j" },
+  var synthOctave = 4;
+  var synthKeyMap = {};
+  var synthControls = ["synth-record", "synth-play", "synth-clear", "synth-oct-down", "synth-oct-up"];
+  var synthNoteNames = ["DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"];
+  var synthLegacyKeys = {
+    do: "a",
+    re: "s",
+    mi: "d",
+    fa: "f",
+    sol: "g",
+    la: "h",
+    si: "j",
   };
 
   function synthInit() {
     if (synthReady) {
       synthSetFoco(0);
+      synthRefreshKeyLabels();
       return;
     }
     synthReady = true;
-    Array.from(document.querySelectorAll(".synth-key")).forEach(function (key) {
+    synthRebuildKeyMap();
+    Array.from(document.querySelectorAll(".synth-key[data-synth-key]")).forEach(function (key) {
       key.addEventListener("click", function () {
-        synthPlayNote(key.getAttribute("data-note"), true);
+        synthPlayKey(key.getAttribute("data-synth-key"), true);
+      });
+    });
+    Array.from(document.querySelectorAll(".synth-key[data-control]")).forEach(function (key) {
+      key.addEventListener("click", function () {
+        synthRunControl(key.getAttribute("data-control"));
       });
     });
     var record = document.getElementById("synth-record");
     var play = document.getElementById("synth-play");
-    var theme = document.getElementById("synth-theme");
+    var clear = document.getElementById("synth-clear");
+    var octaveDown = document.getElementById("synth-oct-down");
+    var octaveUp = document.getElementById("synth-oct-up");
     if (record) record.addEventListener("click", synthToggleRecord);
     if (play) play.addEventListener("click", synthReplay);
-    if (theme) theme.addEventListener("click", synthToggleTheme);
+    if (clear) clear.addEventListener("click", synthClearSequence);
+    if (octaveDown) octaveDown.addEventListener("click", function () { synthChangeOctave(-1); });
+    if (octaveUp) octaveUp.addEventListener("click", function () { synthChangeOctave(1); });
     synthControls.forEach(function (id, index) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -1515,30 +2805,116 @@
     synthIdx = setFocusByIds(synthControls, idx);
   }
 
-  function synthNoteFromKey(k) {
+  function synthNormalizeKey(k) {
+    if (k === " ") return "space";
     k = String(k || "").toLowerCase();
-    for (var note in synthNotes) {
-      if (synthNotes[note].key === k) return note;
-    }
-    return "";
+    if (k === "spacebar") return "space";
+    return k;
+  }
+
+  function synthReadableKey(k) {
+    if (k === "space") return "SPACE";
+    return String(k || "").toUpperCase();
+  }
+
+  function synthRebuildKeyMap() {
+    synthKeyMap = {};
+    Array.from(document.querySelectorAll(".synth-key[data-synth-key]")).forEach(function (key, index) {
+      var keyName = synthNormalizeKey(key.getAttribute("data-synth-key"));
+      var customIndex = parseInt(key.getAttribute("data-synth-index"), 10);
+      var noteIndex = Number.isFinite(customIndex) ? customIndex : index;
+      key.setAttribute("data-synth-index", String(noteIndex));
+      synthKeyMap[keyName] = {
+        el: key,
+        index: noteIndex,
+      };
+    });
+    synthRefreshKeyLabels();
+    synthUpdateOctave();
+  }
+
+  function synthMidiForIndex(index) {
+    return 48 + (synthOctave - 4) * 12 + index;
+  }
+
+  function synthLabelForIndex(index) {
+    var midi = synthMidiForIndex(index);
+    var name = synthNoteNames[((midi % 12) + 12) % 12];
+    var octave = Math.floor(midi / 12) - 1;
+    return name + octave;
+  }
+
+  function synthFrequencyForIndex(index) {
+    var midi = synthMidiForIndex(index);
+    return 440 * Math.pow(2, (midi - 69) / 12);
+  }
+
+  function synthRefreshKeyLabels() {
+    Object.keys(synthKeyMap).forEach(function (keyName) {
+      var data = synthKeyMap[keyName];
+      var note = data.el.querySelector(".note");
+      if (note) note.textContent = synthLabelForIndex(data.index);
+    });
+  }
+
+  function synthUpdateOctave() {
+    var el = document.getElementById("synth-octave");
+    if (el) el.textContent = "OITAVA " + synthOctave;
+    synthRefreshKeyLabels();
+  }
+
+  function synthChangeOctave(delta) {
+    synthOctave = Math.max(2, Math.min(6, synthOctave + delta));
+    synthUpdateOctave();
+    var now = document.getElementById("synth-now");
+    if (now) now.textContent = "OITAVA ATUAL: " + synthOctave;
+    somNav();
+  }
+
+  function synthRunControl(action) {
+    synthFlashControl(action);
+    if (action === "record") synthToggleRecord();
+    else if (action === "play") synthReplay();
+    else if (action === "clear") synthClearSequence();
+    else if (action === "octave-down") synthChangeOctave(-1);
+    else if (action === "octave-up") synthChangeOctave(1);
+  }
+
+  function synthFlashControl(action) {
+    var key = document.querySelector('.synth-key[data-control="' + action + '"]');
+    if (!key) return;
+    key.classList.add("active");
+    setTimeout(function () { key.classList.remove("active"); }, 170);
+  }
+
+  function synthNoteFromKey(k) {
+    k = synthNormalizeKey(k);
+    return synthKeyMap[k] ? k : "";
   }
 
   function synthPlayNote(note, shouldRecord) {
-    var data = synthNotes[note];
+    if (synthLegacyKeys[note]) return synthPlayKey(synthLegacyKeys[note], shouldRecord);
+    return synthPlayKey(note, shouldRecord);
+  }
+
+  function synthPlayKey(keyName, shouldRecord) {
+    keyName = synthNormalizeKey(keyName);
+    var data = synthKeyMap[keyName];
     if (!data) return false;
-    var key = document.querySelector('.synth-key[data-note="' + note + '"]');
+    var key = data.el;
     if (key) {
       key.classList.add("active");
       setTimeout(function () { key.classList.remove("active"); }, 170);
     }
+    var label = synthLabelForIndex(data.index);
     var now = document.getElementById("synth-now");
-    if (now) now.textContent = "ULTIMA NOTA: " + data.label + "  |  TECLA " + data.key.toUpperCase();
+    if (now) now.textContent = "ULTIMA NOTA: " + label + "  |  TECLA " + synthReadableKey(keyName);
     synthCount++;
     var count = document.getElementById("synth-count");
     if (count) count.textContent = synthCount;
-    synthTone(data.freq);
+    synthTone(synthFrequencyForIndex(data.index));
     if (synthRecording && shouldRecord) {
-      synthSequence.push({ note: note, at: Date.now() - synthRecordStarted });
+      synthSequence.push({ key: keyName, at: Date.now() - synthRecordStarted });
     }
     return true;
   }
@@ -1601,19 +2977,18 @@
     if (play) play.classList.add("active");
     synthSequence.forEach(function (item, index) {
       setTimeout(function () {
-        synthPlayNote(item.note, false);
+        synthPlayNote(item.key || item.note, false);
         if (index === synthSequence.length - 1 && play) play.classList.remove("active");
       }, item.at);
     });
   }
 
-  function synthToggleTheme() {
-    var screen = document.getElementById("virtual-keyboard");
-    var btn = document.getElementById("synth-theme");
-    if (!screen) return;
-    screen.classList.toggle("light");
-    if (btn) btn.textContent = screen.classList.contains("light") ? "MODO ESCURO" : "MODO CLARO";
-    somNav();
+  function synthClearSequence() {
+    synthSequence = [];
+    if (synthRecording) synthToggleRecord();
+    var now = document.getElementById("synth-now");
+    if (now) now.textContent = "SEQUENCIA LIMPA";
+    somEsc();
   }
 
   /* =====================================================================
@@ -1717,7 +3092,7 @@
         if (!customInput) return;
       }
       if (k === "F12" || k === "F5") return;
-      if ((k === "i" || k === "I") && typeof window.openAiChat === "function") {
+      if (telaAtiva !== TELA.KEYBOARD && (k === "i" || k === "I") && typeof window.openAiChat === "function") {
         e.preventDefault();
         flashKeyHint("I");
         window.openAiChat();
@@ -1759,6 +3134,72 @@
           somNav();
         } else if (k === "Enter" || k === " ") {
           pgSelect();
+        }
+        return;
+      }
+
+      if (telaAtiva === TELA.MP_HUB) {
+        if (k === "Escape") {
+          somEsc();
+          irPara(TELA.HUB);
+          return;
+        }
+        if (k === "ArrowLeft") {
+          multiplayerSetFoco(multiplayerIdx - 1);
+          somNav();
+        } else if (k === "ArrowRight") {
+          multiplayerSetFoco(multiplayerIdx + 1);
+          somNav();
+        } else if (k === "Enter" || k === " ") {
+          multiplayerSelect();
+        }
+        return;
+      }
+
+      if (telaAtiva === TELA.UT_MULTI) {
+        if (k === "Escape") {
+          somEsc();
+          utmLeaveRoom();
+          irPara(TELA.MP_HUB);
+          return;
+        }
+        if (UTM.state && UTM.state.status === "playing") {
+          return;
+        }
+        if (k === "ArrowLeft" || k === "ArrowUp") {
+          if (!UTM.state || UTM.state.status !== "playing") {
+            utmSetMenuFocus(UTM.menuIdx - 1);
+            somNav();
+          }
+          return;
+        }
+        if (k === "ArrowRight" || k === "ArrowDown") {
+          if (!UTM.state || UTM.state.status !== "playing") {
+            utmSetMenuFocus(UTM.menuIdx + 1);
+            somNav();
+          }
+          return;
+        }
+        var focusedUtmControl = utmGetFocusedMenuControl();
+        if (focusedUtmControl && focusedUtmControl.tagName === "INPUT") {
+          if (k === "Enter" || k === " ") {
+            utmActivateFocusedControl();
+          }
+          return;
+        }
+        if (k === "c" || k === "C") {
+          utmCreateRoom();
+          return;
+        }
+        if (k === "e" || k === "E") {
+          utmJoinRoom();
+          return;
+        }
+        if (k === "Enter" || k === " ") {
+          if (!UTM.state || UTM.state.status !== "playing") {
+            utmActivateFocusedControl();
+          }
+          return;
         }
         return;
       }
@@ -1853,33 +3294,27 @@
           irPara(TELA.PROJECTS);
           return;
         }
-        if (k === "ArrowLeft") {
-          synthSetFoco(synthIdx - 1);
-          somNav();
+        if (k === "Enter") {
+          synthRunControl("play");
           return;
         }
-        if (k === "ArrowRight") {
-          synthSetFoco(synthIdx + 1);
-          somNav();
+        if (k === "Backspace") {
+          synthRunControl("clear");
           return;
         }
-        if (k === "Enter" || k === " ") {
-          clickFocusedId(synthControls, synthIdx);
+        if (k === "CapsLock") {
+          synthRunControl("record");
           return;
         }
-        if (k === "r" || k === "R") {
-          synthToggleRecord();
+        if (k === "Tab") {
+          synthRunControl("octave-down");
           return;
         }
-        if (k === "p" || k === "P") {
-          synthReplay();
+        if (k === "Shift") {
+          synthRunControl("octave-up");
           return;
         }
-        if (k === "t" || k === "T") {
-          synthToggleTheme();
-          return;
-        }
-        if (synthPlayNote(synthNoteFromKey(k), true)) return;
+        if (synthPlayKey(k, true)) return;
         return;
       }
 
@@ -6624,6 +8059,7 @@
 
     var GROK_MODEL = "x-ai/grok-4-1-fast";
     var LOCAL_STATE_KEY = "playground-js-chatbot-state";
+    var CHAT_AI_TIMEOUT_MS = 14000;
     var DIFFICULTY_MAP = { facil: 1, medio: 0.5, dificil: 0.08 };
     var chatContextPromise = null;
     var fallbackContext = {
@@ -6779,18 +8215,32 @@
       return "";
     }
 
+    function withTimeout(promise, ms, message) {
+      var timer = null;
+      var timeout = new Promise(function (_, reject) {
+        timer = setTimeout(function () {
+          reject(new Error(message || "A IA demorou demais para responder."));
+        }, ms);
+      });
+      return Promise.race([promise, timeout]).finally(function () {
+        if (timer) clearTimeout(timer);
+      });
+    }
+
     function callGrok(prompt, context, options) {
       if (!window.puter || !window.puter.ai || typeof window.puter.ai.chat !== "function") {
         throw new Error("Puter.js nao foi carregado. Verifique a conexao com a internet.");
       }
 
-      return window.puter.ai
-        .chat(prompt, {
+      return withTimeout(
+        window.puter.ai.chat(prompt, {
           model: (context && context.model) || GROK_MODEL,
           temperature: options && typeof options.temperature === "number" ? options.temperature : 0.2,
           max_tokens: options && options.maxTokens ? options.maxTokens : 600,
-        })
-        .then(extractGrokText);
+        }),
+        (options && options.timeoutMs) || CHAT_AI_TIMEOUT_MS,
+        "A IA nao respondeu a tempo. Tente de novo em alguns segundos.",
+      ).then(extractGrokText);
     }
 
     function parseClassifierJson(rawText) {
@@ -6852,6 +8302,39 @@
       ].join("\n\n");
     }
 
+    function classifyLocally(userText) {
+      var text = String(userText || "").toLowerCase();
+      var difficulty = "nao_detectado";
+      if (/\b(f[aá]cil|facil|mais f[aá]cil|ganhar mais|vantagem|aumentar facilidade)\b/.test(text)) {
+        difficulty = "facil";
+      } else if (/\b(m[eé]dio|medio|normal|balanceado|justo|padr[aã]o|padrao)\b/.test(text)) {
+        difficulty = "medio";
+      } else if (/\b(dif[ií]cil|dificil|hard|imposs[ií]vel|impossivel|mais dif[ií]cil|casa vencer)\b/.test(text)) {
+        difficulty = "dificil";
+      }
+      return {
+        eh_pergunta: /[?]|como|qual|quais|onde|quando|por que|porque|ajuda|explica|regras|controles|oi|ola|ol[aá]|jogo|cassino|arcade|multiplayer|undertale|teclado|pomodoro/.test(text),
+        mudanca_dificuldade: difficulty,
+      };
+    }
+
+    function localAnswer(userText) {
+      var text = String(userText || "").toLowerCase();
+      if (/undertale|multiplayer|sala|boss|alma/.test(text)) {
+        return "Nao consegui acessar a IA agora, mas pelo contexto local: o Undertale Multiplayer usa salas online, um Boss contra Almas, Socket.IO em tempo real e servidor autoritativo para validar movimentos, ataques, dano e vitoria.";
+      }
+      if (/teclado|musical|piano|nota/.test(text)) {
+        return "Nao consegui acessar a IA agora, mas pelo contexto local: o Teclado Virtual e um piano/synth com duas oitavas, teclas brancas e pretas, gravacao, reproducao e ajuste de oitava.";
+      }
+      if (/pomodoro|timer|foco|pausa/.test(text)) {
+        return "Nao consegui acessar a IA agora, mas pelo contexto local: o Pomodoro permite configurar tempo de foco e pausa, iniciar, pausar e resetar o timer.";
+      }
+      if (/cassino|roleta|slot|crash|dificuldade|facilidade/.test(text)) {
+        return "Nao consegui acessar a IA agora, mas pelo contexto local: o Cassino tem Caca-Niquel, Roleta e Crash com saldo ficticio. Tambem posso mudar a dificuldade para facil, medio ou dificil.";
+      }
+      return "Nao consegui acessar a IA agora. Ainda posso ajudar com informacoes locais do site: jogos Arcade, Cassino, Projetos Web, Undertale Multiplayer e controles.";
+    }
+
     function saveDifficulty(level) {
       var fallbackState = makeDifficultyState(level);
       return fetch("/api/difficulty", {
@@ -6875,11 +8358,23 @@
     }
 
     function askAi(userText) {
+      var localClassification = classifyLocally(userText);
+      if (localClassification.mudanca_dificuldade !== "nao_detectado") {
+        return saveDifficulty(localClassification.mudanca_dificuldade).then(function (payload) {
+          return {
+            message: payload.message || "Facilidade alterada.",
+            classification: localClassification,
+            state: payload.state,
+          };
+        });
+      }
+
       return loadChatContext()
         .then(function (context) {
           return callGrok(buildClassifierPrompt(context, userText), context, {
             temperature: 0,
             maxTokens: 120,
+            timeoutMs: 9000,
           }).then(function (rawClassification) {
             return {
               context: context,
@@ -6911,6 +8406,7 @@
           return callGrok(buildAnswerPrompt(result.context, userText), result.context, {
             temperature: 0.35,
             maxTokens: 500,
+            timeoutMs: CHAT_AI_TIMEOUT_MS,
           }).then(function (answer) {
             return {
               message: answer || "Nao encontrei essa informacao no site.",
@@ -6918,6 +8414,13 @@
               state: readLocalState(),
             };
           });
+        })
+        .catch(function () {
+          return {
+            message: localAnswer(userText),
+            classification: localClassification,
+            state: readLocalState(),
+          };
         });
     }
 

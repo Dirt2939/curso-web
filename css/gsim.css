@@ -1,0 +1,461 @@
+/* ══════════════════════════════════════════════════════════════════
+   GSIM — Simulacao Guiada Multiplayer Realtime
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Shell ─────────────────────────────────────────────────────── */
+.gsim-shell {
+  border: 1px solid rgba(0,245,196,.38);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(0,245,196,.08), transparent 22rem),
+    radial-gradient(circle at 22% 82%, rgba(255,45,120,.1), transparent 18rem),
+    linear-gradient(180deg, rgba(9,12,32,.96), rgba(3,4,16,.99));
+  outline: none;
+  margin-top: 16px;
+}
+.gsim-shell:focus-visible { box-shadow: 0 0 0 2px rgba(0,245,196,.4); }
+
+/* ── Header ──────────────────────────────────────────────────── */
+.gsim-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px; padding: 20px 24px; flex-wrap: wrap;
+  border-bottom: 1px solid rgba(157,92,255,.22);
+}
+.gsim-header-left { display: flex; align-items: center; gap: 16px; }
+.gsim-badge {
+  width: 58px; min-height: 48px;
+  display: grid; place-items: center;
+  border: 2px solid var(--cyan); border-radius: 6px;
+  color: var(--cyan); font-family: var(--fp); font-size: .6rem;
+  background: rgba(0,245,196,.045);
+  box-shadow: 0 0 18px rgba(0,245,196,.2), inset 0 0 14px rgba(0,245,196,.08);
+  flex: 0 0 auto; position: relative;
+}
+.gsim-badge::before {
+  content: ''; position: absolute; left: 5px; top: 5px;
+  width: 10px; height: 10px;
+  border-left: 2px solid currentColor; border-top: 2px solid currentColor;
+}
+.gsim-badge::after {
+  content: ''; position: absolute; right: 5px; bottom: 5px;
+  width: 10px; height: 10px;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+}
+.gsim-title {
+  margin: 0; font-family: var(--fh);
+  font-size: clamp(1rem,2.5vw,1.6rem);
+  color: #fff; text-transform: uppercase; line-height: 1.1;
+}
+.gsim-subtitle { margin: 6px 0 0; color: #aeb8e8; font-size: 1rem; }
+.gsim-subtitle strong { color: var(--cyan); font-family: var(--fp); font-size: .48rem; }
+
+.gsim-tick-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255,255,255,.22); border-radius: 8px;
+  background: rgba(2,1,8,.62); flex: 0 0 auto;
+}
+.gsim-tick-icon {
+  width: 32px; height: 32px;
+  border: 2px solid #fff; border-radius: 5px;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 5px; padding: 7px;
+  animation: tickPulse 1s ease-in-out infinite;
+}
+.gsim-tick-icon span { display: block; height: 2px; background: #fff; border-radius: 2px; }
+.gsim-tick-card strong { display: block; color: #fff; font-family: var(--fp); font-size: .48rem; }
+.gsim-tick-card small  { display: block; color: var(--cyan); font-family: var(--fp); font-size: .4rem; }
+
+/* ── Legend ───────────────────────────────────────────────────── */
+.gsim-legend {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  padding: 10px 24px;
+  border-bottom: 1px solid rgba(157,92,255,.14);
+}
+.gsim-legend-item { display: flex; align-items: center; gap: 8px; color: #c1c9ee; font-size: 1rem; }
+.gsim-legend-item b { font-family: var(--fp); font-size: .48rem; }
+.gleg-dot { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+.gleg-input { background: #3b8cff; box-shadow: 0 0 10px #3b8cff; }
+.gleg-state { background: var(--pink); box-shadow: 0 0 10px var(--pink); }
+
+/* ── Stage ────────────────────────────────────────────────────── */
+.gsim-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 30px;
+  position: relative;
+  /* NO overflow hidden — popups must be visible */
+  background-image:
+    linear-gradient(rgba(0,180,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(157,92,255,.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* ── Boss ─────────────────────────────────────────────────────── */
+.gsim-boss {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; z-index: 6;
+  transition: filter .3s;
+  margin-bottom: 0;
+}
+.gboss-label-row { display: flex; align-items: center; gap: 8px; }
+.gboss-badge {
+  width: 28px; height: 28px;
+  border: 1px solid var(--pink); border-radius: 5px;
+  color: var(--pink); background: rgba(255,45,120,.08);
+  display: grid; place-items: center;
+  font-family: var(--fp); font-size: .46rem;
+}
+.gboss-name {
+  color: var(--pink); font-family: var(--fp); font-size: .66rem;
+  text-shadow: 0 0 12px rgba(255,45,120,.5);
+}
+.gboss-body {
+  width: 100px; height: 100px;
+  border: 3px solid #ff4f7f; border-radius: 8px;
+  background: rgba(255,45,120,.055);
+  box-shadow: 0 0 22px rgba(255,45,120,.28), inset 0 0 22px rgba(255,45,120,.1);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+}
+.gboss-eyes { display: flex; gap: 20px; }
+.gboss-eye {
+  width: 13px; height: 13px; background: #fff;
+  box-shadow: 0 0 10px #fff; border-radius: 2px;
+}
+.gboss-mouth {
+  width: 36px; height: 4px; background: #ff4f7f; border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255,45,120,.6);
+}
+
+/* Boss glow + blink */
+.gsim-shell[data-gsim-step="0"] .gsim-boss { filter: drop-shadow(0 0 18px rgba(255,45,120,.55)); }
+.gsim-shell[data-gsim-step="0"] .gboss-eye,
+.gsim-shell[data-gsim-step="4"] .gboss-eye { animation: eyeBlink 1.8s ease-in-out infinite; }
+@keyframes eyeBlink { 0%,88%,100%{transform:scaleY(1)} 94%{transform:scaleY(.08)} }
+
+/* ── Vertical track Boss→Server ──────────────────────────────── */
+.gsim-vtrack-boss {
+  position: relative;
+  width: 14px; height: 80px; /* increased to make the line very obvious */
+  display: flex; justify-content: center;
+  z-index: 3;
+  flex-shrink: 0;
+}
+.gsim-vtrack-boss .gtrack-line {
+  width: 4px; height: 100%;
+  background: rgba(0,245,196,.8);
+  box-shadow: 0 0 12px rgba(0,245,196,.5);
+}
+/* Hide the old track labels — legend already shows what INPUT/STATE mean */
+.gtrack-label { display: none; }
+
+/* ── Server ──────────────────────────────────────────────────── */
+.gsim-server {
+  position: relative;
+  width: min(400px, 96%);
+  display: grid; grid-template-columns: 66px 1fr 40px;
+  gap: 12px; align-items: center;
+  padding: 16px 18px;
+  border: 3px solid var(--cyan); border-radius: 10px;
+  background: rgba(0,245,196,.055);
+  box-shadow: 0 0 28px rgba(0,245,196,.28), inset 0 0 28px rgba(0,245,196,.08);
+  z-index: 6;
+  transition: box-shadow .3s, border-color .3s;
+}
+.gserver-icon {
+  height: 66px; border: 2px solid var(--cyan); border-radius: 6px;
+  display: grid; align-content: center; gap: 8px; padding: 11px;
+  box-shadow: inset 0 0 12px rgba(0,245,196,.12);
+}
+.gserver-icon span { height: 3px; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); border-radius: 2px; }
+.gserver-info strong { display: block; color: #fff; font-family: var(--fp); font-size: .58rem; }
+.gserver-info span   { display: block; color: var(--cyan); font-size: .9rem; margin: 3px 0; }
+.gserver-info small   { color: #8d96c9; font-size: .85rem; }
+.gserver-spinner {
+  width: 30px; height: 30px;
+  border: 2px solid rgba(0,245,196,.22); border-top-color: var(--cyan);
+  border-radius: 50%; opacity: 0; transition: opacity .3s;
+}
+/* Server pulsing step 2 */
+.gsim-shell[data-gsim-step="2"] .gsim-server {
+  border-color: var(--yellow);
+  box-shadow: 0 0 36px rgba(249,232,77,.38), inset 0 0 28px rgba(249,232,77,.1);
+}
+.gsim-shell[data-gsim-step="2"] .gserver-spinner { opacity: 1; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Terminal bars */
+.gserver-bars {
+  position: absolute; right: 8px; bottom: 8px;
+  display: flex; gap: 3px; align-items: flex-end;
+  opacity: 0; transition: opacity .3s;
+}
+.gserver-bars i {
+  display: block; width: 5px; border-radius: 2px 2px 0 0;
+  background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
+}
+.gsim-shell[data-gsim-step="2"] .gserver-bars { opacity: 1; }
+.gsim-shell[data-gsim-step="2"] .gserver-bars i:nth-child(1) { height:16px; animation:barA .6s 0s infinite alternate; }
+.gsim-shell[data-gsim-step="2"] .gserver-bars i:nth-child(2) { height:24px; animation:barA .6s .15s infinite alternate; }
+.gsim-shell[data-gsim-step="2"] .gserver-bars i:nth-child(3) { height:18px; animation:barA .6s .3s infinite alternate; }
+.gsim-shell[data-gsim-step="2"] .gserver-bars i:nth-child(4) { height:12px; animation:barA .6s .45s infinite alternate; }
+@keyframes barA { from{opacity:.4;transform:scaleY(.5)} to{opacity:1;transform:scaleY(1)} }
+
+/* ── Vertical track Server→HBus ──────────────────────────────── */
+.gsim-vtrack-server {
+  position: relative;
+  width: 14px; height: 40px;
+  display: flex; justify-content: center;
+  z-index: 3;
+  flex-shrink: 0;
+}
+.gsim-vtrack-server .gtrack-line {
+  width: 4px; height: 100%;
+  background: rgba(0,245,196,.8);
+  box-shadow: 0 0 12px rgba(0,245,196,.5);
+}
+
+/* ── Horizontal bus ──────────────────────────────────────────── */
+.gsim-hbus {
+  width: calc(75% + 10px); /* exact width factoring in grid gap and line width */
+  height: 4px;
+  background: rgba(0,245,196,.8);
+  box-shadow: 0 0 12px rgba(0,245,196,.5);
+  position: relative; z-index: 3;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+.ghbus-line { display: none; } /* line is the hbus itself */
+
+/* ── Soul vertical tracks row ────────────────────────────────── */
+.gsim-soul-vtracks-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.gsim-vtrack-soul {
+  display: flex !important;
+  justify-content: center;
+  position: relative;
+  height: 40px;
+}
+.gsim-vtrack-soul .gtrack-line {
+  width: 4px; height: 100%;
+  background: rgba(0,245,196,.8);
+  box-shadow: 0 0 12px rgba(0,245,196,.5);
+}
+
+/* ── Packets ─────────────────────────────────────────────────── */
+.gpacket {
+  position: absolute; left: 50%;
+  width: 14px; height: 14px; border-radius: 4px;
+  transform: translateX(-50%);
+  opacity: 0; z-index: 8;
+}
+.gpacket-input { background: #3b8cff; box-shadow: 0 0 14px #3b8cff; }
+.gpacket-state { background: var(--pink); box-shadow: 0 0 14px var(--pink); }
+.gpacket.go-down { animation: goDown var(--pd,.65s) ease-in-out forwards; }
+.gpacket.go-up   { animation: goUp   var(--pd,.65s) ease-in-out forwards; }
+@keyframes goDown { 0%{opacity:1;top:-4px}  90%{opacity:1;top:calc(100%)} 100%{opacity:0;top:calc(100% + 4px)} }
+@keyframes goUp   { 0%{opacity:1;top:calc(100% + 4px)} 90%{opacity:1;top:0} 100%{opacity:0;top:-4px} }
+
+/* Horizontal Bus Packets (Inward) */
+.gpacket.h-in-s1 { animation: hInS1 var(--pd,.3s) linear forwards; }
+.gpacket.h-in-s4 { animation: hInS4 var(--pd,.3s) linear forwards; }
+@keyframes hInS1 { 0%{opacity:1;left:0%} 90%{opacity:1;left:45%} 100%{opacity:0;left:50%} }
+@keyframes hInS4 { 0%{opacity:1;left:100%} 90%{opacity:1;left:55%} 100%{opacity:0;left:50%} }
+
+/* Horizontal Bus Packets (Outward) */
+.gpacket.h-out-s1 { animation: hOutS1 var(--pd,.3s) linear forwards; }
+.gpacket.h-out-s2 { animation: hOutS2 var(--pd,.3s) linear forwards; }
+.gpacket.h-out-s3 { animation: hOutS3 var(--pd,.3s) linear forwards; }
+.gpacket.h-out-s4 { animation: hOutS4 var(--pd,.3s) linear forwards; }
+@keyframes hOutS1 { 0%{opacity:1;left:50%} 90%{opacity:1;left:5%} 100%{opacity:0;left:0%} }
+@keyframes hOutS2 { 0%{opacity:1;left:50%} 90%{opacity:1;left:35%} 100%{opacity:0;left:33.33%} }
+@keyframes hOutS3 { 0%{opacity:1;left:50%} 90%{opacity:1;left:64%} 100%{opacity:0;left:66.66%} }
+@keyframes hOutS4 { 0%{opacity:1;left:50%} 90%{opacity:1;left:95%} 100%{opacity:0;left:100%} }
+
+/* ── Souls row ───────────────────────────────────────────────── */
+.gsim-souls-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+  padding-top: 0;
+}
+.gsoul-card {
+  position: relative;
+  padding: 12px 10px 10px;
+  border: 1px solid rgba(157,92,255,.42); border-radius: 8px;
+  background: rgba(2,1,8,.72);
+  text-align: center;
+  transition: border-color .3s, box-shadow .3s;
+  overflow: visible; /* popups must overflow */
+}
+.gsoul-header { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 6px; }
+.gsoul-num {
+  width: 24px; height: 24px; display: grid; place-items: center;
+  border: 1px solid var(--purple); border-radius: 4px;
+  color: var(--purple); background: rgba(157,92,255,.08);
+  font-family: var(--fp); font-size: .44rem;
+}
+.gsoul-header strong { color: #fff; font-family: var(--fp); font-size: .46rem; }
+.gsoul-heart {
+  font-size: 1.3rem; color: var(--purple); line-height: 1;
+  text-shadow: 0 0 12px var(--purple);
+  margin: 5px 0; display: block;
+}
+.gsoul-card small { display: block; color: #8d96c9; font-size: .85rem; margin-bottom: 4px; }
+.gsoul-code { color: #dffcff; font-size: .76rem; display: block; }
+
+/* Highlights */
+.gsim-shell[data-gsim-step="0"] #gsoul-1,
+.gsim-shell[data-gsim-step="0"] #gsoul-4 {
+  border-color: rgba(157,92,255,.9);
+  box-shadow: 0 0 16px rgba(157,92,255,.24);
+}
+.gsoul-card.rendered {
+  border-color: var(--cyan);
+  box-shadow: 0 0 20px rgba(0,245,196,.2), inset 0 0 16px rgba(0,245,196,.08);
+}
+.gsoul-card.rendered .gsoul-heart {
+  color: var(--cyan); text-shadow: 0 0 14px var(--cyan);
+  animation: hBounce .5s ease-in-out 3;
+}
+@keyframes hBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+/* ── Popups (global) ─────────────────────────────────────────── */
+.gsim-popup {
+  position: absolute; z-index: 30;
+  padding: 8px 10px; border-radius: 6px;
+  background: rgba(2,1,8,.92);
+  text-align: left;
+  opacity: 0; transform: translateY(5px);
+  transition: opacity .22s, transform .22s;
+  pointer-events: none;
+  width: max-content; max-width: 200px;
+  white-space: nowrap;
+}
+.gsim-popup.visible { opacity: 1; transform: translateY(0); }
+.gpop-label { display: block; font-family: var(--fp); font-size: .36rem; line-height: 1.5; margin-bottom: 3px; }
+.gpop-value { display: block; font-family: var(--fp); font-size: .44rem; color: #fff; }
+.gpop-note  { display: block; margin-top: 4px; color: #9ca4d7; font-size: .8rem; white-space: normal; }
+.gsim-popup code { display: block; font-size: .78rem; color: #dffcff; margin-top: 3px; word-break: break-all; white-space: normal; }
+
+/* ── Boss popup: anchored to the right side of the boss sprite ── */
+.gpop-boss-action {
+  border: 1px solid rgba(255,45,120,.7);
+  background: linear-gradient(90deg,rgba(255,45,120,.12),transparent 70%),rgba(2,1,8,.92);
+  box-shadow: 0 0 14px rgba(255,45,120,.18);
+  left: calc(100% + 20px); top: 50%;
+  transform: translateX(10px) translateY(-50%);
+}
+.gpop-boss-action.visible { transform: translateX(0) translateY(-50%); opacity: 1; }
+.gpop-boss-action .gpop-label { color: var(--pink); }
+
+.gpop-boss-render {
+  border: 1px solid rgba(0,245,196,.65);
+  background: linear-gradient(90deg,rgba(0,245,196,.1),transparent 70%),rgba(2,1,8,.92);
+  box-shadow: 0 0 14px rgba(0,245,196,.18);
+  left: calc(100% + 20px); top: 50%;
+  transform: translateX(10px) translateY(-50%);
+}
+.gpop-boss-render.visible { transform: translateX(0) translateY(-50%); opacity: 1; }
+.gpop-boss-render .gpop-label { color: var(--cyan); }
+
+/* ── Soul popups: ABOVE the card ── */
+.gpop-soul-action {
+  border: 1px solid rgba(157,92,255,.7);
+  box-shadow: 0 0 12px rgba(157,92,255,.2);
+  bottom: calc(100% + 12px); left: 50%;
+  transform: translateX(-50%) translateY(10px);
+}
+.gpop-soul-action.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+.gpop-soul-action .gpop-label { color: var(--purple); }
+.gpop-soul-attack { border-color: rgba(255,45,120,.6); }
+.gpop-soul-attack .gpop-label { color: var(--pink); }
+
+/* ── Server popup: below server ──────────────────────────────── */
+.gserver-popup-process {
+  border: 1px solid rgba(0,245,196,.6);
+  box-shadow: 0 0 14px rgba(0,245,196,.16);
+  top: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: normal; max-width: 280px;
+}
+.gserver-popup-process.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+.gserver-popup-process .gpop-label { color: var(--cyan); }
+
+/* ── Copy block ──────────────────────────────────────────────── */
+.gsim-copy {
+  padding: 18px 24px;
+  border-top: 1px solid rgba(157,92,255,.2);
+  border-bottom: 1px solid rgba(157,92,255,.2);
+  background: rgba(2,1,8,.5);
+}
+.gsim-step-label {
+  margin: 0 0 6px; font-family: var(--fp);
+  font-size: .42rem; color: var(--cyan); text-transform: uppercase;
+}
+.gsim-step-title {
+  margin: 0 0 8px; font-family: var(--fh);
+  font-size: clamp(1.3rem,3vw,1.85rem); color: #fff;
+}
+.gsim-step-text { margin: 0; color: #b6c1ef; font-size: 1.05rem; line-height: 1.38; }
+.gsim-code-block {
+  margin: 12px 0 0; padding: 13px;
+  overflow-x: auto;
+  border: 1px solid rgba(0,245,196,.24); border-radius: 6px;
+  background: #040714;
+}
+.gsim-code-block code { color: #dffcff; font-size: .86rem; }
+
+/* ── Step buttons ────────────────────────────────────────────── */
+.gsim-steps {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  border-top: 1px solid rgba(157,92,255,.2);
+}
+.gsim-step-btn {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px; padding: 14px 8px;
+  background: transparent;
+  border: none; border-right: 1px solid rgba(157,92,255,.16);
+  color: #7d86bd; cursor: pointer;
+  transition: background .18s, color .18s;
+  position: relative; overflow: hidden;
+}
+.gsim-step-btn:last-child { border-right: none; }
+.gsim-step-btn strong { font-family: var(--fp); font-size: .44rem; line-height: 1.5; }
+.gsim-step-btn small  { font-family: var(--fb); font-size: .9rem; color: inherit; }
+.gsim-step-btn:hover { background: rgba(0,245,196,.06); color: #fff; }
+.gsim-step-btn.active {
+  background: rgba(0,245,196,.08); color: #fff;
+  box-shadow: inset 0 -2px 0 var(--cyan);
+}
+.gsim-step-btn.active::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
+}
+
+/* Step icons */
+.gstep-icon { width: 20px; height: 20px; border-radius: 4px; display: block; }
+.gstep-icon-boss   { background:rgba(255,45,120,.2); border:1px solid var(--pink); }
+.gstep-icon-input  { background:rgba(59,140,255,.2); border:1px solid #3b8cff; }
+.gstep-icon-server { background:rgba(0,245,196,.12); border:1px solid var(--cyan); }
+.gstep-icon-state  { background:rgba(255,45,120,.18); border:1px solid var(--pink); }
+.gstep-icon-heart  { background:rgba(157,92,255,.2); border:1px solid var(--purple); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .gsim-souls-row,
+  .gsim-soul-vtracks-row { grid-template-columns: repeat(2,1fr); }
+  .gsim-steps { grid-template-columns: repeat(3,1fr); }
+  .gsim-header { flex-direction: column; align-items: flex-start; }
+}

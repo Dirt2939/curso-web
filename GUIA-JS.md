@@ -1,6 +1,6 @@
 ﻿# Guia de Estudo do JavaScript do Playground JS
 
-Este material foi feito para servir como guia de estudo do projeto. A ideia é explicar **como o JavaScript organiza o site**, **como o servidor funciona**, **como a dificuldade do cassino é aplicada** e **quais funções sustentam a navegação, os jogos e a interação por teclado**.
+Este material foi feito para servir como guia de estudo do projeto. A ideia é explicar **como o JavaScript organiza o site**, **como o servidor funciona**, **como a dificuldade do cassino é aplicada**, **como o Undertale Multiplayer sincroniza jogadores via Socket.IO** e **quais funções sustentam a navegação, os jogos e a interação por teclado**.
 
 ---
 
@@ -11,14 +11,14 @@ O projeto é dividido em quatro partes principais:
 - `index.html`: estrutura das telas e dos elementos.
 - `css/style.css`: aparência, layout e animações visuais.
 - `js/script.js`: lógica da aplicação, jogos, controles, HUDs, sons e canvas.
-- `server.js`: servidor Node.js para servir arquivos, guardar dificuldade e fornecer contexto ao chat.
+- `server.js`: servidor Node.js/Express para servir arquivos, guardar dificuldade, fornecer contexto ao chat e gerenciar salas multiplayer.
 
 Na prática:
 
 - O HTML cria os elementos.
 - O CSS define como tudo parece.
 - O JavaScript transforma a página em uma aplicação interativa.
-- O Node.js adiciona persistência simples e endpoints de apoio.
+- O Node.js adiciona persistência simples, endpoints de apoio e o servidor autoritativo do Undertale Multiplayer.
 
 ---
 
@@ -30,6 +30,7 @@ O arquivo `server.js` cria um servidor HTTP com Node.js:
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const express = require("express");
 const { Server } = require("socket.io");
 ```
 
@@ -55,17 +56,29 @@ Esses arquivos guardam:
 - regras do chatbot;
 - estado da dificuldade do cassino.
 
-3. Define tipos MIME:
+3. Cria o app Express, o servidor HTTP e o Socket.IO:
 
 ```js
-const MIME_TYPES = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "application/javascript; charset=utf-8",
-};
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 ```
 
-Isso permite que o navegador entenda corretamente o tipo de cada arquivo servido.
+O Express entrega os arquivos estáticos e as APIs. O Socket.IO mantém conexões realtime para o Undertale Multiplayer.
+
+4. Publica arquivos estáticos:
+
+```js
+app.use("/vendor/phaser", express.static(path.join(ROOT_DIR, "node_modules", "phaser", "dist")));
+app.use(express.static(ROOT_DIR));
+```
+
+Isso permite abrir `index.html`, `css/style.css`, `js/script.js`, Phaser e demais assets pelo servidor local.
 
 ---
 
@@ -159,11 +172,17 @@ Entrega ao chat:
 
 Isso ajuda o assistente do site a responder com base no próprio projeto.
 
+### `POST /api/chat`
+
+Essa rota existe apenas como compatibilidade e retorna status `410`.
+
+O motivo é que o chatbot atual usa Puter.js/Grok diretamente no navegador. O servidor ainda fornece contexto e estado, mas a chamada de IA não passa mais por `/api/chat`.
+
 ---
 
-## 5. O Nome Correto da Variável do Cassino
+## 5. Variável Central da Dificuldade do Cassino
 
-Você citou `win_difficult`, mas no código a variável real é:
+No front-end, a dificuldade do cassino é aplicada pela variável:
 
 ```js
 var WIN_DIFFICULTY = 1;
@@ -292,7 +311,7 @@ O fluxo é:
    - “modo difícil”;
    - “quero dificuldade média”.
 
-2. O chatbot classifica o pedido.
+2. O JavaScript tenta classificar localmente primeiro com `classifyLocally(userText)`.
 
 3. O JavaScript chama:
 
@@ -320,7 +339,18 @@ window.applyCasinoDifficulty(...)
 
 ### Como explicar em uma frase
 
-> “O chat não muda o jogo diretamente. Ele identifica a intenção do usuário, envia a nova dificuldade ao servidor, e o front-end aplica esse estado no cassino.”
+> “O chat não muda o jogo diretamente. Ele identifica a intenção do usuário, salva a nova dificuldade no servidor, e o front-end aplica esse estado no cassino.”
+
+### Fallback do chat
+
+O chat usa Puter.js/Grok para responder perguntas abertas, mas o projeto não pode depender totalmente de um serviço externo. Por isso existem proteções:
+
+- `CHAT_AI_TIMEOUT_MS`: tempo máximo para esperar a IA.
+- `withTimeout(...)`: encerra uma chamada demorada.
+- `classifyLocally(userText)`: detecta dificuldade sem chamar IA.
+- `localAnswer(userText)`: responde com contexto local quando Puter/Grok falha.
+
+Assim o usuário não fica preso em `PROCESSANDO...` quando a IA externa demora, pede autenticação ou perde conexão.
 
 ---
 
@@ -333,6 +363,9 @@ var TELA = {
   HUB: "hub",
   ARCADE: "arcade-hub",
   ARCADE_GAMES: "arcade-games-hub",
+  MP_HUB: "multiplayer-hub",
+  UT_MULTI: "undertale-multiplayer",
+  PROJECTS: "projects-hub",
   CASINO: "casino",
   SLOTS: "slots",
   ROULETTE: "roulette-game",
@@ -366,6 +399,7 @@ Exemplos:
 - ao sair, chama `geoStop()`;
 - ao entrar no CupShock, chama `cyberEnter()`;
 - ao sair, chama `cyberStop()`.
+- ao entrar no Undertale Multiplayer, chama `utmEnter()`.
 
 ### Como explicar
 
@@ -405,6 +439,13 @@ Se está na roleta:
 Se está no Undertale:
 
 - o evento é enviado para `utBattleKey(k)`.
+
+Se está no Undertale Multiplayer:
+
+- no lobby, setas navegam entre campos e botões;
+- durante a partida, o listener específico envia inputs para o servidor;
+- `WASD` ou setas controlam movimento e mira;
+- `Z`, `X`, `C` e `Shift` viram ações semânticas como ataque, padrão e dash.
 
 ---
 
@@ -495,6 +536,58 @@ E há tratamento especial para inputs:
 - quando o usuário está digitando em campos;
 - quando usa `F5` ou `F12`;
 - quando abre o chat com `I`.
+- quando está no Teclado Virtual, o `I` não abre o chat porque ele precisa tocar nota.
+
+---
+
+## 14.1. Projetos Web no JavaScript
+
+Os projetos avaliativos ficam dentro do mesmo sistema de telas, mas cada um tem uma lógica pequena e isolada.
+
+### Pomodoro
+
+Funções principais:
+
+- `pomoInit()`
+- `pomoStart()`
+- `pomoPause()`
+- `pomoReset()`
+- `pomoRender(message)`
+
+O Pomodoro controla:
+
+- tempo restante;
+- modo atual, foco ou pausa;
+- inputs de duração de foco e pausa;
+- botões de iniciar, pausar e resetar.
+
+Ele não tem mais alternância de tema. O foco do projeto é temporizador, configuração de tempo e feedback da contagem.
+
+### Teclado Virtual
+
+Funções principais:
+
+- `synthInit()`
+- `synthPlayKey(keyName, shouldRecord)`
+- `synthTone(freq)`
+- `synthToggleRecord()`
+- `synthReplay()`
+- `synthClearSequence()`
+- `synthChangeOctave(delta)`
+
+O Teclado Virtual funciona como um piano/synth de duas oitavas. O HTML define cada tecla com `data-synth-key` e `data-synth-index`; o JavaScript monta `synthKeyMap` para transformar tecla física em nota.
+
+Controles importantes:
+
+- teclas brancas: `Z/X/C/V/B/N/M` e `Q/W/E/R/T/Y/U`;
+- teclas pretas: `S/D/G/H/J` e `2/3/5/6/7`;
+- `CapsLock`: gravar;
+- `Enter`: reproduzir;
+- `Backspace`: limpar;
+- `Tab`: diminuir oitava;
+- `Shift`: aumentar oitava.
+
+O som é gerado com Web Audio API usando oscilador, filtro e ganho.
 
 ---
 
@@ -514,6 +607,15 @@ window.openAiChat()
 
 Esse comportamento é interceptado antes da navegação normal, para o chat funcionar de qualquer tela.
 
+O envio da mensagem passa por `askAi(userText)`. O fluxo atual é:
+
+1. classificar dificuldade localmente, se possível;
+2. se for mudança de dificuldade, chamar `saveDifficulty(level)`;
+3. se for pergunta, tentar Puter.js/Grok;
+4. se a IA falhar ou demorar, responder com `localAnswer(userText)`.
+
+Esse modelo deixa o chat mais robusto porque as ações importantes do cassino não dependem da disponibilidade da IA externa.
+
 ---
 
 ## 16. Uso de Canvas nos Jogos
@@ -526,6 +628,20 @@ O projeto usa Canvas em várias partes:
 - roleta;
 - Crash;
 - Undertale.
+- fallback visual do Undertale Multiplayer.
+
+O Undertale Multiplayer usa Phaser quando a biblioteca está disponível:
+
+```js
+UTM.phaser = new window.Phaser.Game({
+  type: window.Phaser.CANVAS,
+  canvas: canvas,
+  width: 720,
+  height: 420,
+});
+```
+
+Phaser fica responsável pela cena 2D, enquanto o estado real da partida continua vindo do servidor.
 
 ### Estrutura comum de um jogo em canvas
 
@@ -543,6 +659,41 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 ```
+
+### Undertale Multiplayer e Socket.IO
+
+O Undertale Multiplayer separa responsabilidades:
+
+- o cliente desenha a arena, mostra lobby, envia inputs e renderiza o estado recebido;
+- o servidor guarda salas, jogadores, HP, projéteis, cooldowns, colisões e vencedor;
+- os clientes não decidem dano nem vitória.
+
+Eventos principais do cliente para o servidor:
+
+```js
+socket.emit("utm:create-room", payload);
+socket.emit("utm:join-room", payload);
+socket.emit("utm:start-game");
+socket.emit("utm:input", input);
+```
+
+Eventos principais do servidor para os clientes:
+
+```js
+io.to(room.id).emit("utm:room", publicRoom(room));
+io.to(room.id).emit("utm:state", publicState(room));
+io.to(room.id).emit("utm:damage", payload);
+```
+
+O loop autoritativo fica no servidor:
+
+```js
+setInterval(() => {
+  rooms.forEach((room) => updateRoom(room, dt));
+}, TICK_MS);
+```
+
+Isso evita que cada navegador calcule um resultado diferente.
 
 ---
 
@@ -720,6 +871,18 @@ encapsulam padrões sonoros reutilizáveis.
 - `loadState()`
 - `saveDifficulty(level)`
 - `syncDifficulty(state)`
+- `classifyLocally(userText)`
+- `localAnswer(userText)`
+
+### Undertale Multiplayer
+
+- `utmEnter()`
+- `utmStartPhaser()`
+- `utmSendInput(force)`
+- `utmSetKey(key, down)`
+- `updateRoom(room, dt)` no servidor
+- `emitState(room)` no servidor
+- `emitDamage(room, target, amount)` no servidor
 
 ### CupShock
 
@@ -734,7 +897,7 @@ encapsulam padrões sonoros reutilizáveis.
 
 Um resumo possível:
 
-> “O Playground JS é uma aplicação front-end com múltiplos jogos organizados por hubs. O JavaScript controla a navegação entre telas, o foco por teclado, os loops de animação em canvas, os sons e a lógica de cada jogo. O `server.js` complementa isso servindo os arquivos, salvando a dificuldade do cassino em JSON e oferecendo APIs para o chat. A variável `WIN_DIFFICULTY` conecta essa dificuldade aos jogos de cassino, alterando probabilidades e comportamento dos resultados.”
+> “O Playground JS é uma aplicação web com múltiplos jogos organizados por hubs. O JavaScript controla a navegação entre telas, o foco por teclado, os loops de animação em canvas/Phaser, os sons e a lógica de cada jogo. O `server.js` serve arquivos, salva a dificuldade do cassino em JSON, fornece contexto ao chat e mantém o estado autoritativo do Undertale Multiplayer via Socket.IO. A variável `WIN_DIFFICULTY` conecta a dificuldade aos jogos de cassino, alterando probabilidades e comportamento dos resultados.”
 
 ---
 
@@ -754,7 +917,7 @@ Porque é uma persistência simples, suficiente para o escopo acadêmico do proj
 
 ### “Qual é a diferença entre front-end e server nesse projeto?”
 
-O front-end executa os jogos e interações. O server entrega arquivos e gerencia dados auxiliares como estado e contexto do chat.
+O front-end executa a interface, jogos locais, renderização e inputs. O server entrega arquivos, gerencia dados auxiliares como estado/contexto do chat e mantém o estado autoritativo do Undertale Multiplayer.
 
 ### “A dificuldade muda somente texto?”
 
@@ -769,6 +932,7 @@ Não. Ela altera matematicamente as probabilidades dos jogos do cassino.
 - A lógica de teclado é centralizada em um único listener grande, mas distribuída por blocos conforme a tela ativa.
 - O cassino tem uma mecânica interessante para explicar probabilidade e pesos.
 - O CupShock é bom para explicar máquina de estados, colisão, HUD e loop de jogo.
+- O Undertale Multiplayer é bom para explicar WebSocket, servidor autoritativo, salas, inputs e sincronização.
 
 ---
 
@@ -779,6 +943,8 @@ Não. Ela altera matematicamente as probabilidades dos jogos do cassino.
 - `data/chatbot-state.json`
 - `config/chatbot-rules.txt`
 - `README.md`
+- `index.html`
+- `css/style.css`
 
 ---
 
@@ -790,3 +956,4 @@ Não. Ela altera matematicamente as probabilidades dos jogos do cassino.
 4. Veja o fluxo do chat alterando a dificuldade.
 5. Estude um jogo simples, como Cara ou Coroa.
 6. Estude um jogo complexo, como CupShock ou Geometry Race.
+7. Estude o Undertale Multiplayer para entender cliente-servidor, Socket.IO e estado autoritativo.

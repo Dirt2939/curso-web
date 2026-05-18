@@ -7,22 +7,23 @@ _Projeto desenvolvido para o módulo de Lógica e Programação Web._
 
 ## Sobre o Projeto
 
-O **Playground JS** é uma aplicação web interativa feita com HTML, CSS e JavaScript puro. O projeto funciona como um hub de minijogos com visual arcade neon, navegação por teclado e mouse, efeitos sonoros, animações em canvas e controle de estado no front-end.
+O **Playground JS** é uma aplicação web interativa feita com HTML, CSS, JavaScript, Node.js, Express e Socket.IO. O projeto funciona como um hub de minijogos com visual arcade neon, navegação por teclado e mouse, efeitos sonoros, animações em canvas, renderização com Phaser no modo multiplayer e controle de estado no front-end e no servidor.
 
-A tela inicial organiza a experiência em quatro hubs:
+A tela inicial organiza a experiência em cinco hubs:
 
 - **Clássicos:** jogos rápidos de sorte, escolha e placar.
 - **Arcade:** jogos de ação, reflexo, sobrevivência e boss fight.
+- **Multiplayer:** partidas online em salas com sincronização realtime.
 - **Cassino:** jogos com saldo fictício, apostas simuladas e verificação de idade.
 - **Projetos Web:** quatro atividades avaliativas de DOM, eventos e estado.
 
-O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-end, como manipulação do DOM, eventos, funções, objetos, arrays, condicionais, temporizadores, `requestAnimationFrame`, Canvas API e Web Audio API.
+O objetivo principal é aplicar conceitos fundamentais de desenvolvimento web, como manipulação do DOM, eventos, funções, objetos, arrays, condicionais, temporizadores, `requestAnimationFrame`, Canvas API, Web Audio API, servidor HTTP, WebSocket e sincronização cliente-servidor.
 
 ---
 
 ## Funcionalidades
 
-- Tela inicial com cards para **Clássicos**, **Arcade**, **Cassino** e **Projetos Web**.
+- Tela inicial com cards para **Clássicos**, **Arcade**, **Multiplayer**, **Cassino** e **Projetos Web**.
 - Cards com descrições curtas para cada hub e jogo.
 - Navegação por teclado e mouse.
 - Feedback visual de foco, seleção, vitória, derrota e estados de bloqueio.
@@ -30,9 +31,11 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 - Animações e jogos renderizados com Canvas API.
 - Visual retrofuturista com grid, brilho neon, cards, HUDs e painéis temáticos.
 - Layout responsivo.
-- Chat de ajuda acessível pela tecla `I`.
+- Chat de ajuda acessível pela tecla `I`, com Puter.js/Grok quando disponível e fallback local quando a IA externa falha.
 - Modal de verificação de idade antes de acessar o Cassino.
 - Sistema de saldo fictício nos jogos de cassino.
+- Sistema de salas online para o Undertale Multiplayer.
+- Servidor autoritativo para validar movimento, ataques, dano, vitória e desconexões do multiplayer.
 
 ---
 
@@ -82,6 +85,19 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 - A dificuldade aumenta por fase, mas os golpes possuem ritmo e aviso visual para o jogador reagir.
 - Ao vencer, o jogador desativa o núcleo e volta para o hub Arcade com `Enter`.
 
+### Multiplayer
+
+**Undertale Multiplayer**
+
+- Jogo realtime inspirado em Undertale, com salas online via Socket.IO.
+- A partida funciona como 1 Boss contra 1 a 4 Almas.
+- O host cria a sala e inicia o sorteio; o Boss é escolhido por carrossel aleatório.
+- O Boss usa ataques com cooldown: tiro, leque e ossos.
+- As Almas desviam, usam dash e podem atirar para reduzir a vida do Boss.
+- O servidor é autoritativo: ele valida inputs, colisões, dano, HP, vitória e remoção de jogadores desconectados.
+- A renderização principal usa Phaser em um canvas 2D; existe fallback em Canvas API se Phaser não carregar.
+- O Boss vence ao eliminar todas as Almas. As Almas vencem ao zerar a vida do Boss.
+
 ### Cassino
 
 **Caça-Níquel**
@@ -120,14 +136,15 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 
 - Timer regressivo de 25:00 com iniciar, pausar e resetar.
 - Alterna entre foco e pausa, com aviso sonoro ao finalizar.
-- Permite configurar tempos e alternar modo noturno.
+- Permite configurar tempos de foco e pausa.
 
 **Teclado Virtual**
 
-- Possui sete teclas musicais de **Dó** a **Si**.
-- Cada nota pode ser tocada por clique ou pelas teclas físicas `A`, `S`, `D`, `F`, `G`, `H` e `J`.
-- A tecla tocada recebe destaque visual e o painel mostra a última nota.
-- Inclui contador de toques, gravação/reprodução de sequência e alternância de modo claro/escuro.
+- Simula um piano/synth com duas oitavas, teclas brancas e pretas.
+- Cada nota pode ser tocada por clique ou por teclas físicas mapeadas no layout musical.
+- As teclas brancas usam `Z`, `X`, `C`, `V`, `B`, `N`, `M` e `Q`, `W`, `E`, `R`, `T`, `Y`, `U`.
+- As teclas pretas usam `S`, `D`, `G`, `H`, `J` e `2`, `3`, `5`, `6`, `7`.
+- Inclui contador de toques, gravação, reprodução, limpeza de sequência e ajuste de oitava.
 
 ---
 
@@ -143,14 +160,15 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 - **F5:** recarregar a página.
 - **I:** abrir o chat de ajuda.
 - **Mouse:** clicar em cards, botões e opções.
-- **A/S/D/F/G/H/J no Teclado Virtual:** tocar as notas Dó, Ré, Mi, Fá, Sol, Lá e Si.
-- **R/P/T no Teclado Virtual:** gravar, reproduzir e alternar tema.
+- **Teclado Virtual:** `Z/X/C/V/B/N/M` e `Q/W/E/R/T/Y/U` tocam teclas brancas; `S/D/G/H/J` e `2/3/5/6/7` tocam teclas pretas.
+- **Controles do Teclado Virtual:** `CapsLock` grava, `Enter` reproduz, `Backspace` limpa, `Tab` reduz oitava e `Shift` aumenta oitava.
 
 ### Jogos Específicos
 
 - **Undertale:** setas para navegar/mover, `Enter` para selecionar e `Esc` para voltar.
 - **Geometry Race:** `W` ou `Espaço` para o Player 1; `Seta para cima` para o Player 2.
 - **CupShock:** `A/D` ou setas para mover; `W`, `Seta para cima` ou `Espaço` para pular; `J/Z` para atirar; `Shift` para dash direcional; `K/X` para especial; `Enter` para avançar diálogo, voltar após vencer ou reiniciar após perder.
+- **Undertale Multiplayer:** `WASD` ou setas movem e miram; Boss usa `Z` para tiro, `X` para leque e `C` para ossos; Almas usam `Z` para atirar e `Shift` para dash.
 
 ---
 
@@ -160,9 +178,11 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 - **CSS3:** layout, responsividade, animações, variáveis visuais e estilo neon.
 - **JavaScript:** regras dos jogos, navegação, eventos, estado, placares, sons e animações.
 - **Canvas API:** renderização de jogos e efeitos visuais.
+- **Phaser:** renderização 2D do Undertale Multiplayer.
 - **Web Audio API:** efeitos sonoros gerados no navegador.
-- **Socket.IO:** dependência disponível no projeto para recursos com servidor.
-- **Node.js:** servidor local opcional via `server.js`.
+- **Node.js + Express:** servidor local, arquivos estáticos e APIs auxiliares.
+- **Socket.IO:** WebSocket/realtime para salas e sincronização do Undertale Multiplayer.
+- **Puter.js/Grok:** chat de ajuda no navegador, com timeout e fallback local.
 
 ---
 
@@ -181,6 +201,7 @@ Desafio-Master/
 |-- package.json
 |-- package-lock.json
 |-- README.md
+|-- GUIA-JS.md
 `-- server.js
 ```
 
@@ -188,11 +209,12 @@ Desafio-Master/
 
 - `index.html`: estrutura HTML das telas, hubs, jogos, modais, SVGs e canvases.
 - `css/style.css`: visual do projeto, incluindo layout, cores, responsividade e animações.
-- `js/script.js`: lógica de navegação, jogos, placares, controles, sons e renderização em canvas.
-- `server.js`: servidor Node.js opcional.
-- `config/`: arquivos de configuração do projeto.
-- `data/`: dados auxiliares usados pela aplicação.
+- `js/script.js`: lógica de navegação, jogos, placares, controles, sons, Phaser e renderização em canvas.
+- `server.js`: servidor Node.js/Express, APIs do chat/dificuldade e servidor autoritativo do Undertale Multiplayer.
+- `config/`: regras do chatbot.
+- `data/`: estado persistido da dificuldade do cassino.
 - `README.md`: documentação do projeto.
+- `GUIA-JS.md`: guia de estudo da arquitetura JavaScript.
 
 ---
 
@@ -202,6 +224,8 @@ Desafio-Master/
 
 1. Abra a pasta do projeto.
 2. Abra o arquivo `index.html` no navegador.
+
+Esse modo permite visualizar a maioria das telas estáticas e jogos front-end, mas o **Undertale Multiplayer**, APIs do chat e persistência de dificuldade dependem do servidor local.
 
 ### Usando o servidor local
 
@@ -217,18 +241,34 @@ npm install
 npm start
 ```
 
-3. Acesse o endereço mostrado no terminal ou acesse https://dirt2939.github.io/Desafio-Master/.
+3. Acesse:
+
+```text
+http://localhost:3000
+```
+
+### Usando Ngrok para multiplayer externo
+
+1. Com o servidor rodando em `localhost:3000`, execute:
+
+```bash
+ngrok http 3000
+```
+
+2. Copie a URL pública gerada pelo Ngrok.
+3. No lobby do Undertale Multiplayer, use essa URL no campo **Servidor** quando os jogadores estiverem fora da mesma rede/origem.
 
 ---
 
 ## Como Jogar
 
 1. Acesse a tela inicial do **Playground JS**.
-2. Escolha um hub: **Clássicos**, **Arcade** ou **Cassino**.
+2. Escolha um hub: **Clássicos**, **Arcade**, **Multiplayer**, **Cassino** ou **Projetos Web**.
 3. Em **Clássicos**, insira a moeda para liberar os jogos.
 4. Em **Arcade**, escolha entre Undertale, Geometry Race ou CupShock.
-5. Em **Cassino**, confirme a idade e insira o ticket.
-6. Use teclado ou mouse para jogar.
+5. Em **Multiplayer**, escolha Undertale MP, crie ou entre em uma sala e espere o host iniciar.
+6. Em **Cassino**, confirme a idade e insira o ticket.
+7. Use teclado ou mouse para jogar.
 
 ---
 
@@ -246,9 +286,12 @@ npm start
 - Temporizadores com `setTimeout` e `setInterval`.
 - Loops de animação com `requestAnimationFrame`.
 - Renderização 2D com Canvas API.
+- Renderização 2D com Phaser no modo multiplayer.
 - Efeitos sonoros com Web Audio API.
+- Comunicação realtime com Socket.IO.
+- Validação autoritativa de estado no servidor.
 
-- - Apresentação de principais conceitos em:[ https://www.canva.com/design/DAHJeeXVn-s/QdmbhgV8kYZv5kT0r53w5A/edit](https://canva.link/l6rtkru1izvh2o2)
+- Apresentação de principais conceitos em: [https://www.canva.com/design/DAHJeeXVn-s/QdmbhgV8kYZv5kT0r53w5A/edit](https://canva.link/l6rtkru1izvh2o2)
 
 ---
 
@@ -267,11 +310,13 @@ O JavaScript é dividido em blocos comentados para facilitar manutenção:
 - Hub principal.
 - Hub Clássicos.
 - Hub Arcade.
+- Hub Multiplayer.
 - Jogos Clássicos.
 - Geometry Race.
 - CupShock.
 - Cassino e seus jogos.
 - Undertale.
+- Undertale Multiplayer.
 - Chat de ajuda.
 
 Essa organização facilita leitura, apresentação e evolução do projeto.
