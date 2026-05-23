@@ -1,4 +1,4 @@
-﻿# Guia de Estudo do JavaScript do Playground JS
+# Guia de Estudo do JavaScript do Playground JS
 
 Este material foi feito para servir como guia de estudo do projeto. A ideia é explicar **como o JavaScript organiza o site**, **como o servidor funciona**, **como a dificuldade do cassino é aplicada**, **como o Undertale Multiplayer sincroniza jogadores via Socket.IO** e **quais funções sustentam a navegação, os jogos e a interação por teclado**.
 
@@ -553,6 +553,13 @@ Funções principais:
 - `pomoPause()`
 - `pomoReset()`
 - `pomoRender(message)`
+- `pomoLoadTasks()`
+- `pomoSaveTasks()`
+- `pomoAddTask()`
+- `pomoToggleTask(id)`
+- `pomoRemoveTask(id)`
+- `pomoClearDoneTasks()`
+- `pomoRenderTasks()`
 
 O Pomodoro controla:
 
@@ -560,8 +567,10 @@ O Pomodoro controla:
 - modo atual, foco ou pausa;
 - inputs de duração de foco e pausa;
 - botões de iniciar, pausar e resetar.
+- uma lista lateral de tarefas persistida em `localStorage`;
+- foco por teclado separado entre controles do timer e controles da lista.
 
-Ele não tem mais alternância de tema. O foco do projeto é temporizador, configuração de tempo e feedback da contagem.
+Ele não tem mais alternância de tema. O foco do projeto é temporizador, configuração de tempo, tarefas de foco e feedback da contagem.
 
 ### Teclado Virtual
 
@@ -574,18 +583,25 @@ Funções principais:
 - `synthReplay()`
 - `synthClearSequence()`
 - `synthChangeOctave(delta)`
+- `synthBuildPresetSequence(song)`
+- `synthPlayPreset(songId)`
+- `synthClearSongButtons()`
 
 O Teclado Virtual funciona como um piano/synth de duas oitavas. O HTML define cada tecla com `data-synth-key` e `data-synth-index`; o JavaScript monta `synthKeyMap` para transformar tecla física em nota.
+
+As músicas prontas ficam em `synthPresetSongs`. Cada música é uma lista de passos com tecla e duração. Ao clicar ou confirmar uma música pelo teclado, `synthPlayPreset(songId)` monta uma sequência temporária e reutiliza `synthReplay()` para tocar.
 
 Controles importantes:
 
 - teclas brancas: `Z/X/C/V/B/N/M` e `Q/W/E/R/T/Y/U`;
 - teclas pretas: `S/D/G/H/J` e `2/3/5/6/7`;
 - `CapsLock`: gravar;
-- `Enter`: reproduzir;
+- `P`: reproduzir gravação;
 - `Backspace`: limpar;
 - `Tab`: diminuir oitava;
 - `Shift`: aumentar oitava.
+- setas: navegar pelas músicas prontas;
+- `Enter`: tocar a música pronta em foco.
 
 O som é gerado com Web Audio API usando oscilador, filtro e ganho.
 

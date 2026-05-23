@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════════════════════════════
-   GSIM — Simulacao Guiada Multiplayer Realtime
-   ═══════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   GSIM â€” Simulacao Guiada Multiplayer Realtime
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 "use strict";
 
 (function () {
@@ -39,7 +39,7 @@
     {
       label: "step 1 / 5",
       title: "ACOES DOS CLIENTES",
-      text:  "No WebSocket, varios jogadores podem agir quase ao mesmo tempo. O cliente nao decide dano nem vitoria — ele so envia intencao.",
+      text:  "No WebSocket, varios jogadores podem agir quase ao mesmo tempo. O cliente nao decide dano nem vitoria â€” ele so envia intencao.",
       code:  'boss.emit("attack")\n// Alma 1: -> move\n// Alma 4: attack'
     },
     {
@@ -142,7 +142,7 @@
       case 1: /* INPUTS */
         /* Boss directly down to server */
         later(function () { firePacket(tracks.boss, "gpkt-boss-input", "go-down", 800); }, 100);
-        
+
         /* Soul 1: up track -> right on hbus -> up server track */
         later(function () { firePacket(tracks.s1, "gpkt-s1-input", "go-up", 400); }, 300);
         later(function () { firePacket(tracks.hbus, "gpkt-hbus-in-s1", "h-in-s1", 400); }, 700);
@@ -164,10 +164,10 @@
       case 3: /* STATE DISTRIBUIDO */
         /* Boss state goes straight up */
         later(function () { firePacket(tracks.boss, "gpkt-boss-state", "go-up", 800); }, 80);
-        
+
         /* Server state goes down to hbus */
         later(function () { firePacket(tracks.server, "gpkt-server-state", "go-down", 400); }, 140);
-        
+
         /* HBus outward distribute */
         later(function () {
           firePacket(tracks.hbus, "gpkt-hbus-out-s1", "h-out-s1", 400);

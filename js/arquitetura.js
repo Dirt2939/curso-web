@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 (function () {
   const details = {
@@ -601,4 +601,3 @@
   setDetail("input");
   setTerm("api");
 })();
-

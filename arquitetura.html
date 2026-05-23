@@ -28,70 +28,70 @@
       <p class="eyebrow">mapa conceitual do projeto</p>
       <h1>PLAYGROUND JS</h1>
       <p class="hero-sub">
-        Uma leitura visual das lógicas do site: entradas pelo teclado, IA com Puter,
+        Uma leitura visual das lÃ³gicas do site: entradas pelo teclado, IA com Puter,
         multiplayer autoritativo, servidor Node, cassino e projetos web.
       </p>
     </div>
-    <div class="hero-console" aria-label="Resumo técnico">
+    <div class="hero-console" aria-label="Resumo tÃ©cnico">
       <span class="console-dot"></span>
       <code>input -&gt; regra -&gt; estado -&gt; render -&gt; feedback</code>
     </div>
-    <div class="hero-terms" aria-label="Mini explicações rápidas">
+    <div class="hero-terms" aria-label="Mini explicaÃ§Ãµes rÃ¡pidas">
       <span><strong>API</strong> rota para trocar dados</span>
       <span><strong>Node.js</strong> JS rodando no servidor</span>
       <span><strong>Puter</strong> ponte para IA no navegador</span>
       <span><strong>Socket.IO</strong> eventos realtime</span>
       <span><strong>Tick</strong> rodada curta do loop</span>
     </div>
-    <!-- stat strip — visão rápida dos números do site -->
-    <div class="hero-stat-strip" aria-label="Números do site">
-      <div class="hero-stat"><b>10</b><span>seções</span></div>
+    <!-- stat strip â€” visÃ£o rÃ¡pida dos nÃºmeros do site -->
+    <div class="hero-stat-strip" aria-label="NÃºmeros do site">
+      <div class="hero-stat"><b>10</b><span>seÃ§Ãµes</span></div>
       <div class="hero-stat"><b>6</b><span>jogos</span></div>
       <div class="hero-stat"><b>4</b><span>projetos web</span></div>
       <div class="hero-stat"><b>1</b><span>servidor Node</span></div>
-      <div class="hero-stat"><b>20×</b><span>ticks / s</span></div>
+      <div class="hero-stat"><b>20Ã—</b><span>ticks / s</span></div>
       <div class="hero-stat"><b>IA</b><span>via Puter</span></div>
     </div>
   </header>
 
   <main class="logic-layout">
-    <aside class="logic-nav" aria-label="Navegação da explicação">
+    <aside class="logic-nav" aria-label="NavegaÃ§Ã£o da explicaÃ§Ã£o">
       <p class="nav-title">CAMADAS</p>
       <a href="#mapa"        data-nav="mapa"        class="active">01 Mapa</a>
       <a href="#jogos"       data-nav="jogos"              >02 Jogos</a>
       <a href="#keydown"     data-nav="keydown"            >03 Keydown</a>
       <a href="#puter"       data-nav="puter"              >04 Puter</a>
-      <a href="#simulacao-mp" data-nav="simulacao-mp"      >05 Simulação</a>
+      <a href="#simulacao-mp" data-nav="simulacao-mp"      >05 SimulaÃ§Ã£o</a>
       <a href="#server"      data-nav="server"             >06 Server.js</a>
       <a href="#cassino"     data-nav="cassino"            >07 Cassino</a>
       <a href="#projetos"    data-nav="projetos"           >08 Projetos</a>
-      <a href="#glossario"   data-nav="glossario"          >09 Glossário</a>
+      <a href="#glossario"   data-nav="glossario"          >09 GlossÃ¡rio</a>
     </aside>
 
     <section class="logic-content">
 
-      <!-- ───────────────────────────────────── 01 MAPA ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 01 MAPA â”€â”€ -->
       <section class="logic-section intro-section" id="mapa" data-section>
         <div class="section-head">
           <span class="section-index">01</span>
           <div>
-            <p class="section-kicker">visão geral</p>
-            <h2>O site funciona como um arcade de módulos</h2>
+            <p class="section-kicker">visÃ£o geral</p>
+            <h2>O site funciona como um arcade de mÃ³dulos</h2>
           </div>
         </div>
 
-        <!-- fluxo interativo: clique em cada nó para ver detalhes -->
+        <!-- fluxo interativo: clique em cada nÃ³ para ver detalhes -->
         <div class="system-ribbon" aria-label="Fluxo principal do sistema">
           <button class="logic-node active" type="button" data-topic="input">
             <span>01</span>
             Entrada
-            <small>teclado, mouse, formulário</small>
+            <small>teclado, mouse, formulÃ¡rio</small>
           </button>
           <div class="ribbon-arrow" aria-hidden="true"></div>
           <button class="logic-node" type="button" data-topic="rules">
             <span>02</span>
             Regra
-            <small>validação e decisão</small>
+            <small>validaÃ§Ã£o e decisÃ£o</small>
           </button>
           <div class="ribbon-arrow" aria-hidden="true"></div>
           <button class="logic-node" type="button" data-topic="state">
@@ -115,10 +115,10 @@
 
         <div class="map-grid">
           <article class="signal-board">
-            <div class="board-label">ROTAS DE LÓGICA</div>
+            <div class="board-label">ROTAS DE LÃ“GICA</div>
             <div class="signal-lane lane-cyan">
               <span>keydown</span>
-              <strong>navegação e ações instantâneas</strong>
+              <strong>navegaÃ§Ã£o e aÃ§Ãµes instantÃ¢neas</strong>
             </div>
             <div class="signal-lane lane-purple">
               <span>puter/chat</span>
@@ -138,52 +138,52 @@
             <p class="detail-overline">clique nos blocos do fluxo</p>
             <h3 data-detail-title>Entrada</h3>
             <p data-detail-text>
-              Toda interação começa como um sinal pequeno: uma tecla, um clique, um nome digitado ou
+              Toda interaÃ§Ã£o comeÃ§a como um sinal pequeno: uma tecla, um clique, um nome digitado ou
               uma mensagem enviada ao chatbot.
             </p>
             <pre><code data-detail-code>document.addEventListener("keydown", handleGlobalKey);</code></pre>
           </article>
         </div>
 
-        <!-- pills de todos os módulos do site — clique nos cards na seção 02 para saber mais -->
+        <!-- pills de todos os mÃ³dulos do site â€” clique nos cards na seÃ§Ã£o 02 para saber mais -->
         <div class="module-overview">
-          <p class="board-label">TUDO NO SITE — CLIQUE EM QUALQUER CARD NA SEÇÃO 02 PARA DETALHES</p>
+          <p class="board-label">TUDO NO SITE â€” CLIQUE EM QUALQUER CARD NA SEÃ‡ÃƒO 02 PARA DETALHES</p>
           <div class="module-pills">
-            <span class="mpill mpill-classic">Jokenpô</span>
+            <span class="mpill mpill-classic">JokenpÃ´</span>
             <span class="mpill mpill-classic">Dados</span>
             <span class="mpill mpill-arcade">Undertale</span>
             <span class="mpill mpill-arcade">Geometry Race</span>
             <span class="mpill mpill-multi">Undertale MP</span>
-            <span class="mpill mpill-casino">Caça-Níquel</span>
+            <span class="mpill mpill-casino">CaÃ§a-NÃ­quel</span>
             <span class="mpill mpill-casino">Crash</span>
             <span class="mpill mpill-project">Teclado Musical</span>
             <span class="mpill mpill-project">Pomodoro</span>
             <span class="mpill mpill-project">Cofrinho</span>
-            <span class="mpill mpill-project">Lâmpada</span>
+            <span class="mpill mpill-project">LÃ¢mpada</span>
           </div>
         </div>
       </section>
 
-      <!-- ───────────────────────────────────── 02 JOGOS ── (movido do 09 para ficar logo após o mapa) -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 02 JOGOS â”€â”€ (movido do 09 para ficar logo apÃ³s o mapa) -->
       <section class="logic-section games-section" id="jogos" data-section>
         <div class="section-head">
           <span class="section-index">02</span>
           <div>
-            <p class="section-kicker">catálogo do site</p>
-            <h2>Cada jogo é um exemplo de lógica diferente</h2>
+            <p class="section-kicker">catÃ¡logo do site</p>
+            <h2>Cada jogo Ã© um exemplo de lÃ³gica diferente</h2>
           </div>
         </div>
 
         <div class="hub-summary-grid">
           <button class="hub-game-card classic" type="button" data-game-modal="jokenpo">
-            <span>clássicos</span>
-            <strong>Jokenpô</strong>
-            <small>entrada simples + regra de comparação</small>
+            <span>clÃ¡ssicos</span>
+            <strong>JokenpÃ´</strong>
+            <small>entrada simples + regra de comparaÃ§Ã£o</small>
           </button>
           <button class="hub-game-card classic" type="button" data-game-modal="dados">
-            <span>clássicos</span>
+            <span>clÃ¡ssicos</span>
             <strong>Dados</strong>
-            <small>aleatório + placar</small>
+            <small>aleatÃ³rio + placar</small>
           </button>
           <button class="hub-game-card arcade" type="button" data-game-modal="undertale">
             <span>arcade</span>
@@ -193,7 +193,7 @@
           <button class="hub-game-card arcade" type="button" data-game-modal="geometry">
             <span>arcade</span>
             <strong>Geometry Race</strong>
-            <small>timing, colisão e velocidade</small>
+            <small>timing, colisÃ£o e velocidade</small>
           </button>
           <button class="hub-game-card multi" type="button" data-game-modal="undertale-mp">
             <span>multiplayer</span>
@@ -202,7 +202,7 @@
           </button>
           <button class="hub-game-card casino" type="button" data-game-modal="slots">
             <span>cassino</span>
-            <strong>Caça-Níquel</strong>
+            <strong>CaÃ§a-NÃ­quel</strong>
             <small>probabilidade controlada</small>
           </button>
           <button class="hub-game-card casino" type="button" data-game-modal="crash">
@@ -223,12 +223,12 @@
           <button class="hub-game-card projects" type="button" data-game-modal="cofrinho">
             <span>projetos web</span>
             <strong>Cofrinho</strong>
-            <small>formulário + localStorage</small>
+            <small>formulÃ¡rio + localStorage</small>
           </button>
         </div>
       </section>
 
-      <!-- ─────────────────────────────────── 03 KEYDOWN ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 03 KEYDOWN â”€â”€ -->
       <section class="logic-section" id="keydown" data-section>
         <div class="section-head">
           <span class="section-index">03</span>
@@ -239,14 +239,14 @@
         </div>
 
         <div class="split-panel">
-          <div class="keyboard-demo" aria-label="Demonstração de teclas">
+          <div class="keyboard-demo" aria-label="DemonstraÃ§Ã£o de teclas">
             <div class="keyboard-row">
-              <span class="kbd-key" data-key="arrowup">↑</span>
+              <span class="kbd-key" data-key="arrowup">â†‘</span>
             </div>
             <div class="keyboard-row">
-              <span class="kbd-key" data-key="arrowleft">←</span>
+              <span class="kbd-key" data-key="arrowleft">â†</span>
               <span class="kbd-key wide" data-key="enter">ENTER</span>
-              <span class="kbd-key" data-key="arrowright">→</span>
+              <span class="kbd-key" data-key="arrowright">â†’</span>
             </div>
             <div class="keyboard-row">
               <span class="kbd-key" data-key="z">Z</span>
@@ -255,21 +255,21 @@
               <span class="kbd-key" data-key=" ">SPACE</span>
               <span class="kbd-key" data-key="i">I</span>
             </div>
-            <p class="demo-caption">Aperte teclas enquanto olha esta página: o painel mostra como input vira ação.</p>
+            <p class="demo-caption">Aperte teclas enquanto olha esta pÃ¡gina: o painel mostra como input vira aÃ§Ã£o.</p>
           </div>
 
           <div class="concept-stack">
             <div class="concept-step">
               <span>1</span>
-              <p><strong>Captura global:</strong> o navegador avisa quando uma tecla é pressionada.</p>
+              <p><strong>Captura global:</strong> o navegador avisa quando uma tecla Ã© pressionada.</p>
             </div>
             <div class="concept-step">
               <span>2</span>
-              <p><strong>Tela ativa:</strong> o código confere se o jogador está no menu, no teclado musical, no arcade ou no multiplayer.</p>
+              <p><strong>Tela ativa:</strong> o cÃ³digo confere se o jogador estÃ¡ no menu, no teclado musical, no arcade ou no multiplayer.</p>
             </div>
             <div class="concept-step">
               <span>3</span>
-              <p><strong>Ação correta:</strong> a mesma tecla pode navegar no menu, tocar uma nota ou mover uma Alma.</p>
+              <p><strong>AÃ§Ã£o correta:</strong> a mesma tecla pode navegar no menu, tocar uma nota ou mover uma Alma.</p>
             </div>
           </div>
         </div>
@@ -281,17 +281,17 @@
 });</code></pre>
       </section>
 
-      <!-- ───────────────────────────────────── 04 PUTER ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 04 PUTER â”€â”€ -->
       <section class="logic-section" id="puter" data-section>
         <div class="section-head">
           <span class="section-index">04</span>
           <div>
             <p class="section-kicker">chatbot</p>
-            <h2>Puter entra como camada de IA, mas o site não fica dependente dele</h2>
+            <h2>Puter entra como camada de IA, mas o site nÃ£o fica dependente dele</h2>
           </div>
         </div>
 
-        <!-- fluxo clicável: cada chip mostra detalhes -->
+        <!-- fluxo clicÃ¡vel: cada chip mostra detalhes -->
         <div class="puter-flow">
           <button class="flow-chip" type="button" data-topic="message">Mensagem</button>
           <span class="flow-line"></span>
@@ -309,7 +309,7 @@
           <div class="puter-card puter-card-local">
             <span class="pcard-num">01</span>
             <strong>Comando direto?</strong>
-            <p>Site resolve localmente — sem chamar IA</p>
+            <p>Site resolve localmente â€” sem chamar IA</p>
             <code>classifyLocally(text)</code>
           </div>
           <div class="puter-card puter-card-ai">
@@ -321,7 +321,7 @@
           <div class="puter-card puter-card-fallback">
             <span class="pcard-num">03</span>
             <strong>IA offline?</strong>
-            <p>Resposta local automática — sem travar</p>
+            <p>Resposta local automÃ¡tica â€” sem travar</p>
             <code>localFallback(text)</code>
           </div>
         </div>
@@ -338,25 +338,25 @@
 }</code></pre>
       </section>
 
-      <!-- ──────────────────────────────── 05 SIMULAÇÃO ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 05 SIMULAÃ‡ÃƒO â”€â”€ -->
       <section class="logic-section mp-sim-section" id="simulacao-mp" data-section>
         <div class="section-head">
           <span class="section-index">05</span>
           <div>
-            <p class="section-kicker">simulação guiada</p>
+            <p class="section-kicker">simulaÃ§Ã£o guiada</p>
             <h2>Como o ataque vira INPUT, passa pelo servidor e volta como STATE</h2>
           </div>
         </div>
 
-        <!-- ── SIMULAÇÃO PRINCIPAL ── -->
+        <!-- â”€â”€ SIMULAÃ‡ÃƒO PRINCIPAL â”€â”€ -->
         <div class="gsim-shell" id="gsim" data-gsim-step="0" tabindex="0" aria-label="Simulacao Guiada Multiplayer Realtime">
 
-          <!-- HEADER: título + tick card -->
+          <!-- HEADER: tÃ­tulo + tick card -->
           <div class="gsim-header">
             <div class="gsim-header-left">
               <div class="gsim-badge">MP</div>
               <div>
-                <h3 class="gsim-title">SIMULAÇÃO GUIADA: MULTIPLAYER REALTIME</h3>
+                <h3 class="gsim-title">SIMULAÃ‡ÃƒO GUIADA: MULTIPLAYER REALTIME</h3>
                 <p class="gsim-subtitle">Inputs entram por Socket.IO; o <strong>server.js</strong> decide o estado oficial da sala.</p>
               </div>
             </div>
@@ -383,7 +383,7 @@
             </span>
           </div>
 
-          <!-- STAGE: área visual principal -->
+          <!-- STAGE: Ã¡rea visual principal -->
           <div class="gsim-stage" aria-hidden="true">
 
             <!-- BOSS (topo, centro) -->
@@ -401,7 +401,7 @@
                   <div class="gboss-mouth"></div>
                 </div>
               </div>
-              <!-- popup ação (step 1) -->
+              <!-- popup aÃ§Ã£o (step 1) -->
               <div class="gsim-popup gpop-boss-action" id="gpop-boss-action">
                 <span class="gpop-label">BOSS ACTION</span>
                 <strong class="gpop-value">attack</strong>
@@ -415,12 +415,12 @@
               </div>
             </div>
 
-            <!-- TRILHO VERTICAL BOSS→SERVER (INPUT sobe, STATE desce) -->
+            <!-- TRILHO VERTICAL BOSSâ†’SERVER (INPUT sobe, STATE desce) -->
             <div class="gsim-vtrack gsim-vtrack-boss" id="gtrack-boss">
               <div class="gtrack-line"></div>
-              <!-- INPUT boss→server -->
+              <!-- INPUT bossâ†’server -->
               <div class="gpacket gpacket-input" id="gpkt-boss-input"></div>
-              <!-- STATE server→boss -->
+              <!-- STATE serverâ†’boss -->
               <div class="gpacket gpacket-state" id="gpkt-boss-state"></div>
               <!-- label INPUT -->
               <span class="gtrack-label gtrack-label-input" id="gtlabel-boss-input">INPUT</span>
@@ -451,7 +451,7 @@
               </div>
             </div>
 
-            <!-- TRILHO VERTICAL SERVER→HBUS -->
+            <!-- TRILHO VERTICAL SERVERâ†’HBUS -->
             <div class="gsim-vtrack-server" id="gtrack-server">
               <div class="gtrack-line"></div>
               <div class="gpacket gpacket-input" id="gpkt-server-in-s1"></div>
@@ -459,7 +459,7 @@
               <div class="gpacket gpacket-state" id="gpkt-server-state"></div>
             </div>
 
-            <!-- BARRAMENTO HORIZONTAL (server↔almas) -->
+            <!-- BARRAMENTO HORIZONTAL (serverâ†”almas) -->
             <div class="gsim-hbus" id="gsim-hbus">
               <div class="ghbus-line"></div>
               <div class="gpacket gpacket-input" id="gpkt-hbus-in-s1"></div>
@@ -470,7 +470,7 @@
               <div class="gpacket gpacket-state" id="gpkt-hbus-out-s4"></div>
             </div>
 
-            <!-- TRILHOS VERTICAIS ALMAS (server→soul) -->
+            <!-- TRILHOS VERTICAIS ALMAS (serverâ†’soul) -->
             <div class="gsim-soul-vtracks-row">
               <div class="gsim-vtrack gsim-vtrack-soul gsim-vtrack-s1" id="gtrack-s1">
                 <div class="gtrack-line"></div>
@@ -555,18 +555,18 @@
           <!-- COPY: texto explicativo do step atual -->
           <div class="gsim-copy" aria-live="polite">
             <p class="gsim-step-label" id="gsim-step-label">step 1 / 5</p>
-            <h3 class="gsim-step-title" id="gsim-step-title">AÇÕES DOS CLIENTES</h3>
+            <h3 class="gsim-step-title" id="gsim-step-title">AÃ‡Ã•ES DOS CLIENTES</h3>
             <p class="gsim-step-text" id="gsim-step-text">
-              No WebSocket, vários jogadores podem agir quase ao mesmo tempo. O cliente não decide dano nem vitória, ele só envia intenção.
+              No WebSocket, vÃ¡rios jogadores podem agir quase ao mesmo tempo. O cliente nÃ£o decide dano nem vitÃ³ria, ele sÃ³ envia intenÃ§Ã£o.
             </p>
             <pre class="gsim-code-block"><code id="gsim-step-code">boss.emit("attack")</code></pre>
           </div>
 
           <!-- STEPS NAV -->
-          <div class="gsim-steps" role="tablist" aria-label="Passos da simulação multiplayer">
+          <div class="gsim-steps" role="tablist" aria-label="Passos da simulaÃ§Ã£o multiplayer">
             <button class="gsim-step-btn active" type="button" role="tab" aria-selected="true" data-gsim-target="0">
               <span class="gstep-icon gstep-icon-boss"></span>
-              <strong>AÇÕES</strong>
+              <strong>AÃ‡Ã•ES</strong>
               <small>jogadores agem</small>
             </button>
             <button class="gsim-step-btn" type="button" role="tab" aria-selected="false" data-gsim-target="1">
@@ -594,13 +594,13 @@
         </div><!-- /gsim-shell -->
       </section>
 
-      <!-- ──────────────────────────────── 06 SERVER.JS ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 06 SERVER.JS â”€â”€ -->
       <section class="logic-section" id="server" data-section>
         <div class="section-head">
           <span class="section-index">06</span>
           <div>
             <p class="section-kicker">backend</p>
-            <h2>server.js junta site estático, APIs e Socket.IO</h2>
+            <h2>server.js junta site estÃ¡tico, APIs e Socket.IO</h2>
           </div>
         </div>
 
@@ -614,13 +614,13 @@
                 <span></span><span></span><span></span>
               </div>
               <div class="srv-browser-inner">
-                <span class="srv-browser-label">Você no navegador</span>
+                <span class="srv-browser-label">VocÃª no navegador</span>
                 <code>localhost:3000</code>
               </div>
             </div>
           </div>
 
-          <!-- Seta: navegador → servidor -->
+          <!-- Seta: navegador â†’ servidor -->
           <div class="srv-connector">
             <div class="srv-conn-line">
               <span class="srv-conn-pkt cyan"></span>
@@ -642,28 +642,28 @@
 
             <div class="srv-layers">
 
-              <!-- Camada 1: arquivos estáticos -->
+              <!-- Camada 1: arquivos estÃ¡ticos -->
               <div class="srv-layer srv-layer-files">
                 <div class="srv-layer-left">
-                  <span class="srv-layer-icon">📁</span>
+                  <span class="srv-layer-icon">ðŸ“</span>
                   <div>
                     <strong>Arquivos do site</strong>
-                    <small>HTML · CSS · JS · imagens</small>
+                    <small>HTML Â· CSS Â· JS Â· imagens</small>
                   </div>
                 </div>
                 <div class="srv-layer-right">
                   <code>express.static(ROOT_DIR)</code>
-                  <div class="srv-layer-hint">quando você abre a página</div>
+                  <div class="srv-layer-hint">quando vocÃª abre a pÃ¡gina</div>
                 </div>
               </div>
 
               <!-- Camada 2: APIs REST -->
               <div class="srv-layer srv-layer-api">
                 <div class="srv-layer-left">
-                  <span class="srv-layer-icon">🔌</span>
+                  <span class="srv-layer-icon">ðŸ”Œ</span>
                   <div>
                     <strong>APIs REST</strong>
-                    <small>lê e muda dados sem recarregar</small>
+                    <small>lÃª e muda dados sem recarregar</small>
                   </div>
                 </div>
                 <div class="srv-layer-right">
@@ -678,10 +678,10 @@
               <!-- Camada 3: Socket.IO -->
               <div class="srv-layer srv-layer-socket">
                 <div class="srv-layer-left">
-                  <span class="srv-layer-icon">⚡</span>
+                  <span class="srv-layer-icon">âš¡</span>
                   <div>
-                    <strong>Socket.IO — Tempo Real</strong>
-                    <small>mantém canal aberto para o multiplayer</small>
+                    <strong>Socket.IO â€” Tempo Real</strong>
+                    <small>mantÃ©m canal aberto para o multiplayer</small>
                   </div>
                 </div>
                 <div class="srv-layer-right">
@@ -700,7 +700,7 @@
         </div>
       </section>
 
-      <!-- ──────────────────────────────────── 07 CASSINO ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 07 CASSINO â”€â”€ -->
       <section class="logic-section" id="cassino" data-section>
         <div class="section-head">
           <span class="section-index">07</span>
@@ -711,14 +711,14 @@
         </div>
 
         <div class="casino-machine">
-          <div class="slot-reel"><span>7</span><span>JS</span><span>★</span></div>
-          <div class="slot-reel delay-a"><span>♦</span><span>7</span><span>XP</span></div>
-          <div class="slot-reel delay-b"><span>★</span><span>API</span><span>7</span></div>
+          <div class="slot-reel"><span>7</span><span>JS</span><span>â˜…</span></div>
+          <div class="slot-reel delay-a"><span>â™¦</span><span>7</span><span>XP</span></div>
+          <div class="slot-reel delay-b"><span>â˜…</span><span>API</span><span>7</span></div>
           <div class="chance-panel">
             <p>chance final</p>
             <strong>base + dificuldade</strong>
             <small>
-              A dificuldade não "quebra" o jogo. Ela ajusta a probabilidade para ficar mais fácil ou mais difícil.
+              A dificuldade nÃ£o "quebra" o jogo. Ela ajusta a probabilidade para ficar mais fÃ¡cil ou mais difÃ­cil.
             </small>
           </div>
         </div>
@@ -732,7 +732,7 @@
 }</code></pre>
       </section>
 
-      <!-- ─────────────────────────────────── 08 PROJETOS ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 08 PROJETOS â”€â”€ -->
       <section class="logic-section" id="projetos" data-section>
         <div class="section-head">
           <span class="section-index">08</span>
@@ -749,14 +749,14 @@
           </button>
           <button class="timeline-item" type="button" data-topic="pomodoro">
             <span>pomodoro</span>
-            timer, ciclos e notificações visuais
+            timer, ciclos e notificaÃ§Ãµes visuais
           </button>
           <button class="timeline-item" type="button" data-topic="piggy">
             <span>cofrinho</span>
-            metas, saldo e persistência local
+            metas, saldo e persistÃªncia local
           </button>
           <button class="timeline-item" type="button" data-topic="light">
-            <span>lâmpada</span>
+            <span>lÃ¢mpada</span>
             eventos simples e troca de estado
           </button>
         </div>
@@ -772,13 +772,13 @@
         </div>
       </section>
 
-      <!-- ──────────────────────────────── 09 GLOSSÁRIO ── -->
+      <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ 09 GLOSSÃRIO â”€â”€ -->
       <section class="logic-section glossary-section" id="glossario" data-section>
         <div class="section-head">
           <span class="section-index">09</span>
           <div>
-            <p class="section-kicker">termos técnicos</p>
-            <h2>Glossário resumido já visível</h2>
+            <p class="section-kicker">termos tÃ©cnicos</p>
+            <h2>GlossÃ¡rio resumido jÃ¡ visÃ­vel</h2>
           </div>
         </div>
 
@@ -787,31 +787,31 @@
           <article><strong>Node.js</strong><span>JavaScript rodando no backend, fora do navegador.</span></article>
           <article><strong>Express</strong><span>biblioteca que entrega arquivos e cria rotas HTTP.</span></article>
           <article><strong>Socket.IO</strong><span>eventos em tempo real para salas multiplayer.</span></article>
-          <article><strong>WebSocket</strong><span>canal aberto para atualizar sem recarregar página.</span></article>
+          <article><strong>WebSocket</strong><span>canal aberto para atualizar sem recarregar pÃ¡gina.</span></article>
           <article><strong>Puter</strong><span>ponte usada para chamar IA no chatbot.</span></article>
           <article><strong>Phaser</strong><span>engine 2D para desenhar e atualizar jogos.</span></article>
           <article><strong>Tick</strong><span>rodada curta do loop do servidor ou do jogo.</span></article>
-          <article><strong>Estado</strong><span>memória atual: vida, sala, seleção, timer ou saldo.</span></article>
+          <article><strong>Estado</strong><span>memÃ³ria atual: vida, sala, seleÃ§Ã£o, timer ou saldo.</span></article>
           <article><strong>DOM</strong><span>estrutura HTML que o JavaScript altera na tela.</span></article>
         </div>
       </section>
 
     </section><!-- /logic-content -->
 
-    <!-- ── SIDE DOCK ── (CSS e JS já tinham suporte; HTML estava faltando)
-         O painel "última tecla" usa #lastKey e #keyMeaning referenciados no arquitetura.js -->
+    <!-- â”€â”€ SIDE DOCK â”€â”€ (CSS e JS jÃ¡ tinham suporte; HTML estava faltando)
+         O painel "Ãºltima tecla" usa #lastKey e #keyMeaning referenciados no arquitetura.js -->
     <aside class="side-dock">
-      <div class="dock-panel live-key-panel" aria-label="Última tecla pressionada">
-        <p class="dock-kicker">última tecla</p>
-        <strong id="lastKey">—</strong>
+      <div class="dock-panel live-key-panel" aria-label="Ãšltima tecla pressionada">
+        <p class="dock-kicker">Ãºltima tecla</p>
+        <strong id="lastKey">â€”</strong>
         <span id="keyMeaning">aperte qualquer tecla para ver o que ela faz no site</span>
       </div>
       <div class="dock-panel thesis-panel" aria-label="Resumo do projeto">
         <p class="dock-kicker">o que o site ensina</p>
         <ul>
-          <li>Input → Regra → Estado → Render</li>
+          <li>Input â†’ Regra â†’ Estado â†’ Render</li>
           <li>Servidor autoritativo no multiplayer</li>
-          <li>IA via Puter sem dependência total</li>
+          <li>IA via Puter sem dependÃªncia total</li>
           <li>Probabilidade controlada no cassino</li>
         </ul>
       </div>
@@ -823,7 +823,7 @@
     aria-labelledby="game-modal-title">
     <div class="game-modal-backdrop" data-close-modal></div>
     <article class="game-modal-panel">
-      <button class="modal-close" type="button" data-close-modal aria-label="Fechar explicação">×</button>
+      <button class="modal-close" type="button" data-close-modal aria-label="Fechar explicaÃ§Ã£o">Ã—</button>
       <p class="modal-kicker" data-modal-kicker>hub</p>
       <h2 id="game-modal-title" data-modal-title>Jogo</h2>
       <p class="modal-lead" data-modal-lead></p>
@@ -834,7 +834,7 @@
           <p data-modal-concept></p>
         </div>
         <div>
-          <span>técnica</span>
+          <span>tÃ©cnica</span>
           <p data-modal-tech></p>
         </div>
       </div>
@@ -845,10 +845,9 @@
     </article>
   </div>
 
-  <a class="top-link" href="#top" aria-label="Voltar ao topo">↑</a>
+  <a class="top-link" href="#top" aria-label="Voltar ao topo">â†‘</a>
   <script src="js/arquitetura.js"></script>
   <script src="js/gsim.js"></script>
 </body>
 
 </html>
-

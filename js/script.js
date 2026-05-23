@@ -2428,6 +2428,13 @@
     return idx;
   }
 
+  function clearFocusByIds(ids) {
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove("kb-focus");
+    });
+  }
+
   function clickFocusedId(ids, idx) {
     var el = document.getElementById(ids[idx]);
     if (!el) return;
@@ -2674,7 +2681,19 @@
   var pomoMode = "focus";
   var pomoRemaining = 25 * 60;
   var pomoIdx = 0;
-  var pomoControls = ["pomo-start", "pomo-pause", "pomo-reset", "pomo-focus", "pomo-break"];
+  var pomoTaskIdx = 0;
+  var pomoFocusZone = "main";
+  var pomoTasks = [];
+  var pomoTaskSeed = 1;
+  var POMO_TASKS_KEY = "playground-pomodoro-tasks";
+  var pomoControls = [
+    "pomo-start",
+    "pomo-pause",
+    "pomo-reset",
+    "pomo-focus",
+    "pomo-break",
+  ];
+  var pomoTaskBaseControls = ["pomo-task-input", "pomo-task-add"];
   function pomoInit() {
     if (!pomoReady) {
       pomoReady = true;
@@ -2683,18 +2702,82 @@
       document.getElementById("pomo-reset").addEventListener("click", pomoReset);
       document.getElementById("pomo-focus").addEventListener("change", pomoReset);
       document.getElementById("pomo-break").addEventListener("change", pomoReset);
+      var taskInput = document.getElementById("pomo-task-input");
+      var taskAdd = document.getElementById("pomo-task-add");
+      var taskClear = document.getElementById("pomo-task-clear");
+      if (taskInput) {
+        taskInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            pomoAddTask();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            taskInput.blur();
+            pomoSetFoco(0);
+          }
+        });
+      }
+      if (taskAdd) taskAdd.addEventListener("click", pomoAddTask);
+      if (taskClear) taskClear.addEventListener("click", pomoClearDoneTasks);
+      var taskList = document.getElementById("pomo-task-list");
+      if (taskList) {
+        taskList.addEventListener("click", function (e) {
+          var toggle = e.target.closest("[data-pomo-task-toggle]");
+          var remove = e.target.closest("[data-pomo-task-remove]");
+          if (toggle) {
+            pomoToggleTask(toggle.getAttribute("data-pomo-task-toggle"));
+          } else if (remove) {
+            pomoRemoveTask(remove.getAttribute("data-pomo-task-remove"));
+          }
+        });
+      }
       pomoControls.forEach(function (id, index) {
         var el = document.getElementById(id);
         if (!el) return;
         el.addEventListener("mouseenter", function () { pomoSetFoco(index); });
       });
+      pomoTaskBaseControls.forEach(function (id, index) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("mouseenter", function () { pomoSetTaskFoco(index); });
+      });
+      if (taskClear) {
+        taskClear.addEventListener("mouseenter", function () {
+          pomoSetTaskFoco(pomoGetTaskControls().length - 1);
+        });
+      }
+      pomoLoadTasks();
     }
     pomoSetFoco(0);
     pomoRender("Configure, inicie e acompanhe a contagem regressiva.");
+    pomoRenderTasks();
   }
   function pomoSetFoco(idx) {
+    pomoFocusZone = "main";
+    clearFocusByIds(pomoGetTaskControls());
     pomoIdx = setFocusByIds(pomoControls, idx);
-    if (pomoControls[pomoIdx] !== "pomo-focus" && pomoControls[pomoIdx] !== "pomo-break") hideInputNumpad();
+    var current = pomoControls[pomoIdx];
+    if (current !== "pomo-focus" && current !== "pomo-break") hideInputNumpad();
+  }
+  function pomoGetTaskControls() {
+    var ids = ["pomo-task-input", "pomo-task-add"];
+    pomoTasks.forEach(function (task, index) {
+      ids.push("pomo-task-toggle-" + task.id);
+      ids.push("pomo-task-remove-" + task.id);
+    });
+    ids.push("pomo-task-clear");
+    return ids;
+  }
+  function pomoSetTaskFoco(idx) {
+    var ids = pomoGetTaskControls();
+    if (!ids.length) return;
+    pomoFocusZone = "tasks";
+    clearFocusByIds(pomoControls);
+    pomoTaskIdx = setFocusByIds(ids, idx);
+    if (ids[pomoTaskIdx] !== "pomo-task-input") hideInputNumpad();
+  }
+  function pomoActivateTaskFocus() {
+    clickFocusedId(pomoGetTaskControls(), pomoTaskIdx);
   }
   function pomoMinutes(id, fallback) {
     var value = Number(document.getElementById(id).value || fallback);
@@ -2732,6 +2815,110 @@
     pomoRemaining = pomoDuration();
     pomoRender("Timer resetado.");
   }
+  function pomoLoadTasks() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(POMO_TASKS_KEY) || "[]");
+      if (Array.isArray(saved)) {
+        pomoTasks = saved
+          .filter(function (task) { return task && String(task.text || "").trim(); })
+          .map(function (task) {
+            return {
+              id: Number(task.id) || pomoTaskSeed++,
+              text: String(task.text || "").slice(0, 48),
+              done: !!task.done,
+            };
+          });
+        pomoTasks.forEach(function (task) {
+          pomoTaskSeed = Math.max(pomoTaskSeed, task.id + 1);
+        });
+      }
+    } catch (e) {
+      pomoTasks = [];
+    }
+  }
+  function pomoSaveTasks() {
+    try {
+      localStorage.setItem(POMO_TASKS_KEY, JSON.stringify(pomoTasks));
+    } catch (e) { }
+  }
+  function pomoAddTask() {
+    var input = document.getElementById("pomo-task-input");
+    var text = input ? input.value.trim() : "";
+    if (!text) {
+      pomoRender("Digite uma tarefa antes de adicionar.");
+      somErro();
+      return;
+    }
+    pomoTasks.push({
+      id: pomoTaskSeed++,
+      text: text.slice(0, 48),
+      done: false,
+    });
+    if (input) {
+      input.value = "";
+      input.blur();
+    }
+    pomoSaveTasks();
+    pomoRenderTasks();
+    pomoSetTaskFoco(2 + (pomoTasks.length - 1) * 2);
+    pomoRender("Tarefa adicionada ao ciclo de foco.");
+    somOk();
+  }
+  function pomoToggleTask(id) {
+    var task = pomoTasks.find(function (item) { return String(item.id) === String(id); });
+    if (!task) return;
+    task.done = !task.done;
+    pomoSaveTasks();
+    pomoRenderTasks();
+    pomoSetTaskFoco(pomoTaskIdx);
+    pomoRender(task.done ? "Tarefa marcada como feita." : "Tarefa voltou para pendente.");
+    somNav();
+  }
+  function pomoRemoveTask(id) {
+    pomoTasks = pomoTasks.filter(function (item) { return String(item.id) !== String(id); });
+    pomoSaveTasks();
+    pomoRenderTasks();
+    pomoSetTaskFoco(Math.min(pomoTaskIdx, pomoGetTaskControls().length - 1));
+    pomoRender("Tarefa removida.");
+    somEsc();
+  }
+  function pomoClearDoneTasks() {
+    var before = pomoTasks.length;
+    pomoTasks = pomoTasks.filter(function (task) { return !task.done; });
+    pomoSaveTasks();
+    pomoRenderTasks();
+    pomoSetTaskFoco(Math.min(pomoTaskIdx, pomoGetTaskControls().length - 1));
+    pomoRender(before === pomoTasks.length ? "Nenhuma tarefa feita para limpar." : "Tarefas feitas removidas.");
+    if (before === pomoTasks.length) somErro();
+    else somOk();
+  }
+  function pomoRenderTasks() {
+    var list = document.getElementById("pomo-task-list");
+    var count = document.getElementById("pomo-task-count");
+    var pending = pomoTasks.filter(function (task) { return !task.done; }).length;
+    if (count) count.textContent = pending + (pending === 1 ? " pendente" : " pendentes");
+    if (!list) return;
+    list.innerHTML = "";
+    pomoTasks.forEach(function (task, index) {
+      var item = document.createElement("li");
+      item.className = "pomo-task-item" + (task.done ? " done" : "");
+      var toggleId = "pomo-task-toggle-" + task.id;
+      var removeId = "pomo-task-remove-" + task.id;
+      item.innerHTML =
+        '<button class="pomo-task-toggle" id="' + toggleId + '" type="button" data-pomo-task-toggle="' + task.id + '" aria-label="Alternar tarefa">' +
+        (task.done ? "OK" : "") +
+        '</button>' +
+        '<span class="pomo-task-text"></span>' +
+        '<button class="pomo-task-remove" id="' + removeId + '" type="button" data-pomo-task-remove="' + task.id + '" aria-label="Remover tarefa">X</button>';
+      var text = item.querySelector(".pomo-task-text");
+      if (text) text.textContent = task.text;
+      var toggle = item.querySelector(".pomo-task-toggle");
+      var remove = item.querySelector(".pomo-task-remove");
+      if (toggle) toggle.addEventListener("mouseenter", function () { pomoSetTaskFoco(2 + index * 2); });
+      if (remove) remove.addEventListener("mouseenter", function () { pomoSetTaskFoco(3 + index * 2); });
+      list.appendChild(item);
+    });
+  }
   function pomoRender(message) {
     var m = Math.floor(pomoRemaining / 60);
     var s = pomoRemaining % 60;
@@ -2754,7 +2941,12 @@
   var synthIdx = 0;
   var synthOctave = 4;
   var synthKeyMap = {};
-  var synthControls = ["synth-record", "synth-play", "synth-clear", "synth-oct-down", "synth-oct-up"];
+  var synthControls = [
+    "synth-song-scale",
+    "synth-song-twinkle",
+    "synth-song-ode",
+    "synth-song-neon",
+  ];
   var synthNoteNames = ["DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"];
   var synthLegacyKeys = {
     do: "a",
@@ -2764,6 +2956,24 @@
     sol: "g",
     la: "h",
     si: "j",
+  };
+  var synthPresetSongs = {
+    scale: {
+      title: "PARABENS",
+      steps: [["b", 260], ["b", 220], ["n", 420], ["b", 420], ["q", 420], ["m", 720], [null, 160], ["b", 260], ["b", 220], ["n", 420], ["b", 420], ["w", 420], ["q", 720], [null, 160], ["b", 260], ["b", 220], ["t", 420], ["e", 420], ["q", 420], ["m", 420], ["n", 680], [null, 160], ["r", 260], ["r", 220], ["e", 420], ["q", 420], ["w", 420], ["q", 760]],
+    },
+    twinkle: {
+      title: "BRILHA",
+      steps: [["z", 360], ["z", 360], ["b", 360], ["b", 360], ["n", 360], ["n", 360], ["b", 560], [null, 160], ["v", 360], ["v", 360], ["c", 360], ["c", 360], ["x", 360], ["x", 360], ["z", 620]],
+    },
+    ode: {
+      title: "ODE",
+      steps: [["c", 300], ["c", 300], ["v", 300], ["b", 300], ["b", 300], ["v", 300], ["c", 300], ["x", 300], ["z", 300], ["z", 300], ["x", 300], ["c", 300], ["c", 420], ["x", 180], ["x", 620]],
+    },
+    neon: {
+      title: "JINGLE",
+      steps: [["c", 240], ["c", 240], ["c", 480], [null, 90], ["c", 240], ["c", 240], ["c", 480], [null, 90], ["c", 260], ["b", 260], ["z", 320], ["x", 220], ["c", 700], [null, 120], ["v", 240], ["v", 240], ["v", 280], ["v", 220], ["v", 240], ["c", 240], ["c", 240], ["c", 160], ["c", 160], ["x", 240], ["x", 240], ["c", 260], ["x", 360], ["b", 640]],
+    },
   };
 
   function synthInit() {
@@ -2790,10 +3000,15 @@
     var octaveDown = document.getElementById("synth-oct-down");
     var octaveUp = document.getElementById("synth-oct-up");
     if (record) record.addEventListener("click", synthToggleRecord);
-    if (play) play.addEventListener("click", synthReplay);
+    if (play) play.addEventListener("click", function () { synthReplay(); });
     if (clear) clear.addEventListener("click", synthClearSequence);
     if (octaveDown) octaveDown.addEventListener("click", function () { synthChangeOctave(-1); });
     if (octaveUp) octaveUp.addEventListener("click", function () { synthChangeOctave(1); });
+    Array.from(document.querySelectorAll("[data-synth-song]")).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        synthPlayPreset(btn.getAttribute("data-synth-song"));
+      });
+    });
     synthControls.forEach(function (id, index) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -2882,6 +3097,16 @@
 
   function synthFlashControl(action) {
     var key = document.querySelector('.synth-key[data-control="' + action + '"]');
+    if (!key) {
+      var buttons = {
+        record: "synth-record",
+        play: "synth-play",
+        clear: "synth-clear",
+        "octave-down": "synth-oct-down",
+        "octave-up": "synth-oct-up",
+      };
+      key = document.getElementById(buttons[action]);
+    }
     if (!key) return;
     key.classList.add("active");
     setTimeout(function () { key.classList.remove("active"); }, 170);
@@ -2965,7 +3190,36 @@
     }
   }
 
-  function synthReplay() {
+  function synthBuildPresetSequence(song) {
+    var at = 0;
+    var sequence = [];
+    song.steps.forEach(function (step) {
+      var key = step[0];
+      var duration = step[1] || 260;
+      if (key) sequence.push({ key: key, at: at });
+      at += duration;
+    });
+    return sequence;
+  }
+
+  function synthClearSongButtons() {
+    Array.from(document.querySelectorAll("[data-synth-song].active")).forEach(function (btn) {
+      btn.classList.remove("active");
+    });
+  }
+
+  function synthPlayPreset(songId) {
+    var song = synthPresetSongs[songId];
+    if (!song) return;
+    if (synthRecording) synthToggleRecord();
+    synthSequence = synthBuildPresetSequence(song);
+    var btn = document.querySelector('[data-synth-song="' + songId + '"]');
+    synthClearSongButtons();
+    if (btn) btn.classList.add("active");
+    synthReplay(song.title, btn);
+  }
+
+  function synthReplay(label, sourceButton) {
     if (!synthSequence.length) {
       somErro();
       var now = document.getElementById("synth-now");
@@ -2975,16 +3229,22 @@
     if (synthRecording) synthToggleRecord();
     var play = document.getElementById("synth-play");
     if (play) play.classList.add("active");
+    var nowPlaying = document.getElementById("synth-now");
+    if (nowPlaying && typeof label === "string" && label) nowPlaying.textContent = "TOCANDO: " + label;
     synthSequence.forEach(function (item, index) {
       setTimeout(function () {
         synthPlayNote(item.key || item.note, false);
-        if (index === synthSequence.length - 1 && play) play.classList.remove("active");
+        if (index === synthSequence.length - 1) {
+          if (play) play.classList.remove("active");
+          if (sourceButton) sourceButton.classList.remove("active");
+        }
       }, item.at);
     });
   }
 
   function synthClearSequence() {
     synthSequence = [];
+    synthClearSongButtons();
     if (synthRecording) synthToggleRecord();
     var now = document.getElementById("synth-now");
     if (now) now.textContent = "SEQUENCIA LIMPA";
@@ -3272,17 +3532,33 @@
           irPara(TELA.PROJECTS);
           return;
         }
-        if (k === "ArrowLeft") {
+        if (k === "ArrowDown" && pomoFocusZone === "main") {
+          pomoSetTaskFoco(0);
+          somNav();
+        } else if (k === "ArrowRight" && pomoFocusZone === "main" && pomoIdx === pomoControls.length - 1) {
+          pomoSetTaskFoco(0);
+          somNav();
+        } else if (pomoFocusZone === "tasks" && (k === "ArrowLeft" || (k === "ArrowUp" && pomoTaskIdx === 0))) {
+          pomoSetFoco(pomoIdx);
+          somNav();
+        } else if (pomoFocusZone === "tasks" && (k === "ArrowRight" || k === "ArrowDown")) {
+          pomoSetTaskFoco(pomoTaskIdx + 1);
+          somNav();
+        } else if (pomoFocusZone === "tasks" && k === "ArrowUp") {
+          pomoSetTaskFoco(pomoTaskIdx - 1);
+          somNav();
+        } else if (k === "ArrowLeft") {
           pomoSetFoco(pomoIdx - 1);
           somNav();
         } else if (k === "ArrowRight") {
           pomoSetFoco(pomoIdx + 1);
           somNav();
-        } else if (k === "ArrowUp" || k === "ArrowDown") {
-          pomoSetFoco(pomoIdx + (k === "ArrowDown" ? 1 : -1));
+        } else if (k === "ArrowUp") {
+          pomoSetFoco(pomoIdx - 1);
           somNav();
         } else if (k === "Enter" || k === " ") {
-          clickFocusedId(pomoControls, pomoIdx);
+          if (pomoFocusZone === "tasks") pomoActivateTaskFocus();
+          else clickFocusedId(pomoControls, pomoIdx);
         }
         return;
       }
@@ -3294,8 +3570,18 @@
           irPara(TELA.PROJECTS);
           return;
         }
-        if (k === "Enter") {
-          synthRunControl("play");
+        if (k === "ArrowLeft" || k === "ArrowUp") {
+          synthSetFoco(synthIdx - 1);
+          somNav();
+          return;
+        }
+        if (k === "ArrowRight" || k === "ArrowDown") {
+          synthSetFoco(synthIdx + 1);
+          somNav();
+          return;
+        }
+        if (k === "Enter" || k === " ") {
+          clickFocusedId(synthControls, synthIdx);
           return;
         }
         if (k === "Backspace") {
@@ -3304,6 +3590,10 @@
         }
         if (k === "CapsLock") {
           synthRunControl("record");
+          return;
+        }
+        if (k === "p" || k === "P") {
+          synthRunControl("play");
           return;
         }
         if (k === "Tab") {

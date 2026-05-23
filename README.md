@@ -1,6 +1,6 @@
-﻿# Playground JS
+# Playground JS
 
-**Colégio ULBRA São Lucas - Curso Técnico em Informática**  
+**Colégio ULBRA São Lucas - Curso Técnico em Informática**
 _Projeto desenvolvido para o módulo de Lógica e Programação Web._
 
 ---
@@ -137,6 +137,7 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento web, c
 - Timer regressivo de 25:00 com iniciar, pausar e resetar.
 - Alterna entre foco e pausa, com aviso sonoro ao finalizar.
 - Permite configurar tempos de foco e pausa.
+- Inclui lista de tarefas lateral com adicionar, marcar como feita, remover, limpar concluidas e persistencia em `localStorage`.
 
 **Teclado Virtual**
 
@@ -144,7 +145,7 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento web, c
 - Cada nota pode ser tocada por clique ou por teclas físicas mapeadas no layout musical.
 - As teclas brancas usam `Z`, `X`, `C`, `V`, `B`, `N`, `M` e `Q`, `W`, `E`, `R`, `T`, `Y`, `U`.
 - As teclas pretas usam `S`, `D`, `G`, `H`, `J` e `2`, `3`, `5`, `6`, `7`.
-- Inclui contador de toques, gravação, reprodução, limpeza de sequência e ajuste de oitava.
+- Inclui contador de toques, gravação, reprodução, limpeza de sequência, ajuste de oitava e músicas prontas como `PARABENS`, `BRILHA`, `ODE` e `JINGLE`.
 
 ---
 
@@ -161,7 +162,8 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento web, c
 - **I:** abrir o chat de ajuda.
 - **Mouse:** clicar em cards, botões e opções.
 - **Teclado Virtual:** `Z/X/C/V/B/N/M` e `Q/W/E/R/T/Y/U` tocam teclas brancas; `S/D/G/H/J` e `2/3/5/6/7` tocam teclas pretas.
-- **Controles do Teclado Virtual:** `CapsLock` grava, `Enter` reproduz, `Backspace` limpa, `Tab` reduz oitava e `Shift` aumenta oitava.
+- **Controles do Teclado Virtual:** `CapsLock` grava, `P` reproduz a gravação, `Backspace` limpa, `Tab` reduz oitava, `Shift` aumenta oitava, setas navegam nas músicas prontas e `Enter` toca a música focada.
+- **Pomodoro:** setas navegam entre controles; `Enter` confirma; a área de tarefas permite adicionar, marcar como feita, remover e limpar concluidas.
 
 ### Jogos Específicos
 

@@ -1,8 +1,8 @@
-/* ══════════════════════════════════════════════════════════════════
-   GSIM — Simulacao Guiada Multiplayer Realtime
-   ══════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   GSIM â€” Simulacao Guiada Multiplayer Realtime
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Shell ─────────────────────────────────────────────────────── */
+/* â”€â”€ Shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-shell {
   border: 1px solid rgba(0,245,196,.38);
   border-radius: 10px;
@@ -15,7 +15,7 @@
 }
 .gsim-shell:focus-visible { box-shadow: 0 0 0 2px rgba(0,245,196,.4); }
 
-/* ── Header ──────────────────────────────────────────────────── */
+/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-header {
   display: flex; justify-content: space-between; align-items: center;
   gap: 16px; padding: 20px 24px; flex-wrap: wrap;
@@ -66,7 +66,7 @@
 .gsim-tick-card strong { display: block; color: #fff; font-family: var(--fp); font-size: .48rem; }
 .gsim-tick-card small  { display: block; color: var(--cyan); font-family: var(--fp); font-size: .4rem; }
 
-/* ── Legend ───────────────────────────────────────────────────── */
+/* â”€â”€ Legend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-legend {
   display: flex; gap: 20px; flex-wrap: wrap;
   padding: 10px 24px;
@@ -78,21 +78,21 @@
 .gleg-input { background: #3b8cff; box-shadow: 0 0 10px #3b8cff; }
 .gleg-state { background: var(--pink); box-shadow: 0 0 10px var(--pink); }
 
-/* ── Stage ────────────────────────────────────────────────────── */
+/* â”€â”€ Stage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 40px 20px 30px;
   position: relative;
-  /* NO overflow hidden — popups must be visible */
+  /* NO overflow hidden â€” popups must be visible */
   background-image:
     linear-gradient(rgba(0,180,255,.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(157,92,255,.04) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 
-/* ── Boss ─────────────────────────────────────────────────────── */
+/* â”€â”€ Boss â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-boss {
   position: relative;
   display: flex; flex-direction: column; align-items: center;
@@ -135,7 +135,7 @@
 .gsim-shell[data-gsim-step="4"] .gboss-eye { animation: eyeBlink 1.8s ease-in-out infinite; }
 @keyframes eyeBlink { 0%,88%,100%{transform:scaleY(1)} 94%{transform:scaleY(.08)} }
 
-/* ── Vertical track Boss→Server ──────────────────────────────── */
+/* â”€â”€ Vertical track Bossâ†’Server â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-vtrack-boss {
   position: relative;
   width: 14px; height: 80px; /* increased to make the line very obvious */
@@ -148,10 +148,10 @@
   background: rgba(0,245,196,.8);
   box-shadow: 0 0 12px rgba(0,245,196,.5);
 }
-/* Hide the old track labels — legend already shows what INPUT/STATE mean */
+/* Hide the old track labels â€” legend already shows what INPUT/STATE mean */
 .gtrack-label { display: none; }
 
-/* ── Server ──────────────────────────────────────────────────── */
+/* â”€â”€ Server â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-server {
   position: relative;
   width: min(400px, 96%);
@@ -203,7 +203,7 @@
 .gsim-shell[data-gsim-step="2"] .gserver-bars i:nth-child(4) { height:12px; animation:barA .6s .45s infinite alternate; }
 @keyframes barA { from{opacity:.4;transform:scaleY(.5)} to{opacity:1;transform:scaleY(1)} }
 
-/* ── Vertical track Server→HBus ──────────────────────────────── */
+/* â”€â”€ Vertical track Serverâ†’HBus â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-vtrack-server {
   position: relative;
   width: 14px; height: 40px;
@@ -217,7 +217,7 @@
   box-shadow: 0 0 12px rgba(0,245,196,.5);
 }
 
-/* ── Horizontal bus ──────────────────────────────────────────── */
+/* â”€â”€ Horizontal bus â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-hbus {
   width: calc(75% + 10px); /* exact width factoring in grid gap and line width */
   height: 4px;
@@ -229,7 +229,7 @@
 }
 .ghbus-line { display: none; } /* line is the hbus itself */
 
-/* ── Soul vertical tracks row ────────────────────────────────── */
+/* â”€â”€ Soul vertical tracks row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-soul-vtracks-row {
   width: 100%;
   display: grid;
@@ -250,7 +250,7 @@
   box-shadow: 0 0 12px rgba(0,245,196,.5);
 }
 
-/* ── Packets ─────────────────────────────────────────────────── */
+/* â”€â”€ Packets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gpacket {
   position: absolute; left: 50%;
   width: 14px; height: 14px; border-radius: 4px;
@@ -280,7 +280,7 @@
 @keyframes hOutS3 { 0%{opacity:1;left:50%} 90%{opacity:1;left:64%} 100%{opacity:0;left:66.66%} }
 @keyframes hOutS4 { 0%{opacity:1;left:50%} 90%{opacity:1;left:95%} 100%{opacity:0;left:100%} }
 
-/* ── Souls row ───────────────────────────────────────────────── */
+/* â”€â”€ Souls row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-souls-row {
   width: 100%;
   display: grid;
@@ -329,7 +329,7 @@
 }
 @keyframes hBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
 
-/* ── Popups (global) ─────────────────────────────────────────── */
+/* â”€â”€ Popups (global) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-popup {
   position: absolute; z-index: 30;
   padding: 8px 10px; border-radius: 6px;
@@ -347,7 +347,7 @@
 .gpop-note  { display: block; margin-top: 4px; color: #9ca4d7; font-size: .8rem; white-space: normal; }
 .gsim-popup code { display: block; font-size: .78rem; color: #dffcff; margin-top: 3px; word-break: break-all; white-space: normal; }
 
-/* ── Boss popup: anchored to the right side of the boss sprite ── */
+/* â”€â”€ Boss popup: anchored to the right side of the boss sprite â”€â”€ */
 .gpop-boss-action {
   border: 1px solid rgba(255,45,120,.7);
   background: linear-gradient(90deg,rgba(255,45,120,.12),transparent 70%),rgba(2,1,8,.92);
@@ -368,7 +368,7 @@
 .gpop-boss-render.visible { transform: translateX(0) translateY(-50%); opacity: 1; }
 .gpop-boss-render .gpop-label { color: var(--cyan); }
 
-/* ── Soul popups: ABOVE the card ── */
+/* â”€â”€ Soul popups: ABOVE the card â”€â”€ */
 .gpop-soul-action {
   border: 1px solid rgba(157,92,255,.7);
   box-shadow: 0 0 12px rgba(157,92,255,.2);
@@ -380,7 +380,7 @@
 .gpop-soul-attack { border-color: rgba(255,45,120,.6); }
 .gpop-soul-attack .gpop-label { color: var(--pink); }
 
-/* ── Server popup: below server ──────────────────────────────── */
+/* â”€â”€ Server popup: below server â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gserver-popup-process {
   border: 1px solid rgba(0,245,196,.6);
   box-shadow: 0 0 14px rgba(0,245,196,.16);
@@ -391,7 +391,7 @@
 .gserver-popup-process.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
 .gserver-popup-process .gpop-label { color: var(--cyan); }
 
-/* ── Copy block ──────────────────────────────────────────────── */
+/* â”€â”€ Copy block â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-copy {
   padding: 18px 24px;
   border-top: 1px solid rgba(157,92,255,.2);
@@ -415,7 +415,7 @@
 }
 .gsim-code-block code { color: #dffcff; font-size: .86rem; }
 
-/* ── Step buttons ────────────────────────────────────────────── */
+/* â”€â”€ Step buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gsim-steps {
   display: grid;
   grid-template-columns: repeat(5,minmax(0,1fr));
@@ -452,7 +452,7 @@
 .gstep-icon-state  { background:rgba(255,45,120,.18); border:1px solid var(--pink); }
 .gstep-icon-heart  { background:rgba(157,92,255,.2); border:1px solid var(--purple); }
 
-/* ── Responsive ──────────────────────────────────────────────── */
+/* â”€â”€ Responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 680px) {
   .gsim-souls-row,
   .gsim-soul-vtracks-row { grid-template-columns: repeat(2,1fr); }

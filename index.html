@@ -772,18 +772,37 @@
         <p class="game-sub">PROJETO 3</p>
         <h2 class="synth-title">POMODORO</h2>
       </div>
-      <div class="pomo-timer" id="pomo-time">25:00</div>
-      <div class="pomo-mode" id="pomo-mode">FOCO</div>
-      <div class="synth-controls">
-        <button class="eval-btn" id="pomo-start" type="button">INICIAR</button>
-        <button class="eval-btn" id="pomo-pause" type="button">PAUSAR</button>
-        <button class="eval-btn" id="pomo-reset" type="button">RESETAR</button>
+      <div class="pomo-board">
+        <div class="pomo-main">
+          <div class="pomo-timer" id="pomo-time">25:00</div>
+          <div class="pomo-mode" id="pomo-mode">FOCO</div>
+          <div class="synth-controls">
+            <button class="eval-btn" id="pomo-start" type="button">INICIAR</button>
+            <button class="eval-btn" id="pomo-pause" type="button">PAUSAR</button>
+            <button class="eval-btn" id="pomo-reset" type="button">RESETAR</button>
+          </div>
+          <div class="pomo-config">
+            <label>Foco <input class="eval-input" id="pomo-focus" type="number" min="1" max="90" value="25" /></label>
+            <label>Pausa <input class="eval-input" id="pomo-break" type="number" min="1" max="30" value="5" /></label>
+          </div>
+          <div class="result-box idle" id="pomo-msg">Configure, inicie e acompanhe a contagem regressiva.</div>
+        </div>
+
+        <aside class="pomo-todo">
+          <div class="pomo-todo-head">
+            <div>
+              <span>tarefas</span>
+              <strong id="pomo-task-count">0 pendentes</strong>
+            </div>
+            <button class="eval-btn danger" id="pomo-task-clear" type="button">LIMPAR FEITAS</button>
+          </div>
+          <div class="pomo-task-form">
+            <input class="eval-input" id="pomo-task-input" type="text" maxlength="48" placeholder="Nova tarefa de foco" />
+            <button class="eval-btn" id="pomo-task-add" type="button">ADICIONAR</button>
+          </div>
+          <ul class="pomo-task-list" id="pomo-task-list" aria-label="Lista de tarefas do Pomodoro"></ul>
+        </aside>
       </div>
-      <div class="pomo-config">
-        <label>Foco <input class="eval-input" id="pomo-focus" type="number" min="1" max="90" value="25" /></label>
-        <label>Pausa <input class="eval-input" id="pomo-break" type="number" min="1" max="30" value="5" /></label>
-      </div>
-      <div class="result-box idle" id="pomo-msg">Configure, inicie e acompanhe a contagem regressiva.</div>
     </div>
   </section>
 
@@ -861,10 +880,24 @@
         <div class="synth-octave" id="synth-octave">OITAVA 4</div>
         <button class="synth-btn" id="synth-oct-up" type="button">OITAVA +</button>
       </div>
+      <div class="synth-presets" aria-label="Músicas predefinidas">
+        <div class="synth-presets-head">
+          <span>MÚSICAS PRONTAS</span>
+          <small>clique para tocar uma sequência</small>
+        </div>
+        <div class="synth-song-grid">
+          <button class="synth-btn synth-song" id="synth-song-scale" type="button" data-synth-song="scale">PARAB&Eacute;NS</button>
+          <button class="synth-btn synth-song" id="synth-song-twinkle" type="button" data-synth-song="twinkle">BRILHA</button>
+          <button class="synth-btn synth-song" id="synth-song-ode" type="button" data-synth-song="ode">ODE</button>
+          <button class="synth-btn synth-song" id="synth-song-neon" type="button" data-synth-song="neon">JINGLE</button>
+        </div>
+      </div>
       <div class="kb-hint-game">
         toque no piano ou use <span class="key">Z</span><span class="key">S</span><span class="key">X</span><span class="key">D</span>...
         &nbsp;|&nbsp; <span class="key">CAPS</span> gravar
-        &nbsp;|&nbsp; <span class="key">ENTER</span> reproduzir &nbsp;|&nbsp; <span class="key">TAB</span>/<span class="key">SHIFT</span> oitava
+        &nbsp;|&nbsp; <span class="key">P</span> reproduzir
+        &nbsp;|&nbsp; <span class="key">SETAS</span> m&uacute;sicas &nbsp;|&nbsp; <span class="key">ENTER</span> tocar
+        &nbsp;|&nbsp; <span class="key">TAB</span>/<span class="key">SHIFT</span> oitava
         &nbsp;|&nbsp; <span class="key">ESC</span> voltar
       </div>
     </div>
