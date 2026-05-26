@@ -434,6 +434,7 @@ https://desafio-master-2ppl.onrender.com/
 - Validação autoritativa de estado no servidor.
 
 - Apresentação de principais conceitos em: [https://www.canva.com/design/DAHJeeXVn-s/QdmbhgV8kYZv5kT0r53w5A/edit](https://canva.link/l6rtkru1izvh2o2)
+- Atualização em: https://canva.link/ydad46q16yghg61
 
 ---
 
