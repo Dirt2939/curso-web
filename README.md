@@ -389,7 +389,12 @@ ngrok http 3000
 2. Copie a URL pública gerada pelo Ngrok.
 3. No lobby do Undertale Multiplayer, use essa URL no campo **Servidor** quando os jogadores estiverem fora da mesma rede/origem.
 
----
+### Usando o site
+
+Acesse: 
+```text
+https://desafio-master-2ppl.onrender.com/
+````
 
 ## Como Jogar
 
