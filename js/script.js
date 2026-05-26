@@ -1084,6 +1084,9 @@
     menuIdx: 0,
     carouselRaf: null,
     renderCache: {},
+    stateBuffer: [],
+    renderDelay: 100,
+    bufferKey: "",
     hpMemory: {},
     hitFx: {},
   };
@@ -1240,6 +1243,7 @@
     UTM.socket.on("utm:state", function (state) {
       utmTrackDamage(state);
       UTM.state = state;
+      utmPushStateSnapshot(state);
       utmRenderStateHud();
     });
 
@@ -1299,6 +1303,8 @@
     UTM.room = null;
     UTM.state = null;
     UTM.renderCache = {};
+    UTM.stateBuffer = [];
+    UTM.bufferKey = "";
     UTM.hpMemory = {};
     UTM.hitFx = {};
     utmRenderRoom();
@@ -1383,35 +1389,118 @@
     return (soul && soul.color) || palette[index % palette.length];
   }
 
-  function utmSmoothEntity(key, entity, factor) {
-    if (!entity) return entity;
-    var cache = UTM.renderCache[key];
-    if (!cache || Math.abs(cache.x - entity.x) > 90 || Math.abs(cache.y - entity.y) > 90) {
-      cache = { x: entity.x, y: entity.y };
-    } else {
-      cache.x += (entity.x - cache.x) * factor;
-      cache.y += (entity.y - cache.y) * factor;
+  function utmCloneState(state) {
+    if (!state) return null;
+    if (typeof structuredClone === "function") return structuredClone(state);
+    return JSON.parse(JSON.stringify(state));
+  }
+
+  function utmStateBufferKey(state) {
+    if (!state) return "";
+    return [state.roomId || "", state.status || "", state.winner || ""].join(":");
+  }
+
+  function utmPushStateSnapshot(state) {
+    if (!state) {
+      UTM.stateBuffer = [];
+      UTM.bufferKey = "";
+      return;
     }
-    UTM.renderCache[key] = cache;
-    var copy = {};
-    Object.keys(entity).forEach(function (prop) {
-      copy[prop] = entity[prop];
+
+    var key = utmStateBufferKey(state);
+    if (key !== UTM.bufferKey) {
+      UTM.stateBuffer = [];
+      UTM.renderCache = {};
+      UTM.bufferKey = key;
+    }
+
+    UTM.stateBuffer.push({
+      at: performance.now(),
+      state: utmCloneState(state),
     });
-    copy.x = cache.x;
-    copy.y = cache.y;
+
+    if (UTM.stateBuffer.length > 8) UTM.stateBuffer.splice(0, UTM.stateBuffer.length - 8);
+  }
+
+  function utmLerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function utmById(list) {
+    var map = {};
+    (list || []).forEach(function (item) {
+      if (item && item.id != null) map[item.id] = item;
+    });
+    return map;
+  }
+
+  function utmInterpolateEntity(previous, next, alpha, maxSnap) {
+    if (!next) return null;
+    if (!previous || previous.id !== next.id) return utmCloneState(next);
+
+    var dx = next.x - previous.x;
+    var dy = next.y - previous.y;
+    if (Math.hypot(dx, dy) > maxSnap) return utmCloneState(next);
+
+    var copy = utmCloneState(next);
+    copy.x = utmLerp(previous.x, next.x, alpha);
+    copy.y = utmLerp(previous.y, next.y, alpha);
+    if (typeof previous.vx === "number" && typeof next.vx === "number") copy.vx = utmLerp(previous.vx, next.vx, alpha);
+    if (typeof previous.vy === "number" && typeof next.vy === "number") copy.vy = utmLerp(previous.vy, next.vy, alpha);
     return copy;
   }
 
+  function utmInterpolateState(previous, next, alpha) {
+    if (!previous || !next || previous.status !== next.status || previous.roomId !== next.roomId) {
+      return utmCloneState(next || previous);
+    }
+
+    var render = utmCloneState(next);
+    render.boss = utmInterpolateEntity(previous.boss, next.boss, alpha, 140);
+
+    var prevSouls = utmById(previous.souls);
+    render.souls = (next.souls || []).map(function (soul) {
+      return utmInterpolateEntity(prevSouls[soul.id], soul, alpha, 120);
+    });
+
+    var prevBullets = utmById(previous.bullets);
+    render.bullets = (next.bullets || []).map(function (bullet) {
+      return utmInterpolateEntity(prevBullets[bullet.id], bullet, alpha, 180);
+    });
+
+    return render;
+  }
+
+  function utmGetRenderState() {
+    if (!UTM.state) return null;
+    var buffer = UTM.stateBuffer;
+    if (!buffer || buffer.length < 2) return UTM.state;
+
+    var renderAt = performance.now() - UTM.renderDelay;
+    while (buffer.length > 2 && buffer[1].at <= renderAt) buffer.shift();
+
+    var previous = buffer[0];
+    var next = buffer[1];
+    if (!previous || !next) return UTM.state;
+
+    if (renderAt <= previous.at) return previous.state;
+    if (renderAt >= next.at) return next.state;
+
+    var span = Math.max(1, next.at - previous.at);
+    var alpha = Math.max(0, Math.min(1, (renderAt - previous.at) / span));
+    return utmInterpolateState(previous.state, next.state, alpha);
+  }
+
   function utmSmoothBoss(boss) {
-    return boss ? utmSmoothEntity("boss:" + boss.id, boss, 0.34) : null;
+    return boss || null;
   }
 
   function utmSmoothSoul(soul) {
-    return soul ? utmSmoothEntity("soul:" + soul.id, soul, 0.38) : null;
+    return soul || null;
   }
 
   function utmSmoothBullet(bullet) {
-    return bullet ? utmSmoothEntity("bullet:" + bullet.id, bullet, 0.52) : null;
+    return bullet || null;
   }
 
   function utmGetMode() {
@@ -2005,7 +2094,7 @@
     g.fillStyle(0xffffff, 0.035);
     for (var y = 18; y < h; y += 10) g.fillRect(10, y, w - 20, 1);
 
-    var state = UTM.state;
+    var state = utmGetRenderState();
     if (!state) {
       utmPhaserLabel(scene, w / 2, h / 2 - 8, "UNDERTALE MP", 18, "#ff4040");
       utmPhaserLabel(scene, w / 2, h / 2 + 22, "AGUARDANDO SALA", 10, "#d8e0ff");
@@ -2129,7 +2218,7 @@
     ctx.fillStyle = "rgba(255,255,255,0.035)";
     for (var y = 18; y < h; y += 10) ctx.fillRect(10, y, w - 20, 1);
 
-    var state = UTM.state;
+    var state = utmGetRenderState();
     if (!state) {
       ctx.fillStyle = "#ff4040";
       ctx.font = "18px 'Press Start 2P', monospace";

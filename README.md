@@ -188,6 +188,135 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento web, c
 
 ---
 
+## Logica dos Modulos Principais
+
+Esta parte resume como os modulos mais importantes do projeto funcionam por dentro.
+
+### Projetos Web
+
+Os Projetos Web demonstram DOM, eventos, estado local e feedback visual no navegador.
+
+**Controle de Luz**
+
+Manipula estado visual com classes CSS e contador:
+
+```js
+lightOn = !lightOn;
+room.classList.toggle("on", lightOn);
+if (lightOn) lightCount++;
+```
+
+**Cofrinho Digital**
+
+Atualiza saldo, valida valores e persiste os dados:
+
+```js
+piggyTotal += value;
+localStorage.setItem("piggy-state", JSON.stringify(piggyState));
+```
+
+**Pomodoro**
+
+Usa temporizador, estado de execucao, pausa e lista de tarefas:
+
+```js
+pomoTimer = setInterval(function () {
+  pomoRemaining--;
+  if (pomoRemaining <= 0) pomoFinishCycle();
+  pomoRender();
+}, 1000);
+```
+
+**Teclado Virtual**
+
+Usa Web Audio API para gerar som no navegador:
+
+```js
+function synthTone(freq) {
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+}
+```
+
+### Undertale Multiplayer
+
+O Undertale Multiplayer usa uma logica assimetrica:
+
+- 1 jogador vira **Boss**.
+- 1 a 4 jogadores viram **Almas**.
+- O Boss tenta eliminar todas as Almas.
+- As Almas vencem ao zerar a vida do Boss.
+
+A diferenca para um jogo local e que varios navegadores precisam enxergar a mesma partida. Para evitar resultados diferentes em cada tela, o servidor e autoritativo.
+
+Responsabilidades:
+
+- **Cliente:** le teclado, desenha arena, mostra lobby, HP, cooldowns e mensagens.
+- **Servidor:** guarda salas, jogadores, tiros, HP, cooldowns, colisao, dano e vencedor.
+- **Socket.IO:** mantem a comunicacao realtime entre navegadores e servidor.
+
+Fluxo tecnico:
+
+```text
+teclado -> input -> servidor -> simulacao -> estado oficial -> renderizacao
+```
+
+Cliente envia apenas comandos:
+
+```js
+socket.emit("utm:input", {
+  up: keys.up,
+  down: keys.down,
+  left: keys.left,
+  right: keys.right,
+  attack: keys.attack,
+  dash: keys.dash
+});
+```
+
+Servidor recebe e valida:
+
+```js
+socket.on("utm:input", (payload) => {
+  const room = getRoomForSocket(socket);
+  const player = room ? room.players.get(socket.id) : null;
+  if (!room || !player || room.status !== "playing") return;
+  player.input = sanitizeInput(payload);
+});
+```
+
+Servidor atualiza a partida em ticks:
+
+```js
+setInterval(() => {
+  rooms.forEach((room) => {
+    updateRoom(room, dt);
+  });
+}, TICK_MS);
+```
+
+Servidor replica o estado oficial para todos:
+
+```js
+io.to(room.id).emit("utm:state", publicState(room));
+```
+
+Recursos do multiplayer:
+
+- Criacao e entrada em salas por codigo.
+- Sorteio do Boss por carrossel.
+- Movimento e mira por teclado.
+- Ataques com cooldown.
+- Dash das Almas.
+- Barra de vida do Boss.
+- Cores diferentes para cada Alma.
+- Animacao de dano replicada para todos.
+- Remocao de jogador desconectado.
+
+---
+
 ## Estrutura do Projeto
 
 ```text
