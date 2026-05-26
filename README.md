@@ -9,6 +9,12 @@ _Projeto desenvolvido para o módulo de Lógica e Programação Web._
 
 O **Playground JS** é uma aplicação web interativa feita com HTML, CSS, JavaScript, Node.js, Express e Socket.IO. O projeto funciona como um hub de minijogos com visual arcade neon, navegação por teclado e mouse, efeitos sonoros, animações em canvas, renderização com Phaser no modo multiplayer e controle de estado no front-end e no servidor.
 
+
+Acesse: 
+```text
+https://desafio-master-2ppl.onrender.com/
+````
+
 A tela inicial organiza a experiência em cinco hubs:
 
 - **Clássicos:** jogos rápidos de sorte, escolha e placar.
