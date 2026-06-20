@@ -1,0 +1,111 @@
+/* Reset básico e tipografia */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Configuração do fundo com tema escuro (Dark Mode) */
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container principal para as telas */
+.login-container, .dashboard-container {
+  background-color: #1e1e1e;
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+/* Alinhamento dos formulários */
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaaaaa;
+}
+
+/* Estilização dos campos de entrada */
+input {
+  padding: 0.8rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #333333;
+  border-radius: 5px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+/* Efeito de foco nos campos (Ciano/Azul moderno) */
+input:focus {
+  border-color: #00adb5;
+}
+
+/* Estilização dos botões */
+button {
+  padding: 0.8rem;
+  background-color: #00adb5;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background-color: #008c93;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Textos e links auxiliares */
+p {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+a {
+  color: #00adb5;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #008c93;
+  text-decoration: underline;
+}
+
+/* Destaque para a informação do usuário logado */
+#user-info {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: #00adb5;
+  font-weight: 500;
+}

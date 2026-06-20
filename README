@@ -1,0 +1,203 @@
+# 🔐 Sistema de Autenticação Web com Firebase
+
+Este projeto é uma aplicação web de autenticação desenvolvida com **HTML5**, **CSS3**, **JavaScript** e **Firebase Authentication**.  
+A proposta da atividade é implementar um fluxo completo de autenticação com:
+
+- **Cadastro de usuários**
+- **Login com e-mail e senha**
+- **Área restrita (dashboard)**
+- **Logout**
+- **Proteção de rota no painel administrativo**
+
+---
+
+## 📌 Objetivo da atividade
+
+Desenvolver um sistema de autenticação funcional utilizando o **Firebase Authentication**, aplicando conceitos de integração com serviços em nuvem, manipulação de formulários, controle de sessão e proteção de páginas restritas no front-end.
+
+Além disso, a atividade busca reforçar a organização de um projeto web simples com múltiplas páginas, separando a interface da lógica JavaScript de autenticação.
+
+---
+
+## 🛠 Tecnologias utilizadas
+
+- **HTML5**
+- **CSS3**
+- **JavaScript**
+- **Firebase Authentication**
+- **Firebase SDK v8**
+- **Live Server / servidor local**
+
+---
+
+## 📂 Estrutura do projeto
+
+```bash
+firebase-project/
+│
+├── index.html        # Tela de login
+├── register.html     # Tela de cadastro
+├── dashboard.html    # Área restrita após autenticação
+├── styles.css        # Estilização visual da aplicação
+├── app.js            # Lógica de login
+├── register.js       # Lógica de cadastro
+└── dashboard.js      # Controle da dashboard e logout
+```
+
+---
+
+## ⚙️ Funcionalidades implementadas
+
+### 1. Cadastro de usuário
+Na página `register.html`, o usuário pode criar uma nova conta utilizando:
+
+- E-mail
+- Senha com no mínimo 6 caracteres
+
+O cadastro é feito com o método do Firebase:
+
+```js
+auth.createUserWithEmailAndPassword(email, password)
+```
+
+Após o cadastro, o usuário é redirecionado para a tela de login.
+
+---
+
+### 2. Login de usuário
+Na página `index.html`, o usuário informa seu e-mail e senha para acessar o sistema.
+
+A autenticação é feita com:
+
+```js
+auth.signInWithEmailAndPassword(email, password)
+```
+
+Se as credenciais estiverem corretas, o sistema redireciona o usuário para a página `dashboard.html`.
+
+---
+
+### 3. Dashboard protegida
+A página `dashboard.html` representa a área restrita do sistema.  
+O acesso a ela é controlado por meio do observador de autenticação do Firebase:
+
+```js
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // usuário autenticado
+  } else {
+    // redireciona para a tela de login
+  }
+});
+```
+
+Se não houver um usuário autenticado, o acesso é bloqueado e o visitante é redirecionado para a tela inicial.
+
+---
+
+### 4. Logout
+O botão **Sair do Sistema** encerra a sessão do usuário com:
+
+```js
+auth.signOut()
+```
+
+Após o logout, o usuário retorna à tela de login.
+
+---
+
+## 🎨 Interface do sistema
+
+A aplicação utiliza um layout simples com tema escuro, contendo:
+
+- Formulários centralizados
+- Inputs estilizados
+- Botões com efeito hover
+- Destaque visual para o estado de autenticação do usuário
+- Navegação entre login, cadastro e dashboard
+
+---
+
+## 🔥 Configuração do Firebase
+
+Para que o projeto funcione corretamente, é necessário criar um projeto no **Firebase** e ativar o método de autenticação por **E-mail/Senha**.
+
+### Passos gerais:
+1. Acessar o Firebase Console
+2. Criar um novo projeto
+3. Ir em **Authentication**
+4. Ativar o método **E-mail/Senha**
+5. Registrar um app web no projeto
+6. Copiar a configuração do Firebase e inserir nos arquivos JavaScript
+
+Exemplo de configuração:
+
+```js
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  projectId: "SEU_PROJETO",
+  storageBucket: "SEU_PROJETO.firebasestorage.app",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID"
+};
+```
+
+---
+
+## ▶️ Como executar o projeto
+
+Como a aplicação utiliza recursos do Firebase e scripts JavaScript separados, é recomendado executá-la em um **servidor local**.
+
+### Opção recomendada: Live Server
+1. Abra a pasta do projeto no **VS Code**
+2. Instale a extensão **Live Server**
+3. Clique com o botão direito no arquivo `index.html`
+4. Selecione **Open with Live Server**
+
+---
+
+## 🧪 Como testar
+
+### Teste do fluxo completo:
+1. Abra a tela de **cadastro**
+2. Crie uma conta com e-mail e senha
+3. Verifique se o sistema redireciona para a tela de login
+4. Faça login com a conta criada
+5. Confira se o acesso ao **dashboard** foi liberado
+6. Teste o botão de **logout**
+7. Tente acessar o `dashboard.html` sem login para validar a proteção da página
+
+---
+
+## 📚 Conceitos trabalhados
+
+Durante o desenvolvimento desta atividade, foram aplicados os seguintes conceitos:
+
+- Estruturação de páginas web com HTML
+- Estilização com CSS
+- Manipulação de eventos com JavaScript
+- Captura de dados de formulários
+- Integração com Firebase
+- Criação e autenticação de usuários
+- Controle de sessão
+- Proteção de rotas no front-end
+- Redirecionamento entre páginas
+
+---
+
+## ✅ Resultado esperado
+
+Ao final da atividade, o sistema deve permitir que um usuário:
+
+- criar uma conta;
+- realizar login com e-mail e senha;
+- acessar uma área restrita;
+- visualizar seu e-mail autenticado;
+- encerrar a sessão com segurança.
+
+---
+
+## 👨‍💻 Autor
+
+Projeto desenvolvido como atividade prática de **Autenticação Web com Firebase**, com foco em consolidar o uso do **Firebase Authentication** em aplicações web simples.
