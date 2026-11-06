@@ -1,0 +1,51 @@
+[
+    {
+        "nome": "Marcia Souza",
+        "email": "marcia.souza@gmail.com",
+        "idade": 20,
+        "curso": "Informatica",
+        "cidade": "São Paulo"
+    },
+    {
+        "nome": "João Silva",
+        "email": "joao.silva@gmail.com",
+        "idade": 19,
+        "curso": "admnistração",
+        "cidade": "Rio de Janeiro"
+    },
+    {
+        "nome": "Ana Rambus",
+        "email": "ana.rambus@gmail.com",
+        "idade": 21,
+        "curso": "design",
+        "cidade": "Vale do Paraíba"
+    },
+    {
+        "nome": "Lucas Pereira",
+        "email": "lucas.pereira@gmail.com",
+        "idade": 22,
+        "curso": "Engenharia",
+        "cidade": "Belo Horizonte"
+    },
+    {
+        "nome": "Beatriz Carvalho",
+        "email": "beatriz.carvalho@gmail.com",
+        "idade": 18,
+        "curso": "Medicina",
+        "cidade": "Curitiba"
+    },
+    {
+        "nome": "Gabriel Santos",
+        "email": "gabriel.santos@gmail.com",
+        "idade": 23,
+        "curso": "Arquitetura",
+        "cidade": "Porto Alegre"
+    },
+    {
+        "nome": "Camila Fernandes",
+        "email": "camila.fernandes@gmail.com",
+        "idade": 20,
+        "curso": "Publicidade",
+        "cidade": "Fortaleza"
+    }
+]

@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "titulo": "Desenvolvimento Web Full Stack",
+    "categoria": "Programação",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Ana Silva",
+      "experiencia": "Senior Dev"
+    },
+    "modulos": [
+      "HTML & CSS",
+      "JavaScript Avançado",
+      "Bancos de Dados"
+    ]
+  },
+  {
+    "id": 2,
+    "titulo": "UX/UI Design para Iniciantes",
+    "categoria": "Design",
+    "vagasEsgotadas": true,
+    "instrutor": {
+      "nome": "Carlos Souza",
+      "experiencia": "Lead Designer"
+    },
+    "modulos": [
+      "Fundamentos do Design",
+      "Prototipagem no Figma",
+      "Testes de Usabilidade"
+    ]
+  },
+  {
+    "id": 3,
+    "titulo": "Banco de Dados e SQL Moderno",
+    "categoria": "Programação",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Ana Silva",
+      "experiencia": "Senior Dev"
+    },
+    "modulos": [
+      "Modelagem Relacional",
+      "Queries Avançadas",
+      "Performance"
+    ]
+  },
+  {
+    "id": 4,
+    "titulo": "Marketing Digital e Growth Hacking",
+    "categoria": "Negócios",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Mariana Costa",
+      "experiencia": "Growth Manager"
+    },
+    "modulos": [
+      "SEO Avançado",
+      "Tráfego Pago",
+      "Análise de Métricas"
+    ]
+  },
+  {
+    "id": 5,
+    "titulo": "React do Zero ao Profissional",
+    "categoria": "Programação",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Felipe Rocha",
+      "experiencia": "Frontend Specialist"
+    },
+    "modulos": [
+      "Componentes",
+      "Hooks",
+      "Consumo de APIs",
+      "React Router"
+    ]
+  },
+  {
+    "id": 6,
+    "titulo": "Ilustração Digital para Games",
+    "categoria": "Design",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Juliana Martins",
+      "experiencia": "Concept Artist"
+    },
+    "modulos": [
+      "Desenho Base",
+      "Colorização",
+      "Pintura Digital",
+      "Criação de Personagens"
+    ]
+  },
+  {
+    "id": 7,
+    "titulo": "Finanças para Empreendedores",
+    "categoria": "Negócios",
+    "vagasEsgotadas": true,
+    "instrutor": {
+      "nome": "Ricardo Alves",
+      "experiencia": "Consultor Financeiro"
+    },
+    "modulos": [
+      "Fluxo de Caixa",
+      "Precificação",
+      "Investimentos",
+      "Planejamento Financeiro"
+    ]
+  },
+  {
+    "id": 8,
+    "titulo": "Node.js e APIs REST",
+    "categoria": "Programação",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Camila Ferreira",
+      "experiencia": "Backend Engineer"
+    },
+    "modulos": [
+      "Express",
+      "Rotas",
+      "Middleware",
+      "Integração com Banco"
+    ]
+  },
+  {
+    "id": 9,
+    "titulo": "Branding e Identidade Visual",
+    "categoria": "Design",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Paulo Mendes",
+      "experiencia": "Diretor de Arte"
+    },
+    "modulos": [
+      "Construção de Marca",
+      "Tipografia",
+      "Paleta de Cores",
+      "Manual de Marca"
+    ]
+  },
+  {
+    "id": 10,
+    "titulo": "Gestão Ágil de Projetos",
+    "categoria": "Negócios",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Fernanda Lima",
+      "experiencia": "Scrum Master"
+    },
+    "modulos": [
+      "Scrum",
+      "Kanban",
+      "Gestão de Times",
+      "Planejamento Ágil"
+    ]
+  },
+  {
+    "id": 11,
+    "titulo": "TypeScript para Projetos Escaláveis",
+    "categoria": "Programação",
+    "vagasEsgotadas": true,
+    "instrutor": {
+      "nome": "Lucas Andrade",
+      "experiencia": "Software Architect"
+    },
+    "modulos": [
+      "Tipagem",
+      "Interfaces",
+      "Generics",
+      "Boas Práticas"
+    ]
+  },
+  {
+    "id": 12,
+    "titulo": "Motion Design para Redes Sociais",
+    "categoria": "Design",
+    "vagasEsgotadas": false,
+    "instrutor": {
+      "nome": "Beatriz Moraes",
+      "experiencia": "Motion Designer"
+    },
+    "modulos": [
+      "After Effects",
+      "Animação de Texto",
+      "Transições",
+      "Exportação para Social Media"
+    ]
+  }
+]

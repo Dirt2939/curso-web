@@ -1,0 +1,37 @@
+[
+  {
+    "nome": "Teclado Mecânico RGB",
+    "preco": 349.90,
+    "categoria": "Periféricos",
+    "estoque": 12,
+    "img": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=500&q=80"
+  },
+  {
+    "nome": "Mouse Gamer Sem Fio",
+    "preco": 289.50,
+    "categoria": "Periféricos",
+    "estoque": 4,
+    "img": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&q=80"
+  },
+  {
+    "nome": "Monitor Ultrawide 29\"",
+    "preco": 1250.00,
+    "categoria": "Monitores",
+    "estoque": 8,
+    "img": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&q=80"
+  },
+  {
+    "nome": "Headset com Cancelamento de Ruído",
+    "preco": 450.00,
+    "categoria": "Áudio",
+    "estoque": 0,
+    "img": "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&q=80"
+  },
+  {
+    "nome": "Cadeira Ergonômica Office",
+    "preco": 899.99,
+    "categoria": "Móveis",
+    "estoque": 25,
+    "img": "https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?w=500&q=80"
+  }
+]

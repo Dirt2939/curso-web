@@ -1,0 +1,58 @@
+[
+  {
+    "nome": "A Viagem",
+    "descricao": "Uma jornada épica através de mundos desconhecidos.",
+    "img": "img/a_viagem.webp",
+    "nota": 8.9,
+    "genero": "Aventura"
+  },
+  {
+    "nome": "Caçadores do Fim do Mundo",
+    "descricao": "Ação acelerada e heróis improváveis em uma missão pelo futuro.",
+    "img": "img/cacadores_do_fim_do_mundo.jpg",
+    "nota": 8.5,
+    "genero": "Ação"
+  },
+  {
+    "nome": "O Grande Houdini",
+    "descricao": "A história de um mago lendário e suas travessuras.",
+    "img": "img/houdini.jpg",
+    "nota": 8.2,
+    "genero": "Biografia"
+  },
+  {
+    "nome": "No Ritmo do Coração",
+    "descricao": "Música, emoção e uma jornada que pulsa no compasso da vida.",
+    "img": "img/no_ritmo_do_coracao.jpg",
+    "nota": 8.0,
+    "genero": "Musical"
+  },
+  {
+    "nome": "O Segredo na Montanha",
+    "descricao": "Uma história profunda sobre amor, barreiras e as escolhas que definem uma vida.",
+    "img": "img/o_segredo_na_montanha.jpg",
+    "nota": 8.8,
+    "genero": "Drama"
+  },
+  {
+    "nome": "O Segredo",
+    "descricao": "Um thriller intenso onde cada segundo revela um novo perigo.",
+    "img": "img/o_segredo.jpg",
+    "nota": 7.8,
+    "genero": "Suspense"
+  },
+  {
+    "nome": "Planeta Azul",
+    "descricao": "Um futuro distante em que a Terra ainda guarda seus maiores segredos.",
+    "img": "img/planeta_azul.jpg",
+    "nota": 8.5,
+    "genero": "Ficção Científica"
+  },
+  {
+    "nome": "Tempo de Esperança",
+    "descricao": "Uma história de superação que reacende a fé em novos começos.",
+    "img": "img/tempo_de_esperanca.jpg",
+    "nota": 9.1,
+    "genero": "Drama"
+  }
+]

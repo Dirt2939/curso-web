@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub de Exercícios JSON + Fetch API</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .subtitulo {
+      color: #cbd5e1;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      transition: 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: #38bdf8;
+      box-shadow: 0 10px 30px rgba(56,189,248,0.2);
+    }
+
+    .numero {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: #38bdf8;
+      color: #0f172a;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #38bdf8;
+      color: #0f172a;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #7dd3fc;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #7dd3fc;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>JSON + Fetch API</h1>
+
+    <p class="subtitulo">
+      Central dos exercícios práticos envolvendo JSON, Fetch API,
+      renderização dinâmica e manipulação de arrays no JavaScript.
+      Porque aparentemente transformar objetos em divs virou uma profissão inteira.
+    </p>
+
+    <div class="grid">
+
+      <!-- Exercício 1 e 2 -->
+      <div class="card">
+        <span class="badge">JSON Básico</span>
+
+        <div class="numero">1</div>
+
+        <h2>Alunos</h2>
+
+        <p>
+          Exercícios de expansão do JSON e renderização dinâmica
+          de cards com nome, idade, curso, cidade e email.
+        </p>
+
+        <a href="./exercicio-1-2/index.html">
+          <span class="btn">Abrir Projeto</span>
+        </a>
+      </div>
+
+      <!-- Exercício 3 -->
+      <div class="card">
+        <span class="badge">Fetch API</span>
+
+        <div class="numero">2</div>
+
+        <h2>Catálogo de Filmes</h2>
+
+        <p>
+          Projeto de listagem de filmes utilizando fetch(),
+          leitura de JSON e renderização dinâmica no HTML.
+        </p>
+
+        <a href="./exercicio-3/index.html">
+          <span class="btn">Abrir Projeto</span>
+        </a>
+      </div>
+
+      <!-- Exercício 4 -->
+      <div class="card">
+        <span class="badge">E-commerce</span>
+
+        <div class="numero">3</div>
+
+        <h2>Loja Virtual</h2>
+
+        <p>
+          Simulação de um catálogo de produtos com preço,
+          categoria, estoque e renderização de cards.
+        </p>
+
+        <a href="./exercicio-4/index.html">
+          <span class="btn">Abrir Projeto</span>
+        </a>
+      </div>
+
+      <!-- Exercício 5 -->
+      <div class="card">
+        <span class="badge">Dados Aninhados</span>
+
+        <div class="numero">4</div>
+
+        <h2>Catálogo de Cursos</h2>
+
+        <p>
+          Projeto avançado com filtros, arrays aninhados,
+          módulos, instrutores e lógica dinâmica com .filter().
+        </p>
+
+        <a href="./exercicio-5/index.html">
+          <span class="btn">Abrir Projeto</span>
+        </a>
+      </div>
+
+    </div>
+
+    <footer>
+      Desenvolvido com Fetch API, JSON e funções diabólicas como map().join("")
+    </footer>
+
+  </div>
+
+</body>
+</html>
