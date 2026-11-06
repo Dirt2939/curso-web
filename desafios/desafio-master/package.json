@@ -1,0 +1,17 @@
+{
+  "name": "playground-js",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playground JS com minijogos, projetos DOM e chatbot via Puter.js.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "phaser": "^4.1.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  }
+}

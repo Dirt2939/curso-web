@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!--
+    Estrutura principal do Playground JS.
+    Estilos ficam em css/style.css e comportamento fica em js/script.js.
+  -->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARCADE JS</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="scanlines"></div>
+  <canvas id="cc-canvas"></canvas>
+
+  <svg class="cc-svg-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="ccCoinFill" cx="36%" cy="28%" r="70%">
+        <stop offset="0%" stop-color="#ffffff" />
+        <stop offset="44%" stop-color="#eef4f7" />
+        <stop offset="100%" stop-color="#becbd4" />
+      </radialGradient>
+      <linearGradient id="ccCoinRim" x1="18" y1="10" x2="104" y2="112" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#ffffff" />
+        <stop offset="34%" stop-color="#d8e1e7" />
+        <stop offset="64%" stop-color="#f8fbfd" />
+        <stop offset="100%" stop-color="#aebbc5" />
+      </linearGradient>
+      <linearGradient id="ccCrystal" x1="42" y1="18" x2="78" y2="72" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#d9fbff" />
+        <stop offset="45%" stop-color="#86e7f2" />
+        <stop offset="100%" stop-color="#4fb8d5" />
+      </linearGradient>
+      <symbol id="cc-face-cara" viewBox="0 0 120 120">
+        <g transform="matrix(.95 0 0 .95 -65.70 -30.40)">
+          <path fill="#82919E"
+            d="M89.925446,114.161140 C85.718292,111.578033 87.350227,107.410797 87.575104,103.312950 C89.980812,102.343681 91.913330,101.815132 93.845856,101.286591 C93.900055,100.600922 93.954254,99.915245 94.008453,99.229576 C91.414948,98.519165 88.821449,97.808762 86.227943,97.098358 C86.326904,95.308983 86.425865,93.519608 86.521294,91.794014 C79.127563,89.591148 79.132996,89.593224 82.062836,81.909637 C84.255669,76.158867 86.822983,70.509453 88.449097,64.601738 C89.246994,61.702980 88.963791,58.085594 87.970184,55.207619 C86.221298,50.141994 87.167465,44.891918 91.734322,42.070034 C93.952003,40.699715 96.581894,39.155132 99.032677,39.142494 C112.978783,39.070564 126.940163,39.148079 140.869339,39.775032 C147.959396,40.094158 153.110291,44.341187 156.866409,50.392899 C157.753006,51.821354 159.954102,53.684227 161.193161,53.450760 C173.982925,51.040939 180.839920,57.940830 185.543579,69.033936 C185.317337,71.993484 185.194427,74.295540 185.071503,76.597588 C184.455368,88.135689 177.614136,94.302452 165.953537,93.470993 C155.000000,100.000000 145.000000,105.000000 140.996964,103.005127 C141.770462,104.054153 142.380325,104.520645 143.187256,105.190521 C143.591003,105.913025 143.797684,106.432144 143.570129,106.998703 C135.322128,107.143394 134.824234,107.786469 138.081055,114.761040 C139.325485,117.426010 141.179581,119.806305 142.872192,122.625900 C144.959747,125.687508 146.930939,128.439545 149.019806,131.486023 C150.531509,133.273254 151.925537,134.766022 153.376724,136.609863 C153.582520,137.658920 153.731140,138.356918 153.473877,139.057404 C150.118683,138.940338 146.904694,137.996033 144.265549,138.842957 C132.356110,142.664749 120.609451,146.993774 108.483276,151.144684 C107.735779,151.172897 107.309143,151.196457 106.882500,151.220001 C104.761215,150.032043 103.969124,148.830246 106.303413,146.879135 C110.028099,143.765823 113.577713,140.443054 117.556168,136.614182 C120.410469,129.466293 118.029366,123.632370 115.182159,117.580917 C114.855637,116.810921 114.581604,116.319405 114.259583,115.468384 C113.496101,112.326401 111.864319,111.852020 109.357201,112.999748 C103.046066,115.888901 96.509811,115.554733 89.925446,114.161140 M98.967239,67.748093 C96.501122,67.991661 94.035011,68.235222 91.568893,68.478790 C91.666031,69.341354 91.763168,70.203918 91.860306,71.066490 C95.926445,70.765297 99.992584,70.464104 104.058716,70.162918 C104.032310,69.568161 104.005905,68.973412 103.979500,68.378654 C102.566010,68.213364 101.152512,68.048073 98.967239,67.748093 M98.480255,72.925568 C97.418335,73.913956 96.291328,74.848282 95.371918,75.955048 C95.248665,76.103416 96.329201,77.713486 96.588898,77.645180 C98.647720,77.103722 100.642738,76.313672 102.657349,75.610138 C102.621338,75.144890 102.585320,74.679634 102.549301,74.214386 C101.450310,73.788956 100.351318,73.363525 98.480255,72.925568 z" />
+
+          <path fill="#8FC0DB"
+            d="M137.978653,79.981224 C138.057800,84.835129 134.784103,86.435562 130.808060,87.051468 C128.886230,87.349174 126.868225,87.026047 124.445412,86.928986 C123.004547,86.023857 122.012047,85.173759 120.905411,83.726082 C124.090332,81.611778 127.389381,80.095070 131.376404,78.262062 C129.551788,77.479935 127.782692,76.721603 125.956154,75.669014 C125.312614,74.387764 124.726509,73.400780 124.140396,72.413795 C123.549706,71.210304 122.959007,70.006813 122.454224,68.432693 C122.931709,67.935562 123.323280,67.809059 124.008545,67.864090 C125.561638,69.342636 126.821030,70.639656 128.184875,72.252815 C130.257217,74.368111 132.225098,76.167267 134.475555,78.096291 C135.831635,78.811180 136.905136,79.396202 137.978653,79.981224 z" />
+          <path fill="#81BAE9"
+            d="M128.080429,71.936676 C126.821030,70.639656 125.561638,69.342636 124.043694,67.596336 C123.804077,66.603889 123.823006,66.060715 123.841927,65.517548 C124.653358,63.414600 125.276291,61.212242 126.320557,59.232082 C127.876266,56.282120 129.849136,54.601246 132.602173,59.231869 C133.807648,64.922874 132.723038,69.141563 128.080429,71.936676 z" />
+          <path fill="#C0EFE3"
+            d="M123.642303,65.208282 C123.823006,66.060715 123.804077,66.603889 123.750000,67.414810 C123.323280,67.809059 122.931709,67.935562 122.246628,68.159790 C117.213982,67.561455 112.827171,66.365395 111.484169,60.862724 C110.673996,57.543217 112.068382,55.410992 115.166512,57.203190 C118.345413,59.042114 120.717491,62.275764 123.642303,65.208282 z" />
+          <path fill="#86D6F2"
+            d="M138.280975,79.804001 C136.905136,79.396202 135.831635,78.811180 134.446472,77.665550 C133.723801,72.205429 134.153168,67.633705 138.948166,64.764832 C139.720749,65.659019 140.493332,66.553207 141.431808,67.680573 C142.618713,72.339455 142.269485,76.412506 138.280975,79.804001 z" />
+          <path fill="#87D9F6"
+            d="M123.792389,72.206726 C124.726509,73.400780 125.312614,74.387764 125.653366,75.905106 C122.262962,76.949615 119.117905,77.463760 115.972847,77.977905 C114.422005,76.313690 112.871162,74.649467 111.320320,72.985245 C113.810951,72.182495 116.256531,71.062241 118.809662,70.700050 C120.263847,70.493759 121.893646,71.525444 123.792389,72.206726 z" />
+        </g>
+      </symbol>
+      <symbol id="cc-face-coroa" viewBox="0 0 120 120">
+        <path fill="#90C6ED" d="M38,60 L38,35 L47,45 L60,20 L73,45 L82,35 L82,60 Z" />
+
+        <path fill="#5695EB" d="M44,60 L44,42 L51,51 L60,28 L69,51 L76,42 L76,60 Z" />
+
+        <path fill="#B8F2E6" d="M49,60 L49,49 L55,56 L60,40 L65,56 L71,49 L71,60 Z" />
+
+        <polygon fill="#90C6ED" points="60,11 63,14 60,17 57,14" />
+        <polygon fill="#90C6ED" points="38,26 40,28 38,30 36,28" />
+        <polygon fill="#90C6ED" points="82,26 84,28 82,30 80,28" />
+
+        <path fill="#637281" d="M22,60 C4,60 4,36 20,44 C26,47 26,52 22,50 C10,44 10,56 22,58 Z" />
+
+        <path fill="#637281" d="M98,60 C116,60 116,36 100,44 C94,47 94,52 98,50 C110,44 110,56 98,58 Z" />
+
+        <path fill="#637281" d="M22,58 L98,58 L98,62 L22,62 Z" />
+
+        <path fill="#7E8F9D" d="M30,62 Q60,100 90,62 Z" />
+
+        <path fill="#637281" d="M54,85 L66,85 L66,96 L54,96 Z" />
+
+        <path fill="#7E8F9D" d="M40,100 C40,96 46,96 54,96 L66,96 C74,96 80,96 80,100 L80,102 L40,102 Z" />
+      </symbol>
+      <symbol id="cc-face-duo" viewBox="0 0 120 120">
+        <g transform="translate(-10 2) scale(.76)">
+          <use href="#cc-face-cara" />
+        </g>
+        <g transform="translate(42 18) scale(.72)">
+          <use href="#cc-face-coroa" />
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Modal verificação de idade -->
+  <div id="age-modal" role="dialog" aria-modal="true">
+    <div id="age-box">
+      <div class="age-icon">🔞</div>
+      <h2>ACESSO RESTRITO</h2>
+      <p>
+        O Casino JS contém conteúdo voltado para maiores de idade.
+        <br />
+        Você tem 18 anos ou mais?
+      </p>
+      <div class="age-btns">
+        <button class="age-btn yes" id="age-yes">SIM, TENHO 18+</button>
+        <button class="age-btn no" id="age-no">NÃO</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mario-coin" aria-hidden="true">
+    <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="26" cy="26" r="24" fill="#f9e84d" stroke="#c88000" stroke-width="2.5" />
+      <circle cx="26" cy="26" r="18" fill="#ffd000" stroke="#a06000" stroke-width="1.5" />
+      <text x="26" y="33" text-anchor="middle" font-size="18" font-family="monospace" font-weight="900" fill="#7a4800">
+        $
+      </text>
+    </svg>
+  </div>
+
+  <!-- =====================================================================
+     PLAYGROUND JS -- Tela inicial
+     ===================================================================== -->
+  <section id="hub" class="screen active">
+    <div id="hub-wrap">
+      <div class="hub-hero" id="hub-hero">
+        <h1 class="hub-title">PLAYGROUND JS</h1>
+        <p class="hub-sub">ESCOLHA SUA AVENTURA</p>
+      </div>
+
+      <div class="game-grid" id="pg-grid">
+        <!-- CLASSICOS -->
+        <div class="gcard gcard-jkp" id="pg-arcade" role="button" aria-label="Classicos">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--purple)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Cabinet body -->
+                <rect x="14" y="26" width="48" height="38" rx="6" fill="rgba(157,92,255,.12)" stroke="currentColor"
+                  stroke-width="2.2" />
+                <!-- Screen -->
+                <rect x="20" y="30" width="36" height="20" rx="3" fill="rgba(157,92,255,.25)" stroke="currentColor"
+                  stroke-width="1.5" />
+                <!-- Screen glow lines -->
+                <line x1="24" y1="36" x2="34" y2="36" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                  opacity=".5" />
+                <line x1="24" y1="40" x2="40" y2="40" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                  opacity=".5" />
+                <line x1="24" y1="44" x2="37" y2="44" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                  opacity=".5" />
+                <!-- Joystick -->
+                <circle cx="28" cy="57" r="5" stroke="currentColor" stroke-width="2" fill="rgba(157,92,255,.2)" />
+                <line x1="28" y1="52" x2="28" y2="48" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="28" cy="47" r="3" fill="currentColor" opacity=".8" />
+                <!-- Buttons -->
+                <circle cx="44" cy="55" r="3.5" fill="currentColor" opacity=".9" />
+                <circle cx="53" cy="55" r="3.5" fill="currentColor" opacity=".5" />
+                <!-- Insert coin slot -->
+                <rect x="30" y="22" width="16" height="3" rx="1.5" fill="currentColor" opacity=".4" />
+                <!-- Top light -->
+                <rect x="22" y="12" width="32" height="12" rx="4" fill="rgba(157,92,255,.18)" stroke="currentColor"
+                  stroke-width="2" />
+                <line x1="30" y1="18" x2="46" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  opacity=".6" />
+              </svg>
+            </div>
+            <div class="gcard-name">CL&Aacute;SSICOS</div>
+            <div class="gcard-desc">
+              Partidas r&aacute;pidas
+              <br />
+              de sorte e escolha.
+            </div>
+            <div class="gcard-cta">ENTRAR</div>
+          </div>
+        </div>
+
+        <!-- ARCADE -->
+        <div class="gcard gcard-geo" id="pg-arcade-games" role="button" aria-label="Arcade">
+          <div class="gcard-inner">
+            <div class="gcard-glow"
+              style="background:radial-gradient(ellipse at 50% 0%,rgba(0,180,255,0.14),transparent 70%)"></div>
+            <div class="gcard-icon" style="color:var(--blue)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 10H59L65 66H11L17 10Z" fill="rgba(0,180,255,.08)" stroke="currentColor"
+                  stroke-width="2.4" stroke-linejoin="round" />
+                <rect x="20" y="15" width="36" height="29" rx="3" fill="rgba(2,5,18,.78)" stroke="currentColor"
+                  stroke-width="1.8" />
+                <path d="M22 29H54" stroke="currentColor" stroke-width="1.2" opacity=".35" />
+                <path d="M38 26L32 20.4C29.4 18 30.2 14.8 33.3 14.8C35 14.8 37 16.1 38 18.1C39 16.1 41 14.8 42.7 14.8C45.8 14.8 46.6 18 44 20.4L38 26Z"
+                  fill="#ff2d78" filter="url(#arcadeHubGlow)" />
+                <path d="M19 49H57L59 61H17L19 49Z" fill="rgba(0,245,196,.07)" stroke="currentColor"
+                  stroke-width="1.7" stroke-linejoin="round" />
+                <path d="M29 55H39" stroke="#00f5c4" stroke-width="2" stroke-linecap="round" />
+                <circle cx="46" cy="55" r="2.4" fill="#ff2d78" />
+                <circle cx="53" cy="55" r="2.4" fill="#f9e84d" />
+                <path d="M8 25H14M62 25H68M7 34H13M63 34H69" stroke="currentColor" stroke-width="1.7"
+                  stroke-linecap="round" opacity=".65" />
+                <defs>
+                  <filter id="arcadeHubGlow" x="24" y="8" width="28" height="24" color-interpolation-filters="sRGB">
+                    <feDropShadow dx="0" dy="0" stdDeviation="2.4" flood-color="#ff2d78" flood-opacity=".75" />
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+            <div class="gcard-name" style="color:var(--blue)">ARCADE</div>
+            <div class="gcard-desc">A&ccedil;&atilde;o em fases<br>com desafio crescente.</div>
+            <div class="gcard-cta" style="border-color:var(--blue);color:var(--blue)">ENTRAR</div>
+          </div>
+        </div>
+
+        <!-- MULTIPLAYER -->
+        <div class="gcard gcard-multiplayer" id="pg-multiplayer" role="button" aria-label="Multiplayer">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--pink)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="20" y="20" width="36" height="30" rx="3" fill="rgba(255,45,120,.1)" stroke="currentColor"
+                  stroke-width="2.5" />
+                <path d="M26 28H50M26 42H50" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  opacity=".32" />
+                <path d="M38 43L31 36C28.2 33.2 29.4 28.5 33.5 28.5C35.6 28.5 37.2 29.8 38 31.7C38.8 29.8 40.4 28.5 42.5 28.5C46.6 28.5 47.8 33.2 45 36Z"
+                  fill="#ff4040" />
+                <path d="M20 35H12M56 35H64M38 20V12M26 50L18 59M50 50L58 59" stroke="#00f5c4"
+                  stroke-width="2.2" stroke-linecap="round" />
+                <circle cx="12" cy="35" r="6" fill="rgba(0,245,196,.12)" stroke="#00f5c4" stroke-width="2.2" />
+                <circle cx="64" cy="35" r="6" fill="rgba(0,245,196,.12)" stroke="#00f5c4" stroke-width="2.2" />
+                <circle cx="38" cy="12" r="6" fill="rgba(0,245,196,.12)" stroke="#00f5c4" stroke-width="2.2" />
+                <circle cx="18" cy="59" r="5" fill="rgba(255,45,120,.12)" stroke="currentColor" stroke-width="2" />
+                <circle cx="58" cy="59" r="5" fill="rgba(255,45,120,.12)" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="35" r="2" fill="#ffee44" />
+                <circle cx="64" cy="35" r="2" fill="#ffee44" />
+                <circle cx="38" cy="12" r="2" fill="#ffee44" />
+              </svg>
+            </div>
+            <div class="gcard-name" style="color: var(--pink)">MULTIPLAYER</div>
+            <div class="gcard-desc">Salas online<br>em tempo real.</div>
+            <div class="gcard-cta" style="border-color: var(--pink); color: var(--pink)">ENTRAR</div>
+          </div>
+        </div>
+
+        <!-- CASSINO -->
+        <div class="gcard" id="pg-casino" role="button" aria-label="Cassino">
+          <div class="gcard-inner">
+            <div class="gcard-glow" style="
+                  background: radial-gradient(
+                    ellipse at 50% 0%,
+                    rgba(255, 140, 0, 0.14),
+                    transparent 70%
+                  );
+                "></div>
+            <div class="gcard-icon" style="color: var(--orange)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Slot machine body -->
+                <rect x="10" y="18" width="56" height="46" rx="7" fill="rgba(255,140,0,.1)" stroke="currentColor"
+                  stroke-width="2.2" />
+                <!-- 3 reel windows -->
+                <rect x="15" y="24" width="13" height="18" rx="3" fill="rgba(255,140,0,.2)" stroke="currentColor"
+                  stroke-width="1.5" />
+                <rect x="31.5" y="24" width="13" height="18" rx="3" fill="rgba(255,140,0,.2)" stroke="currentColor"
+                  stroke-width="1.5" />
+                <rect x="48" y="24" width="13" height="18" rx="3" fill="rgba(255,140,0,.2)" stroke="currentColor"
+                  stroke-width="1.5" />
+                <!-- Symbols inside reels -->
+                <!-- 7 -->
+                <text x="21.5" y="37" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700"
+                  fill="currentColor" opacity=".9">7</text>
+                <!-- Cherry -->
+                <circle cx="38" cy="31" r="2.5" fill="currentColor" opacity=".8" />
+                <circle cx="38" cy="37" r="2.5" fill="currentColor" opacity=".5" />
+                <line x1="38" y1="31" x2="38" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  opacity=".6" />
+                <!-- BAR -->
+                <rect x="50" y="30" width="9" height="4" rx="1.5" fill="currentColor" opacity=".8" />
+                <rect x="50" y="36" width="9" height="2.5" rx="1" fill="currentColor" opacity=".4" />
+                <!-- Win line -->
+                <line x1="13" y1="33" x2="63" y2="33" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"
+                  opacity=".4" />
+                <!-- Lever -->
+                <line x1="66" y1="28" x2="66" y2="46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="66" cy="26" r="4" fill="currentColor" opacity=".8" />
+                <!-- Coin slot -->
+                <rect x="28" y="48" width="20" height="5" rx="2.5" fill="rgba(255,140,0,.3)" stroke="currentColor"
+                  stroke-width="1.5" />
+                <!-- Base detail -->
+                <rect x="18" y="57" width="40" height="5" rx="2.5" fill="currentColor" opacity=".15" />
+              </svg>
+            </div>
+            <div class="gcard-name" style="color: var(--orange)">CASSINO</div>
+            <div class="gcard-desc">
+              Apostas fict&iacute;cias
+              <br />
+              com risco controlado.
+            </div>
+            <div class="gcard-cta" style="border-color: var(--orange); color: var(--orange)">
+              ENTRAR
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJETOS WEB -->
+        <div class="gcard gcard-synth" id="pg-projects" role="button" aria-label="Projetos Web">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--cyan)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="13" width="56" height="50" rx="6" fill="rgba(0,245,196,.07)" stroke="currentColor"
+                  stroke-width="2.4" />
+                <path d="M16 25H60" stroke="currentColor" stroke-width="1.5" opacity=".45" stroke-linecap="round" />
+                <circle cx="18" cy="19" r="2" fill="#ff2d78" />
+                <circle cx="25" cy="19" r="2" fill="#f9e84d" />
+                <circle cx="32" cy="19" r="2" fill="#00b4ff" />
+                <path d="M19 35H27M19 42H31M19 49H26" stroke="#d8e0ff" stroke-width="2.3" stroke-linecap="round" />
+                <rect x="17" y="56" width="42" height="2.5" rx="1.25" fill="currentColor" opacity=".55" />
+              </svg>
+            </div>
+            <div class="gcard-name">PROJETOS<br>WEB</div>
+            <div class="gcard-desc">
+              Atividades DOM
+              <br />
+              da avalia&ccedil;&atilde;o.
+            </div>
+            <div class="gcard-cta">ENTRAR</div>
+          </div>
+        </div>
+      </div>
+      <!-- /pg-grid -->
+
+      <div class="kb-hint-hub" style="display: flex; margin-top: 16px">
+        <span class="key">&larr;</span>
+        <span class="key">&rarr;</span>
+        navegar &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        selecionar &nbsp;|&nbsp;
+        <span class="key">I</span>
+        chat IA
+      </div>
+    </div>
+    <!-- /hub-wrap -->
+  </section>
+
+  <!-- =====================================================================
+     PROJETOS WEB -- Hub avaliativo
+     ===================================================================== -->
+  <section id="projects-hub" class="screen">
+    <div class="arcade-wrap">
+      <div class="hub-hero compacted" id="projects-hero">
+        <h1 class="hub-title">PROJETOS WEB</h1>
+        <p class="hub-sub">AVALIA&Ccedil;&Atilde;O DOM</p>
+        <div class="projects-build-panel" id="projects-build-panel">
+          <div class="build-window">
+            <div class="build-top">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="build-lines">
+              <span>npm run projetos</span>
+              <span>html css js ready</span>
+            </div>
+            <div class="hub-build-btn" id="projects-build-btn" role="button" aria-label="Compilar projetos web">
+              COMPILAR
+            </div>
+          </div>
+        </div>
+        <div class="kb-hint-hub show" id="projects-hint">
+          <span class="key">ENTER</span>
+          compilar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+      </div>
+
+      <div class="game-grid projects-grid" id="projects-grid" aria-hidden="true">
+        <div class="gcard gcard-dados" data-goto="light-switch" aria-label="Controle de Luz">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color:var(--yellow)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M38 8C25 8 17 18 17 30c0 8 4 14 10 19v8h22v-8c6-5 10-11 10-19C59 18 51 8 38 8Z"
+                  fill="rgba(249,232,77,.12)" stroke="currentColor" stroke-width="2.4" />
+                <path d="M29 58h18M31 65h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M32 31h12M38 25v12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="gcard-name">LUZ</div>
+            <div class="gcard-desc">Interruptor<br>com classList.</div>
+            <div class="gcard-cta">ABRIR</div>
+          </div>
+        </div>
+
+        <div class="gcard gcard-coin" data-goto="piggy-bank" aria-label="Cofrinho Digital">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color:var(--cyan)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="15" y="18" width="46" height="44" rx="6" fill="rgba(0,180,255,.12)" stroke="currentColor"
+                  stroke-width="2.8" />
+                <rect x="22" y="25" width="32" height="30" rx="3" fill="rgba(5,3,14,.42)" stroke="currentColor"
+                  stroke-width="1.8" opacity=".9" />
+                <circle cx="38" cy="40" r="9" fill="rgba(0,245,196,.12)" stroke="#d8e0ff" stroke-width="2.4" />
+                <path d="M38 31V36M38 44V49M29 40H34M42 40H47M32 34L35 37M44 43L47 46M44 37L47 34M32 46L35 43"
+                  stroke="#f9e84d" stroke-width="1.8" stroke-linecap="round" />
+                <rect x="27" y="12" width="22" height="8" rx="2" fill="rgba(249,232,77,.16)" stroke="#f9e84d"
+                  stroke-width="2" />
+                <path d="M23 62V67M53 62V67" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="gcard-name">COFRINHO</div>
+            <div class="gcard-desc">Moedas, saque<br>e localStorage.</div>
+            <div class="gcard-cta">ABRIR</div>
+          </div>
+        </div>
+
+        <div class="gcard gcard-geo" data-goto="pomodoro" aria-label="Pomodoro">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color:var(--blue)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="38" cy="42" r="24" fill="rgba(0,180,255,.1)" stroke="currentColor" stroke-width="2.4" />
+                <path d="M30 10h16M38 18v7M38 42l10-11" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" />
+                <path d="M21 24l-5-5M55 24l5-5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="gcard-name">POMODORO</div>
+            <div class="gcard-desc">Timer de foco<br>configur&aacute;vel.</div>
+            <div class="gcard-cta">ABRIR</div>
+          </div>
+        </div>
+
+        <div class="gcard gcard-synth" data-goto="virtual-keyboard" aria-label="Teclado Virtual">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color:var(--cyan)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 24C13 20.7 15.7 18 19 18H57C60.3 18 63 20.7 63 24V58H13V24Z"
+                  fill="rgba(0,245,196,.09)" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" />
+                <path d="M18 29H58" stroke="currentColor" stroke-width="1.6" opacity=".45" stroke-linecap="round" />
+                <path d="M19 36H27V58H19V36Z" fill="rgba(255,255,255,.82)" />
+                <path d="M28 36H36V58H28V36Z" fill="rgba(255,255,255,.82)" />
+                <path d="M37 36H45V58H37V36Z" fill="rgba(255,255,255,.82)" />
+                <path d="M46 36H54V58H46V36Z" fill="rgba(255,255,255,.82)" />
+                <path d="M25 36H30V49H25V36Z" fill="currentColor" />
+                <path d="M34 36H39V49H34V36Z" fill="currentColor" />
+                <path d="M48 36H53V49H48V36Z" fill="currentColor" />
+                <circle cx="23" cy="24" r="2" fill="#f9e84d" />
+                <circle cx="31" cy="24" r="2" fill="#ff2d78" />
+              </svg>
+            </div>
+            <div class="gcard-name">TECLADO</div>
+            <div class="gcard-desc">Notas musicais<br>e grava&ccedil;&atilde;o.</div>
+            <div class="gcard-cta">ABRIR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     MULTIPLAYER -- Hub
+     ===================================================================== -->
+  <section id="multiplayer-hub" class="screen">
+    <div class="arcade-wrap multiplayer-wrap">
+      <nav class="nav">
+        <div class="nav-back" id="multiplayer-back" role="button">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo" style="color:var(--pink)">MULTIPLAYER</span>
+        <div class="spacer"></div>
+      </nav>
+
+      <div class="hub-hero compacted">
+        <h1 class="hub-title multiplayer-title">MULTIPLAYER</h1>
+        <p class="hub-sub multiplayer-sub">SALAS ONLINE</p>
+      </div>
+
+      <div class="game-grid multiplayer-game-grid show" id="multiplayer-grid" aria-hidden="false">
+        <div class="gcard ut-pg-card" id="mp-undertale-card" data-goto="undertale-multiplayer"
+          aria-label="Undertale Multiplayer">
+          <div class="gcard-inner">
+            <div class="gcard-glow"
+              style="background:radial-gradient(ellipse at 50% 0%,rgba(255,64,64,0.16),transparent 70%)"></div>
+            <div class="gcard-icon" style="color:#ff4040">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="9" y="16" width="58" height="46" rx="2" fill="rgba(255,64,64,.08)" stroke="currentColor"
+                  stroke-width="2.5" />
+                <path d="M38 54 L25 41 C19 35 21 25 29 25 C34 25 37 29 38 33 C39 29 42 25 47 25 C55 25 57 35 51 41 Z"
+                  fill="currentColor" />
+                <path d="M16 23H23M53 23H60M16 55H23M53 55H60" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" opacity=".72" />
+                <circle cx="25" cy="34" r="3" fill="#ffee44" />
+                <circle cx="51" cy="34" r="3" fill="#00f5c4" />
+              </svg>
+            </div>
+            <div class="gcard-name" style="color:#ff4040">UNDERTALE<br>MP</div>
+            <div class="gcard-desc">1 Boss contra<br>1 a 4 Almas.</div>
+            <div class="gcard-cta" style="border-color:#ff4040;color:#ff4040">JOGAR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kb-hint-hub show" id="multiplayer-play-hint" style="margin-top: 16px">
+        <span class="key">&larr;</span>
+        <span class="key">&rarr;</span>
+        navegar &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        selecionar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     UNDERTALE MULTIPLAYER
+     ===================================================================== -->
+  <section id="undertale-multiplayer" class="screen">
+    <nav class="nav utm-nav">
+      <div class="nav-back" id="utm-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color:#ff4040">UNDERTALE MP</span>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill" style="border-color:rgba(255,64,64,0.45);color:#ff4040">
+          <span class="lbl">SALA</span>
+          <span class="val" id="utm-room-pill">----</span>
+        </div>
+        <div class="score-pill win">
+          <span class="lbl">BOSS</span>
+          <span class="val" id="utm-time-pill">--</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="utm-shell">
+      <aside class="utm-panel utm-lobby-panel" id="utm-lobby-panel">
+        <div class="utm-panel-head">
+          <span>LOBBY</span>
+          <strong id="utm-connection-badge">OFFLINE</strong>
+        </div>
+
+        <label class="utm-field">
+          <span>Servidor</span>
+          <input id="utm-server-url" type="text" placeholder="mesma origem ou URL do ngrok" maxlength="120" />
+        </label>
+        <label class="utm-field">
+          <span>Nome</span>
+          <input id="utm-player-name" type="text" maxlength="18" value="Jogador" />
+        </label>
+
+        <div class="utm-actions-grid">
+          <button class="utm-btn primary" id="utm-create-room" type="button">CRIAR SALA</button>
+          <label class="utm-field compact">
+            <span>Codigo</span>
+            <input id="utm-room-code" type="text" maxlength="4" placeholder="ABCD" />
+          </label>
+          <button class="utm-btn" id="utm-join-room" type="button">ENTRAR</button>
+        </div>
+
+        <div class="utm-room-display">
+          <span>CODIGO DA SALA</span>
+          <strong id="utm-current-room">----</strong>
+        </div>
+
+        <button class="utm-btn start" id="utm-start-game" type="button">INICIAR PARTIDA</button>
+
+        <div class="utm-status" id="utm-status">Conecte ao servidor para criar uma sala.</div>
+      </aside>
+
+      <main class="utm-stage">
+        <section class="utm-lobby-hero" id="utm-lobby-hero" aria-label="Lobby Undertale Multiplayer">
+          <div class="utm-lobby-kicker">SALA ONLINE</div>
+          <h2>Lobby de batalha</h2>
+          <p>O host inicia quando todos estiverem prontos. O Boss e as Almas sao definidos por sorteio.</p>
+          <div class="utm-lobby-code">
+            <span>Codigo</span>
+            <strong id="utm-hero-room-code">----</strong>
+          </div>
+          <div class="utm-control-cards">
+            <div>
+              <span>Boss</span>
+              <strong>Setas/WASD movem e miram</strong>
+              <small>Z tiro · X leque · C ossos</small>
+            </div>
+            <div>
+              <span>Almas</span>
+              <strong>Setas/WASD para desviar</strong>
+              <small>Z tiro · Shift dash</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="utm-carousel-panel" id="utm-carousel-panel" aria-label="Sorteio do Boss">
+          <div class="utm-lobby-kicker">SORTEIO DO BOSS</div>
+          <div class="utm-carousel-window">
+            <div class="utm-carousel-track" id="utm-carousel-track"></div>
+            <div class="utm-carousel-focus" aria-hidden="true">BOSS</div>
+          </div>
+          <strong class="utm-carousel-result" id="utm-carousel-result">Girando...</strong>
+        </section>
+
+        <div class="utm-stage-top">
+          <div class="utm-bossplate">
+            <span>BOSS</span>
+            <strong id="utm-boss-name">AGUARDANDO</strong>
+          </div>
+          <div class="utm-result" id="utm-result">LOBBY</div>
+        </div>
+
+        <canvas id="utm-canvas" width="720" height="420" aria-label="Arena Undertale Multiplayer"></canvas>
+
+        <div class="ut-dialog utm-dialog">
+          <div class="ut-dialog-text" id="utm-dialog-text">Crie uma sala, espere os jogadores e inicie o sorteio do Boss.</div>
+        </div>
+
+        <div class="utm-ability-row">
+          <button class="utm-btn" id="utm-action-shot" type="button">Z TIRO</button>
+          <button class="utm-btn" id="utm-action-ring" type="button">X LEQUE</button>
+          <button class="utm-btn" id="utm-action-wall" type="button">C OSSOS</button>
+          <button class="utm-btn soul" id="utm-action-dash" type="button">SHIFT DASH</button>
+        </div>
+      </main>
+
+      <aside class="utm-panel utm-roster-panel">
+        <div class="utm-panel-head">
+          <span>JOGADORES</span>
+          <strong id="utm-player-count">0/5</strong>
+        </div>
+        <div class="utm-roster" id="utm-roster"></div>
+        <div class="utm-mini-help">
+          <span><b>Boss</b> e sorteado quando o host inicia.</span>
+          <span><b>Almas</b> vencem ao zerar o HP do Boss.</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     CONTROLE DE LUZ
+     ===================================================================== -->
+  <section id="light-switch" class="screen eval-screen light-room">
+    <div class="nav">
+      <button class="nav-back" id="light-back" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 6L9 12L15 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        VOLTAR
+      </button>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill win"><span class="lbl">ACESAS</span><span class="val" id="light-count">0</span></div>
+      </div>
+    </div>
+    <div class="eval-wrap">
+      <div class="synth-head">
+        <p class="game-sub">PROJETO 1</p>
+        <h2 class="synth-title">CONTROLE DE LUZ</h2>
+      </div>
+      <div class="light-stage" id="light-stage">
+        <div class="room-art" aria-hidden="true">
+          <div class="room-window"></div>
+          <div class="room-bed">
+            <div class="bed-pillow"></div>
+            <div class="bed-blanket"></div>
+          </div>
+          <div class="room-desk"></div>
+          <div class="desk-lamp"></div>
+          <div class="desk-screen"></div>
+          <div class="room-switch"></div>
+          <div class="lamp-halo"></div>
+          <div class="lamp-cord"></div>
+          <div class="lamp-css"></div>
+          <div class="lamp-base-css"></div>
+        </div>
+        <img id="lamp-off" class="lamp-img" alt="Lampada apagada"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 220'><rect width='160' height='220' fill='%23080616'/><path d='M80 22C52 22 35 44 35 70c0 17 8 31 22 43v20h46v-20c14-12 22-26 22-43 0-26-17-48-45-48Z' fill='%23241a52' stroke='%2348507a' stroke-width='5'/><path d='M58 143h44M64 160h32M69 177h22' stroke='%2348507a' stroke-width='7' stroke-linecap='round'/></svg>" />
+        <img id="lamp-on" class="lamp-img hidden" alt="Lampada acesa"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 220'><rect width='160' height='220' fill='%23201708'/><circle cx='80' cy='76' r='62' fill='%23f9e84d' opacity='.25'/><path d='M80 22C52 22 35 44 35 70c0 17 8 31 22 43v20h46v-20c14-12 22-26 22-43 0-26-17-48-45-48Z' fill='%23f9e84d' stroke='%23fff7a8' stroke-width='5'/><path d='M58 143h44M64 160h32M69 177h22' stroke='%23fff7a8' stroke-width='7' stroke-linecap='round'/></svg>" />
+      </div>
+      <button class="eval-btn" id="light-toggle" type="button">LIGAR</button>
+      <div class="result-box idle" id="light-msg">A lampada esta apagada.</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     COFRINHO DIGITAL
+     ===================================================================== -->
+  <section id="piggy-bank" class="screen eval-screen">
+    <div class="nav">
+      <button class="nav-back" id="piggy-back" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 6L9 12L15 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        VOLTAR
+      </button>
+    </div>
+    <div class="eval-wrap">
+      <div class="synth-head">
+        <p class="game-sub">PROJETO 2</p>
+        <h2 class="synth-title">COFRINHO DIGITAL</h2>
+      </div>
+      <div class="piggy-bank-visual">
+        <svg class="piggy-art safe-art" viewBox="0 0 260 170" aria-hidden="true">
+          <defs>
+            <filter id="piggyGlow" x="-25%" y="-35%" width="150%" height="170%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00f5c4" flood-opacity=".55" />
+              <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#00b4ff" flood-opacity=".22" />
+            </filter>
+            <filter id="coinGlow" x="-45%" y="-45%" width="190%" height="190%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#f9e84d" flood-opacity=".75" />
+              <feDropShadow dx="0" dy="0" stdDeviation="9" flood-color="#ff8c00" flood-opacity=".3" />
+            </filter>
+          </defs>
+          <g filter="url(#piggyGlow)">
+            <rect class="safe-body" x="43" y="28" width="174" height="124" rx="14" />
+            <g class="safe-door-group">
+              <rect class="safe-door" x="63" y="45" width="134" height="90" rx="8" />
+              <circle class="safe-dial" cx="130" cy="90" r="24" />
+              <path class="safe-dial-mark"
+                d="M130 66V78M130 102V114M106 90H118M142 90H154M113 73L121 81M139 99L147 107M147 73L139 81M121 99L113 107" />
+              <rect class="safe-handle" x="157" y="82" width="22" height="16" rx="4" />
+              <path class="safe-slot" d="M93 58H167" />
+            </g>
+            <path class="safe-feet" d="M70 152V162M190 152V162" />
+            <path class="safe-corner" d="M55 54V42H67M205 54V42H193M55 126V138H67M205 126V138H193" />
+          </g>
+        </svg>
+        <div class="piggy-drop-coin" id="piggy-drop-coin">$</div>
+        <div class="piggy-burst" id="piggy-burst" aria-hidden="true"></div>
+        <div class="piggy-total" id="piggy-total">R$ 0,00</div>
+        <div class="piggy-meter">
+          <div class="piggy-fill" id="piggy-fill"></div>
+        </div>
+      </div>
+      <div class="coin-buttons">
+        <button class="eval-btn" id="piggy-coin-010" type="button" data-coin="0.10">R$0,10</button>
+        <button class="eval-btn" id="piggy-coin-025" type="button" data-coin="0.25">R$0,25</button>
+        <button class="eval-btn" id="piggy-coin-050" type="button" data-coin="0.50">R$0,50</button>
+        <button class="eval-btn" id="piggy-coin-100" type="button" data-coin="1.00">R$1,00</button>
+      </div>
+      <div class="piggy-actions">
+        <input class="eval-input" id="piggy-withdraw" type="number" min="0" step="0.01" placeholder="Valor do saque" />
+        <button class="eval-btn" id="piggy-cashout" type="button">SACAR</button>
+        <button class="eval-btn danger" id="piggy-empty" type="button">ESVAZIAR COFRE</button>
+      </div>
+      <div class="piggy-counts" id="piggy-counts">R$0,10: 0 | R$0,25: 0 | R$0,50: 0 | R$1,00: 0</div>
+      <div class="result-box idle" id="piggy-msg">Adicione moedas ao cofre.</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     POMODORO
+     ===================================================================== -->
+  <section id="pomodoro" class="screen eval-screen pomo-screen">
+    <div class="nav">
+      <button class="nav-back" id="pomo-back" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 6L9 12L15 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        VOLTAR
+      </button>
+    </div>
+    <div class="eval-wrap">
+      <div class="synth-head">
+        <p class="game-sub">PROJETO 3</p>
+        <h2 class="synth-title">POMODORO</h2>
+      </div>
+      <div class="pomo-board">
+        <div class="pomo-main">
+          <div class="pomo-timer" id="pomo-time">25:00</div>
+          <div class="pomo-mode" id="pomo-mode">FOCO</div>
+          <div class="synth-controls">
+            <button class="eval-btn" id="pomo-start" type="button">INICIAR</button>
+            <button class="eval-btn" id="pomo-pause" type="button">PAUSAR</button>
+            <button class="eval-btn" id="pomo-reset" type="button">RESETAR</button>
+          </div>
+          <div class="pomo-config">
+            <label>Foco <input class="eval-input" id="pomo-focus" type="number" min="1" max="90" value="25" /></label>
+            <label>Pausa <input class="eval-input" id="pomo-break" type="number" min="1" max="30" value="5" /></label>
+          </div>
+          <div class="result-box idle" id="pomo-msg">Configure, inicie e acompanhe a contagem regressiva.</div>
+        </div>
+
+        <aside class="pomo-todo">
+          <div class="pomo-todo-head">
+            <div>
+              <span>tarefas</span>
+              <strong id="pomo-task-count">0 pendentes</strong>
+            </div>
+            <button class="eval-btn danger" id="pomo-task-clear" type="button">LIMPAR FEITAS</button>
+          </div>
+          <div class="pomo-task-form">
+            <input class="eval-input" id="pomo-task-input" type="text" maxlength="48" placeholder="Nova tarefa de foco" />
+            <button class="eval-btn" id="pomo-task-add" type="button">ADICIONAR</button>
+          </div>
+          <ul class="pomo-task-list" id="pomo-task-list" aria-label="Lista de tarefas do Pomodoro"></ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     TECLADO VIRTUAL -- Sons na Web
+     ===================================================================== -->
+  <section id="virtual-keyboard" class="screen synth-screen">
+    <div class="nav">
+      <button class="nav-back" id="synth-back" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 6L9 12L15 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        VOLTAR
+      </button>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill win"><span class="lbl">TOQUES</span><span class="val" id="synth-count">0</span></div>
+      </div>
+    </div>
+
+    <div class="synth-wrap">
+      <div class="synth-head">
+        <p class="game-sub">PROJETO 4</p>
+        <h2 class="synth-title">TECLADO VIRTUAL</h2>
+        <div class="synth-now" id="synth-now">TOQUE UMA NOTA</div>
+      </div>
+
+      <div class="synth-panel" id="synth-panel">
+        <div class="synth-leds" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="synth-keys synth-piano" id="synth-keys" aria-label="Teclado musical de piano">
+          <div class="synth-piano-bank" aria-label="Oitava grave">
+            <div class="synth-white-row">
+              <button class="synth-key piano-white" type="button" data-synth-key="z" data-synth-index="0"><span class="note">DO</span><span class="kbd">Z</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="x" data-synth-index="2"><span class="note">RE</span><span class="kbd">X</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="c" data-synth-index="4"><span class="note">MI</span><span class="kbd">C</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="v" data-synth-index="5"><span class="note">FA</span><span class="kbd">V</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="b" data-synth-index="7"><span class="note">SOL</span><span class="kbd">B</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="n" data-synth-index="9"><span class="note">LA</span><span class="kbd">N</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="m" data-synth-index="11"><span class="note">SI</span><span class="kbd">M</span></button>
+            </div>
+            <button class="synth-key piano-black" style="left: 10.2%" type="button" data-synth-key="s" data-synth-index="1"><span class="note">DO#</span><span class="kbd">S</span></button>
+            <button class="synth-key piano-black" style="left: 24.45%" type="button" data-synth-key="d" data-synth-index="3"><span class="note">RE#</span><span class="kbd">D</span></button>
+            <button class="synth-key piano-black" style="left: 53.05%" type="button" data-synth-key="g" data-synth-index="6"><span class="note">FA#</span><span class="kbd">G</span></button>
+            <button class="synth-key piano-black" style="left: 67.25%" type="button" data-synth-key="h" data-synth-index="8"><span class="note">SOL#</span><span class="kbd">H</span></button>
+            <button class="synth-key piano-black" style="left: 81.55%" type="button" data-synth-key="j" data-synth-index="10"><span class="note">LA#</span><span class="kbd">J</span></button>
+          </div>
+
+          <div class="synth-piano-bank" aria-label="Oitava aguda">
+            <div class="synth-white-row">
+              <button class="synth-key piano-white" type="button" data-synth-key="q" data-synth-index="12"><span class="note">DO</span><span class="kbd">Q</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="w" data-synth-index="14"><span class="note">RE</span><span class="kbd">W</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="e" data-synth-index="16"><span class="note">MI</span><span class="kbd">E</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="r" data-synth-index="17"><span class="note">FA</span><span class="kbd">R</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="t" data-synth-index="19"><span class="note">SOL</span><span class="kbd">T</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="y" data-synth-index="21"><span class="note">LA</span><span class="kbd">Y</span></button>
+              <button class="synth-key piano-white" type="button" data-synth-key="u" data-synth-index="23"><span class="note">SI</span><span class="kbd">U</span></button>
+            </div>
+            <button class="synth-key piano-black" style="left: 10.2%" type="button" data-synth-key="2" data-synth-index="13"><span class="note">DO#</span><span class="kbd">2</span></button>
+            <button class="synth-key piano-black" style="left: 24.45%" type="button" data-synth-key="3" data-synth-index="15"><span class="note">RE#</span><span class="kbd">3</span></button>
+            <button class="synth-key piano-black" style="left: 53.05%" type="button" data-synth-key="5" data-synth-index="18"><span class="note">FA#</span><span class="kbd">5</span></button>
+            <button class="synth-key piano-black" style="left: 67.25%" type="button" data-synth-key="6" data-synth-index="20"><span class="note">SOL#</span><span class="kbd">6</span></button>
+            <button class="synth-key piano-black" style="left: 81.55%" type="button" data-synth-key="7" data-synth-index="22"><span class="note">LA#</span><span class="kbd">7</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="synth-controls">
+        <button class="synth-btn" id="synth-record" type="button">GRAVAR</button>
+        <button class="synth-btn" id="synth-play" type="button">REPRODUZIR</button>
+        <button class="synth-btn" id="synth-clear" type="button">LIMPAR</button>
+        <button class="synth-btn" id="synth-oct-down" type="button">OITAVA -</button>
+        <div class="synth-octave" id="synth-octave">OITAVA 4</div>
+        <button class="synth-btn" id="synth-oct-up" type="button">OITAVA +</button>
+      </div>
+      <div class="synth-presets" aria-label="Músicas predefinidas">
+        <div class="synth-presets-head">
+          <span>MÚSICAS PRONTAS</span>
+          <small>clique para tocar uma sequência</small>
+        </div>
+        <div class="synth-song-grid">
+          <button class="synth-btn synth-song" id="synth-song-scale" type="button" data-synth-song="scale">PARAB&Eacute;NS</button>
+          <button class="synth-btn synth-song" id="synth-song-twinkle" type="button" data-synth-song="twinkle">BRILHA</button>
+          <button class="synth-btn synth-song" id="synth-song-ode" type="button" data-synth-song="ode">ODE</button>
+          <button class="synth-btn synth-song" id="synth-song-neon" type="button" data-synth-song="neon">JINGLE</button>
+        </div>
+      </div>
+      <div class="kb-hint-game">
+        toque no piano ou use <span class="key">Z</span><span class="key">S</span><span class="key">X</span><span class="key">D</span>...
+        &nbsp;|&nbsp; <span class="key">CAPS</span> gravar
+        &nbsp;|&nbsp; <span class="key">P</span> reproduzir
+        &nbsp;|&nbsp; <span class="key">SETAS</span> m&uacute;sicas &nbsp;|&nbsp; <span class="key">ENTER</span> tocar
+        &nbsp;|&nbsp; <span class="key">TAB</span>/<span class="key">SHIFT</span> oitava
+        &nbsp;|&nbsp; <span class="key">ESC</span> voltar
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     ARCADE HUB -- Insert Coin + Jogos
+     ===================================================================== -->
+  <section id="arcade-hub" class="screen">
+    <div class="arcade-wrap">
+      <div class="hub-hero" id="arc-hero">
+        <h1 class="hub-title">CL&Aacute;SSICOS</h1>
+        <p class="hub-sub">JOGOS CL&Aacute;SSICOS</p>
+        <div class="hub-coin-btn" id="btn-coin" role="button" aria-label="Inserir moeda">
+          INSERT COIN TO PLAY
+        </div>
+        <div class="kb-hint-hub" id="hub-hint" aria-live="polite">
+          <span class="key">&larr;</span>
+          <span class="key">&rarr;</span>
+          navegar &nbsp;|&nbsp;
+          <span class="key">ENTER</span>
+          selecionar &nbsp;|&nbsp;
+          <span class="key">I</span>
+          chat IA
+        </div>
+      </div>
+
+      <div class="game-grid" id="game-grid">
+        <!-- JOKENPO -->
+        <div class="gcard gcard-jkp" data-goto="jokenpo" aria-label="Jokenpo">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--purple)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="38" cy="38" r="33" fill="rgba(157,92,255,.08)" stroke="currentColor" stroke-width="2.4" />
+                <path d="M13 48 L21 33 L34 27 L45 33 L51 47 L43 58 H24 Z" fill="currentColor" opacity=".78" />
+                <path d="M23 35 L31 44 M39 34 L33 48" stroke="rgba(5,3,14,.45)" stroke-width="2.3"
+                  stroke-linecap="round" />
+                <path d="M45 18 H61 L66 23 V50 H45 Z" fill="rgba(157,92,255,.18)" stroke="currentColor"
+                  stroke-width="2.2" />
+                <path d="M60 18 V24 H66" stroke="currentColor" stroke-width="2.2" />
+                <path d="M50 33 H61 M50 40 H59" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <circle cx="23" cy="20" r="5" stroke="currentColor" stroke-width="2.2" />
+                <circle cx="34" cy="20" r="5" stroke="currentColor" stroke-width="2.2" />
+                <path d="M27 24 L19 40 M31 24 L40 40" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="gcard-name">JOKENPO</div>
+            <div class="gcard-desc">
+              Pedra, Papel ou
+              <br />
+              Tesoura?
+            </div>
+            <div class="gcard-cta">JOGAR</div>
+          </div>
+        </div>
+
+        <!-- DADOS -->
+        <div class="gcard gcard-dados" data-goto="dados" aria-label="Dados">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--yellow)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="56" height="56" rx="13" fill="rgba(249,232,77,.1)" stroke="currentColor"
+                  stroke-width="2.8" />
+                <circle cx="26" cy="26" r="5.5" fill="currentColor" />
+                <circle cx="50" cy="26" r="5.5" fill="currentColor" />
+                <circle cx="26" cy="38" r="5.5" fill="currentColor" />
+                <circle cx="50" cy="38" r="5.5" fill="currentColor" />
+                <circle cx="26" cy="50" r="5.5" fill="currentColor" />
+                <circle cx="50" cy="50" r="5.5" fill="currentColor" />
+              </svg>
+            </div>
+            <div class="gcard-name">
+              BATALHA DE
+              <br />
+              DADOS
+            </div>
+            <div class="gcard-desc">
+              Maior numero
+              <br />
+              vence!
+            </div>
+            <div class="gcard-cta">JOGAR</div>
+          </div>
+        </div>
+
+        <!-- CARA OU COROA -->
+        <div class="gcard gcard-coin" data-goto="caraCoroa" aria-label="Cara ou Coroa">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--cyan)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="31" cy="38" r="25" fill="rgba(0,245,196,.08)" stroke="currentColor" stroke-width="2.4" />
+                <circle cx="31" cy="38" r="18" stroke="currentColor" stroke-width="1.5" opacity=".35" />
+                <circle cx="25" cy="34" r="2.5" fill="currentColor" />
+                <circle cx="37" cy="34" r="2.5" fill="currentColor" />
+                <path d="M24 43 Q31 49 38 43" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+                <circle cx="48" cy="38" r="25" fill="rgba(0,245,196,.06)" stroke="currentColor" stroke-width="2.4"
+                  opacity=".72" />
+                <path d="M35 49 H61 L57 35 L52 41 L48 29 L44 41 L39 35 Z" fill="currentColor" opacity=".78" />
+                <rect x="37" y="49" width="22" height="5" rx="2.5" fill="currentColor" opacity=".9" />
+                <circle cx="48" cy="29" r="2.4" fill="currentColor" />
+              </svg>
+              <svg class="cc-choice-art" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+                <use href="#cc-face-duo"></use>
+                <circle cx="28" cy="38" r="24" fill="rgba(0,245,196,.06)" stroke="currentColor" stroke-width="2.2" />
+                <path
+                  d="M21 29 C19 23 23 18 31 17 C40 16 47 22 47 30 C47 38 42 42 37 43 L37 50 L44 57 H19 L26 50 L26 45 C21 43 18 39 18 34 C18 31 19 29 21 29Z"
+                  fill="currentColor" opacity=".55" />
+                <path d="M36 32 C42 26 48 25 54 27" stroke="#86e7ee" stroke-width="3" stroke-linecap="round" />
+                <ellipse cx="43" cy="27" rx="4" ry="2.2" fill="#86e7ee" transform="rotate(25 43 27)" />
+                <ellipse cx="50" cy="34" rx="4" ry="2.2" fill="#86e7ee" transform="rotate(25 50 34)" />
+                <circle cx="49" cy="40" r="24" fill="rgba(0,245,196,.04)" stroke="currentColor" stroke-width="2.2"
+                  opacity=".8" />
+                <path d="M35 47 C37 36 43 30 50 30 C57 30 63 36 65 47 C60 51 40 51 35 47Z" fill="currentColor"
+                  opacity=".55" />
+                <path d="M50 19 L58 34 L53 48 H47 L42 34 Z" fill="#9deeff" />
+                <path d="M50 19 L53 48 L47 48 Z" fill="#d6fbff" />
+              </svg>
+            </div>
+            <div class="gcard-name">
+              CARA OU
+              <br />
+              COROA
+            </div>
+            <div class="gcard-desc">
+              50% de chance &mdash;
+              <br />
+              escolha o lado!
+            </div>
+            <div class="gcard-cta">JOGAR</div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /game-grid -->
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     ARCADE HUB
+     ===================================================================== -->
+  <section id="arcade-games-hub" class="screen">
+    <div class="arcade-wrap">
+      <div class="hub-hero" id="arcade-games-hero">
+        <h1 class="hub-title">ARCADE</h1>
+        <p class="hub-sub">DESAFIOS NEON</p>
+        <div class="arcade-boot-panel" id="arcade-boot-panel">
+          <div class="arcade-cabinet">
+            <div class="cabinet-screen">
+              <span class="scan"></span>
+              <strong>NEON OS</strong>
+              <em>READY</em>
+            </div>
+            <div class="cabinet-controls">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="hub-power-btn" id="arcade-power-btn" role="button" aria-label="Ligar arcade">
+              POWER UP
+            </div>
+          </div>
+        </div>
+        <div class="kb-hint-hub show" id="arcade-games-entry-hint">
+          <span class="key">ENTER</span>
+          ligar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+      </div>
+
+      <div class="game-grid arcade-games-grid" id="arcade-games-grid" aria-hidden="true">
+        <div class="gcard ut-pg-card" data-goto="undertale-hub" aria-label="Undertale">
+          <div class="gcard-inner">
+            <div class="gcard-glow"
+              style="background:radial-gradient(ellipse at 50% 0%,rgba(255,64,64,0.14),transparent 70%)"></div>
+            <div class="gcard-icon" style="color:#ff4040">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="12" y="20" width="52" height="42" rx="2" fill="rgba(255,45,120,.08)" stroke="currentColor"
+                  stroke-width="2.5" />
+                <path d="M38 56 L24 42 C18 36 20 26 29 26 C34 26 37 29 38 33 C39 29 42 26 47 26 C56 26 58 36 52 42 Z"
+                  fill="currentColor" />
+                <path d="M17 16 H27 M49 16 H59 M17 66 H27 M49 66 H59" stroke="currentColor" stroke-width="2.4"
+                  stroke-linecap="round" opacity=".75" />
+                <path d="M24 12 L52 12 M24 70 L52 70" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  opacity=".35" />
+              </svg>
+            </div>
+            <div class="gcard-name" style="color:#ff4040">UNDERTALE</div>
+            <div class="gcard-desc">Boss fights<br>e sobrevivencia!</div>
+            <div class="gcard-cta" style="border-color:#ff4040;color:#ff4040">JOGAR</div>
+          </div>
+        </div>
+
+        <div class="gcard gcard-geo" data-goto="geometry-race" aria-label="Geometry Race">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--blue)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="8" y="16" width="60" height="44" rx="7" fill="rgba(0,180,255,.1)" stroke="currentColor"
+                  stroke-width="2.4" />
+                <path d="M13 48 H62" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".36" />
+                <path d="M13 28 H62" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".22" />
+                <rect x="18" y="38" width="12" height="12" rx="2" fill="currentColor" />
+                <rect x="18" y="20" width="12" height="12" rx="2" fill="currentColor" opacity=".72" />
+                <path d="M40 50 L48 36 L56 50 Z" fill="currentColor" opacity=".88" />
+                <path d="M40 32 L48 18 L56 32 Z" fill="currentColor" opacity=".48" />
+                <path d="M31 44 H39 M31 26 H39" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="gcard-name">GEOMETRY<br>RACE</div>
+            <div class="gcard-desc">Corrida split-screen<br>de sobrevivencia!</div>
+            <div class="gcard-cta">JOGAR</div>
+          </div>
+        </div>
+
+        <div class="gcard gcard-cyber" data-goto="cyber-maze" aria-label="CupShock">
+          <div class="gcard-inner">
+            <div class="gcard-glow"></div>
+            <div class="gcard-icon" style="color: var(--pink)">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M38 7L59 18V44L38 69L17 44V18L38 7Z" fill="rgba(157,92,255,.14)"
+                  stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" />
+                <path d="M26 25H50M24 38H52" stroke="#00f5c4" stroke-width="2.4" stroke-linecap="round" />
+                <circle cx="38" cy="38" r="13" fill="rgba(0,245,196,.18)" stroke="#00f5c4" stroke-width="2.5" />
+                <circle cx="38" cy="38" r="5" fill="#f9e84d" />
+                <path d="M20 52L10 60M56 52L66 60M16 22L7 16M60 22L69 16" stroke="#ff2d78"
+                  stroke-width="2.5" stroke-linecap="round" />
+                <path d="M29 15L38 10L47 15" stroke="#9d5cff" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="gcard-name">CUP<br>SHOCK</div>
+            <div class="gcard-desc">Boss fight <br>estilo cuphead.</div>
+            <div class="gcard-cta">JOGAR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kb-hint-hub" id="arcade-games-play-hint" style="margin-top: 16px">
+        <span class="key">&larr;</span>
+        <span class="key">&rarr;</span>
+        navegar &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        selecionar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     JOKENPÔ
+     ===================================================================== -->
+  <section id="jokenpo" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="jkp-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo">JOKENPÔ</span>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill win">
+          <span class="lbl">WIN</span>
+          <span class="val" id="jw">0</span>
+        </div>
+        <div class="score-pill lose">
+          <span class="lbl">LOSE</span>
+          <span class="val" id="jl">0</span>
+        </div>
+        <div class="score-pill draw">
+          <span class="lbl">DRAW</span>
+          <span class="val" id="jd">0</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="jkp-arena">
+      <p class="game-sub">— Escolha sua jogada —</p>
+      <div class="kb-hint-game">
+        <span class="key">←</span>
+        <span class="key">→</span>
+        escolher &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        confirmar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+
+      <div class="jkp-cards" id="jkp-cards">
+        <!-- PEDRA: punho fechado – outline neon -->
+        <div class="jkp-card" data-jkp="pedra" aria-label="Pedra">
+          <div class="jkp-card-icon">
+            <!-- PEDRA: punho fechado sólido -->
+            <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Nós dos dedos -->
+              <path d="M9 38 L15 25 L27 15 L42 18 L52 31 L47 45 L34 53 L18 49 Z" fill="currentColor" />
+              <path d="M17 28 L28 34 M36 20 L31 33 M43 33 L33 45" stroke="rgba(5,3,14,.42)" stroke-width="2.4"
+                stroke-linecap="round" />
+              <path d="M15 25 L27 15 L42 18" stroke="rgba(255,255,255,.22)" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <span class="jkp-lbl">PEDRA</span>
+        </div>
+
+        <!-- TESOURA: sinal de paz / V – outline neon -->
+        <div class="jkp-card" data-jkp="tesoura" aria-label="Tesoura">
+          <div class="jkp-card-icon">
+            <!-- TESOURA: dedo indicador + médio em V, demais dobrados -->
+            <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Palma base -->
+              <circle cx="19" cy="43" r="8" stroke="currentColor" stroke-width="4" />
+              <circle cx="41" cy="43" r="8" stroke="currentColor" stroke-width="4" />
+              <path d="M25 38 L49 13 M35 38 L11 13" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+              <path d="M30 35 L30 47" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+              <!-- Indicador (esquerdo do V) -->
+              <!-- Médio (direito do V) -->
+              <!-- Anelar dobrado (pequeno) -->
+              <!-- Mínimo dobrado -->
+              <!-- Polegar -->
+              <!-- Separação em V entre indicador e médio -->
+            </svg>
+          </div>
+          <span class="jkp-lbl">TESOURA</span>
+        </div>
+
+        <!-- PAPEL: mão aberta, todos os dedos – outline neon -->
+        <div class="jkp-card" data-jkp="papel" aria-label="Papel">
+          <div class="jkp-card-icon">
+            <!-- PAPEL: mão aberta plana com todos os dedos estendidos -->
+            <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Palma -->
+              <path d="M16 7 H39 L50 18 V53 H16 Z" fill="rgba(157,92,255,.16)" stroke="currentColor" stroke-width="3" />
+              <path d="M39 7 V19 H50" stroke="currentColor" stroke-width="3" />
+              <path d="M23 29 H42 M23 37 H42 M23 45 H35" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" />
+              <!-- Mínimo -->
+              <!-- Anelar -->
+              <!-- Médio -->
+              <!-- Indicador -->
+              <!-- Polegar -->
+              <!-- Linha da palma -->
+            </svg>
+          </div>
+          <span class="jkp-lbl">PAPEL</span>
+        </div>
+      </div>
+
+      <!-- Painel VS -->
+      <div class="jkp-vs-panel">
+        <div class="jkp-vs-side player">
+          <span class="jkp-vs-lbl">VOCÊ</span>
+          <div class="jkp-vs-ch" id="jkp-pc">
+            <svg viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <text x="30" y="42" text-anchor="middle" font-size="32" font-family="monospace" opacity=".28">
+                ?
+              </text>
+            </svg>
+          </div>
+        </div>
+        <div class="jkp-vs-div">VS</div>
+        <div class="jkp-vs-side">
+          <span class="jkp-vs-lbl">CPU</span>
+          <div class="jkp-vs-ch" id="jkp-ic">
+            <svg viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <text x="30" y="42" text-anchor="middle" font-size="32" font-family="monospace" opacity=".28">
+                ?
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-box idle" id="jkp-result">Faça sua escolha acima</div>
+      <div class="btn-arc btn-jkp" id="jkp-new" role="button" style="display: none">
+        NOVA RODADA
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     DADOS
+     ===================================================================== -->
+  <section id="dados" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="dados-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo">DADOS</span>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill win">
+          <span class="lbl">WIN</span>
+          <span class="val" id="dw">0</span>
+        </div>
+        <div class="score-pill lose">
+          <span class="lbl">LOSE</span>
+          <span class="val" id="dl">0</span>
+        </div>
+        <div class="score-pill draw">
+          <span class="lbl">DRAW</span>
+          <span class="val" id="dd">0</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="dados-arena">
+      <p class="game-sub">— Lance os dados e vença —</p>
+      <div class="dados-stats">
+        <div>
+          <span>RODADAS</span>
+          <strong id="dr">0</strong>
+        </div>
+        <div>
+          <span>PLACAR</span>
+          <strong id="ds">0 : 0</strong>
+        </div>
+      </div>
+      <div class="dados-field">
+        <div class="dado-side">
+          <div class="dado-lbl">JOGADOR</div>
+          <div class="dado-face" id="df-p">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="dado-num p" id="dn-p">-</div>
+        </div>
+        <span class="dados-vs">VS</span>
+        <div class="dado-side">
+          <div class="dado-lbl">CPU</div>
+          <div class="dado-face" id="df-i">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="dado-num ia" id="dn-i">-</div>
+        </div>
+      </div>
+      <div class="kb-hint-game">
+        <span class="key">ENTER</span>
+        lançar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+      <div class="result-box idle" id="dados-res">Pressione ENTER para lançar!</div>
+      <div class="btn-arc btn-dice kb-focus" id="btn-dados" role="button">LANÇAR DADOS</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     CARA OU COROA
+     ===================================================================== -->
+  <section id="caraCoroa" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="cc-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo">CARA OU COROA</span>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill win">
+          <span class="lbl">WIN</span>
+          <span class="val" id="cw">0</span>
+        </div>
+        <div class="score-pill lose">
+          <span class="lbl">LOSE</span>
+          <span class="val" id="cl">0</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="cc-arena">
+      <p class="game-sub">— Escolha um lado —</p>
+
+      <div class="coin-stage">
+        <div class="coin3d" id="coin3d">
+          <!-- CARA — "1 REAL" lado monetário -->
+          <div class="coin-face coin-cara">
+            <svg class="coin-face-img" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Inner border ring -->
+              <circle cx="45" cy="45" r="33" stroke="rgba(80,45,0,.28)" stroke-width="1.8" />
+              <!-- Dot stars at radius 30 (12 posições) -->
+              <circle cx="75" cy="45" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="71" cy="60" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="60" cy="71" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="45" cy="75" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="30" cy="71" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="19" cy="60" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="15" cy="45" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="19" cy="30" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="30" cy="19" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="45" cy="15" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="60" cy="19" r="2.2" fill="rgba(80,45,0,.55)" />
+              <circle cx="71" cy="30" r="2.2" fill="rgba(80,45,0,.55)" />
+              <!-- Decorative lines -->
+              <line x1="24" y1="38" x2="66" y2="38" stroke="rgba(80,45,0,.18)" stroke-width="1" />
+              <!-- Large "1" -->
+              <text x="45" y="58" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-size="32"
+                font-weight="bold" fill="rgba(80,45,0,.75)">
+                1
+              </text>
+              <!-- "REAL" -->
+              <text x="45" y="71" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-size="8.5"
+                letter-spacing="3.5" fill="rgba(80,45,0,.65)">
+                REAL
+              </text>
+              <!-- Top shine -->
+              <path d="M 26 22 Q 45 14 64 22" stroke="rgba(255,255,255,.42)" stroke-width="2.2" fill="none"
+                stroke-linecap="round" />
+              <circle cx="45" cy="45" r="36" fill="#f9e84d" />
+              <circle cx="45" cy="45" r="34" stroke="rgba(80,45,0,.28)" stroke-width="2" />
+              <circle cx="45" cy="45" r="25" fill="rgba(80,45,0,.08)" stroke="rgba(80,45,0,.18)" stroke-width="1.5" />
+              <circle cx="35" cy="39" r="4" fill="rgba(80,45,0,.72)" />
+              <circle cx="55" cy="39" r="4" fill="rgba(80,45,0,.72)" />
+              <path d="M33 54 Q45 65 57 54" stroke="rgba(80,45,0,.72)" stroke-width="4" fill="none"
+                stroke-linecap="round" />
+              <path d="M27 23 Q45 14 63 23" stroke="rgba(255,255,255,.42)" stroke-width="2.2" fill="none"
+                stroke-linecap="round" />
+              <text x="45" y="80" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-size="8"
+                letter-spacing="3" fill="rgba(80,45,0,.66)">
+                CARA
+              </text>
+            </svg>
+            <svg class="coin-face-img coin-art-current" viewBox="0 0 120 120" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <use href="#cc-face-cara"></use>
+            </svg>
+            <div class="coin-lbl">CARA</div>
+          </div>
+
+          <!-- COROA — rosto da república lado anverso -->
+          <div class="coin-face coin-coroa">
+            <svg class="coin-face-img" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Inner border ring -->
+              <circle cx="45" cy="45" r="33" stroke="rgba(50,50,60,.24)" stroke-width="1.8" />
+              <!-- Perfil feminino – cabeça voltada à direita -->
+              <!-- Cabelo / silhueta traseira -->
+              <path d="M 30 26 Q 28 16 38 11 Q 50 7 60 14 Q 68 20 66 32 Q 64 42 60 50 Q 56 58 52 64 L 48 72"
+                fill="rgba(50,50,60,.52)" />
+              <!-- Face frontal / perfil -->
+              <path d="M 38 11 Q 32 14 30 22 Q 28 30 30 38 Q 32 46 36 52 Q 40 58 46 62 L 48 72"
+                fill="rgba(50,50,60,.48)" />
+              <!-- Pescoço -->
+              <rect x="41" y="68" width="12" height="12" rx="4" fill="rgba(50,50,60,.45)" />
+              <!-- Nariz projetado (perfil) -->
+              <path d="M 66 34 Q 70 36 69 41 Q 68 46 64 47" fill="rgba(50,50,60,.35)" />
+              <!-- Ramo de louro (esquerda) -->
+              <path d="M 24 30 Q 16 30 14 37" stroke="rgba(50,50,60,.42)" stroke-width="2.2" fill="none"
+                stroke-linecap="round" />
+              <path d="M 17 34 Q 13 40 14 47" stroke="rgba(50,50,60,.38)" stroke-width="2" fill="none"
+                stroke-linecap="round" />
+              <path d="M 14 44 Q 13 50 16 55" stroke="rgba(50,50,60,.34)" stroke-width="2" fill="none"
+                stroke-linecap="round" />
+              <!-- Folhinhas no ramo -->
+              <ellipse cx="17" cy="32" rx="4" ry="2.5" fill="rgba(50,50,60,.35)" transform="rotate(-20 17 32)" />
+              <ellipse cx="14" cy="43" rx="4" ry="2.5" fill="rgba(50,50,60,.32)" transform="rotate(-10 14 43)" />
+              <!-- "BRASIL" -->
+              <text x="45" y="84" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-size="7.5"
+                letter-spacing="3" fill="rgba(50,50,60,.68)">
+                BRASIL
+              </text>
+              <!-- Top shine -->
+              <path d="M 26 20 Q 45 12 64 20" stroke="rgba(255,255,255,.44)" stroke-width="2.2" fill="none"
+                stroke-linecap="round" />
+              <circle cx="45" cy="45" r="36" fill="#e8e8e8" />
+              <circle cx="45" cy="45" r="34" stroke="rgba(50,50,60,.24)" stroke-width="2" />
+              <path d="M22 56 H68 L64 37 L56 46 L45 25 L34 46 L26 37 Z" fill="rgba(50,50,60,.6)" />
+              <rect x="27" y="56" width="36" height="9" rx="4.5" fill="rgba(50,50,60,.58)" />
+              <circle cx="45" cy="25" r="4" fill="rgba(50,50,60,.72)" />
+              <circle cx="26" cy="37" r="3" fill="rgba(50,50,60,.62)" />
+              <circle cx="64" cy="37" r="3" fill="rgba(50,50,60,.62)" />
+              <path d="M27 22 Q45 13 63 22" stroke="rgba(255,255,255,.44)" stroke-width="2.2" fill="none"
+                stroke-linecap="round" />
+              <text x="45" y="80" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-size="8"
+                letter-spacing="3" fill="rgba(50,50,60,.68)">
+                COROA
+              </text>
+            </svg>
+            <svg class="coin-face-img coin-art-current" viewBox="0 0 120 120" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <use href="#cc-face-coroa"></use>
+            </svg>
+            <div class="coin-lbl">COROA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões -->
+      <div class="cc-btns">
+        <!-- Botão CARA -->
+        <div class="cc-btn cara-btn" id="btn-cara" role="button" aria-label="Cara">
+          <!-- CARA: moeda dourada com "1" -->
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Moeda -->
+            <circle cx="22" cy="22" r="20" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="2" />
+            <circle cx="22" cy="22" r="15" stroke="currentColor" stroke-width="1" opacity=".35" />
+            <!-- Brilho superior -->
+            <path d="M12 12 Q22 7 32 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"
+              fill="none" />
+            <!-- Número 1 central -->
+            <circle cx="17" cy="20" r="2" fill="currentColor" />
+            <circle cx="27" cy="20" r="2" fill="currentColor" />
+            <path d="M16 27 Q22 32 28 27" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" />
+            <!-- Detalhe inferior -->
+          </svg>
+          <svg class="cc-choice-art" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <use href="#cc-face-cara"></use>
+          </svg>
+          CARA
+        </div>
+
+        <!-- Botão COROA -->
+        <div class="cc-btn coroa-btn" id="btn-coroa" role="button" aria-label="Coroa">
+          <!-- COROA: coroa clássica com pontas e faixa base -->
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Fundo circular -->
+            <circle cx="22" cy="22" r="20" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width="2" />
+            <!-- Faixa base da coroa -->
+            <rect x="8" y="31" width="28" height="7" rx="3" fill="currentColor" opacity=".85" />
+            <!-- Corpo da coroa -->
+            <path d="M8 31 L8 20 L14 26 L22 11 L30 26 L36 20 L36 31 Z" fill="currentColor" opacity=".8" />
+            <!-- Gemas nas pontas -->
+            <circle cx="22" cy="11" r="3" fill="currentColor" />
+            <circle cx="8" cy="20" r="2.5" fill="currentColor" opacity=".75" />
+            <circle cx="36" cy="20" r="2.5" fill="currentColor" opacity=".75" />
+            <!-- Gema central no corpo -->
+            <circle cx="22" cy="26" r="3" fill="rgba(5,3,14,.5)" />
+            <circle cx="22" cy="26" r="1.5" fill="currentColor" opacity=".6" />
+          </svg>
+          <svg class="cc-choice-art" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <use href="#cc-face-coroa"></use>
+          </svg>
+          COROA
+        </div>
+      </div>
+
+      <div class="kb-hint-game">
+        <span class="key">←</span>
+        <span class="key">→</span>
+        escolher &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        confirmar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+
+      <div class="result-box idle" id="cc-result">Escolha CARA ou COROA acima</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     GEOMETRY RACE
+     ===================================================================== -->
+  <section id="geometry-race" class="screen geo-screen">
+    <nav class="nav geo-nav">
+      <div class="nav-back" id="geo-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color: var(--blue)">GEOMETRY RACE</span>
+      <div class="spacer"></div>
+      <div class="geo-meter-pill">
+        <span class="lbl">METROS</span>
+        <span id="geo-meter">0m</span>
+      </div>
+    </nav>
+
+    <div class="geo-wrap">
+      <div class="geo-headline">
+        <div>
+          <span class="geo-player-tag p1">PLAYER 1</span>
+          <span class="geo-control-copy">W / SPACE</span>
+        </div>
+        <div class="geo-mode-pill" id="geo-mode-pill">CUBE</div>
+        <div>
+          <span class="geo-player-tag p2">PLAYER 2</span>
+          <span class="geo-control-copy">ARROW UP</span>
+        </div>
+      </div>
+
+      <div class="geo-stage">
+        <canvas id="geo-canvas" width="1120" height="620"></canvas>
+        <div class="geo-countdown" id="geo-countdown" aria-live="polite">3</div>
+        <div class="geo-result-overlay" id="geo-result-overlay" aria-live="polite">
+          <div class="geo-result-title" id="geo-result-title">PLAYER 1 WINS</div>
+          <div class="geo-result-sub" id="geo-result-sub">ENTER para reiniciar</div>
+        </div>
+      </div>
+
+      <div class="kb-hint-game geo-hint">
+        P1
+        <span class="key">W</span>
+        <span class="key">SPACE</span>
+        &nbsp;|&nbsp; P2
+        <span class="key">&uarr;</span>
+        &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        reiniciar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     CUPSHOCK
+     ===================================================================== -->
+  <section id="cyber-maze" class="screen cyber-screen tax-screen">
+    <nav class="nav cyber-nav">
+      <div class="nav-back" id="cyber-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color: var(--pink)">CUPSHOCK</span>
+      <div class="spacer"></div>
+      <div class="cyber-top-hud">
+        <div class="cyber-pill">
+          <span>FASE</span>
+          <strong id="cyber-level">01</strong>
+        </div>
+        <div class="cyber-pill">
+          <span>BOSS</span>
+          <strong id="cyber-time">100%</strong>
+        </div>
+        <div class="cyber-pill">
+          <span>RISCO</span>
+          <strong id="cyber-deaths">0%</strong>
+        </div>
+      </div>
+    </nav>
+
+    <div class="cyber-wrap">
+      <div class="cyber-statusbar">
+        <div>
+          <span class="cyber-label">MISSÃO</span>
+          <strong id="cyber-status">APROXIME-SE</strong>
+        </div>
+        <div>
+          <span class="cyber-label">ESPECIAL</span>
+          <strong id="cyber-dash">0%</strong>
+        </div>
+      </div>
+
+      <div class="cyber-stage">
+        <canvas id="cyber-canvas" width="1280" height="720"></canvas>
+        <div class="tax-boss-title" aria-hidden="true">
+          <span>BOSS</span>
+          <strong>SENTINELA NEXUS</strong>
+          <em>GUARDIÃO DA ARENA</em>
+        </div>
+        <aside class="tax-move-panel" aria-hidden="true">
+          <div class="tax-panel-phase">FASE <span id="tax-panel-phase">1/3</span></div>
+          <div class="tax-panel-name" id="tax-panel-name">PROTOCOLO I</div>
+          <div class="tax-move">
+            <span>LASER RASANTE</span>
+            <small>Feixes cortam faixas da arena.</small>
+          </div>
+          <div class="tax-move">
+            <span>ORBE VOLTÁICO</span>
+            <small>Projéteis caem em arcos pela arena.</small>
+          </div>
+          <div class="tax-move">
+            <span>INVESTIDA NEXUS</span>
+            <small>O núcleo avança pelo chão da arena.</small>
+          </div>
+        </aside>
+        <div class="tax-boss-hp" aria-hidden="true">
+          <span>HP</span>
+          <div><i id="tax-boss-hp-fill"></i></div>
+        </div>
+        <div class="tax-bottom-hud" aria-hidden="true">
+          <div class="tax-hud-card tax-player-card">
+            <span>HP</span>
+            <strong id="tax-player-hp">3</strong>
+            <div id="tax-heart-row" class="tax-heart-row"></div>
+          </div>
+          <div class="tax-hud-card">
+            <span>TÉCNICA</span>
+            <strong id="tax-scheme">BLASTER</strong>
+          </div>
+          <div class="tax-hud-card">
+            <span>TENSÃO</span>
+            <strong id="tax-risk">0%</strong>
+            <div class="tax-risk-bar"><i id="tax-risk-fill"></i></div>
+          </div>
+        </div>
+        <div class="tax-siren" id="tax-siren" aria-hidden="true">
+          <span></span><span></span>
+        </div>
+        <div class="cyber-message" id="cyber-message" aria-live="polite">
+          <div class="cyber-message-title" id="cyber-message-title">CUPSHOCK</div>
+          <div class="cyber-message-sub" id="cyber-message-sub">Aproxime-se do Sentinela Nexus</div>
+        </div>
+      </div>
+
+      <div class="kb-hint-game cyber-hint">
+        <span class="key">A/D</span>
+        mover &nbsp;|&nbsp;
+        <span class="key">W</span>
+        pular &nbsp;|&nbsp;
+        <span class="key">J</span>
+        atirar &nbsp;|&nbsp;
+        <span class="key">SHIFT</span>
+        dash direcional &nbsp;|&nbsp;
+        <span class="key">K</span>
+        especial &nbsp;|&nbsp;
+        <span class="key">ENTER</span>
+        diálogo/reiniciar &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     CASINO JS - HUB
+     ===================================================================== -->
+  <section id="casino" class="screen">
+    <div class="casino-wrap">
+      <div class="casino-hero" id="casino-hero">
+        <h1 class="casino-logo">CASINO JS</h1>
+        <p class="casino-tagline">JOGUE COM RESPONSABILIDADE</p>
+        <div class="casino-balance-disp">
+          <span class="lbl">SALDO</span>
+          <span id="casino-bal-hero">$500</span>
+        </div>
+      </div>
+      <nav class="casino-nav">
+        <div class="nav-back" id="casino-back" role="button">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <div class="spacer"></div>
+      </nav>
+      <div class="casino-ticket-panel" id="casino-ticket-panel">
+        <div class="ticket-card">
+          <div class="ticket-icon" aria-hidden="true">
+            <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M13 24 Q13 18 19 18 H57 Q63 18 63 24 V31 Q57 31 57 38 Q57 45 63 45 V52 Q63 58 57 58 H19 Q13 58 13 52 V45 Q19 45 19 38 Q19 31 13 31 V24Z"
+                fill="rgba(255,140,0,.1)" stroke="currentColor" stroke-width="2.5" />
+              <path d="M28 18 V58" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity=".45" />
+              <path d="M36 31 H52 M36 38 H50 M36 45 H46" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" />
+              <circle cx="22" cy="38" r="3" fill="currentColor" opacity=".75" />
+            </svg>
+          </div>
+          <div class="ticket-label">INSIRA O TICKET</div>
+          <div class="ticket-sub">ACESSO CASINO JS</div>
+          <div class="hub-coin-btn hub-ticket-btn" id="btn-ticket" role="button" aria-label="Inserir ticket">
+            INSERT TICKET
+          </div>
+        </div>
+      </div>
+      <div class="kb-hint-hub casino-hint show" id="casino-hint" aria-live="polite">
+        <span class="key">ENTER</span>
+        inserir ticket &nbsp;|&nbsp;
+        <span class="key">ESC</span>
+        voltar
+      </div>
+      <div class="casino-grid hidden" id="casino-game-grid">
+        <!-- CAÇA-NÍQUEL -->
+        <div class="ccard ccard-slots" data-goto="slots" aria-label="Caça-Níquel">
+          <div class="ccard-inner">
+            <div class="ccard-glow"></div>
+            <div class="ccard-icon" style="color: var(--orange)">
+              <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Machine body -->
+                <rect x="5" y="16" width="60" height="44" rx="7" fill="rgba(255,140,0,.1)" stroke="currentColor"
+                  stroke-width="2.2" />
+                <!-- 3 reel windows -->
+                <rect x="9" y="22" width="14" height="22" rx="3" fill="rgba(255,140,0,.15)" stroke="currentColor"
+                  stroke-width="1.6" />
+                <rect x="27" y="22" width="14" height="22" rx="3" fill="rgba(255,140,0,.15)" stroke="currentColor"
+                  stroke-width="1.6" />
+                <rect x="45" y="22" width="14" height="22" rx="3" fill="rgba(255,140,0,.15)" stroke="currentColor"
+                  stroke-width="1.6" />
+                <!-- Win line -->
+                <line x1="7" y1="33" x2="63" y2="33" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"
+                  opacity=".35" />
+                <!-- Reel 1: lucky 7 -->
+                <text x="16" y="37" text-anchor="middle" font-family="monospace" font-size="13" font-weight="900"
+                  fill="currentColor" opacity=".95">7</text>
+                <!-- Reel 2: cherry (circle + stem) -->
+                <circle cx="34" cy="35" r="4" fill="currentColor" opacity=".9" />
+                <path d="M34 31 Q37 26 40 27" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  fill="none" opacity=".7" />
+                <!-- Reel 3: BAR -->
+                <rect x="47" y="28" width="10" height="4" rx="2" fill="currentColor" opacity=".85" />
+                <rect x="47" y="34" width="10" height="3" rx="1.5" fill="currentColor" opacity=".5" />
+                <rect x="47" y="39" width="10" height="3" rx="1.5" fill="currentColor" opacity=".3" />
+                <!-- Lever arm -->
+                <line x1="65" y1="24" x2="65" y2="42" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" />
+                <circle cx="65" cy="22" r="4.5" fill="currentColor" opacity=".85" />
+                <!-- Coin slot + base -->
+                <rect x="24" y="50" width="22" height="5" rx="2.5" fill="rgba(255,140,0,.25)" stroke="currentColor"
+                  stroke-width="1.5" />
+                <text x="35" y="55" text-anchor="middle" font-family="monospace" font-size="5" fill="currentColor"
+                  opacity=".5">INSERT</text>
+              </svg>
+            </div>
+            <div class="ccard-name">
+              CAÇA-
+              <br />
+              NÍQUEL
+            </div>
+            <div class="ccard-desc">
+              Gire os rolos e
+              <br />
+              tente o jackpot!
+            </div>
+            <div class="ccard-cta">JOGAR</div>
+          </div>
+        </div>
+
+        <!-- ROLETA -->
+        <div class="ccard ccard-rlt" data-goto="roulette-game" aria-label="Roleta">
+          <div class="ccard-inner">
+            <div class="ccard-glow"></div>
+            <div class="ccard-icon" style="color: var(--pink)">
+              <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer ring -->
+                <circle cx="35" cy="35" r="30" fill="rgba(255,45,120,.08)" stroke="currentColor" stroke-width="2.4" />
+                <!-- Alternating colored segments (8 segments) -->
+                <path d="M35 5 A30 30 0 0 1 56.2 13.8 L35 35 Z" fill="#e53935" opacity=".7" />
+                <path d="M56.2 13.8 A30 30 0 0 1 65 35 L35 35 Z" fill="rgba(30,30,30,.5)" opacity=".7" />
+                <path d="M65 35 A30 30 0 0 1 56.2 56.2 L35 35 Z" fill="#e53935" opacity=".7" />
+                <path d="M56.2 56.2 A30 30 0 0 1 35 65 L35 35 Z" fill="rgba(30,30,30,.5)" opacity=".7" />
+                <path d="M35 65 A30 30 0 0 1 13.8 56.2 L35 35 Z" fill="#e53935" opacity=".7" />
+                <path d="M13.8 56.2 A30 30 0 0 1 5 35 L35 35 Z" fill="rgba(30,30,30,.5)" opacity=".7" />
+                <path d="M5 35 A30 30 0 0 1 13.8 13.8 L35 35 Z" fill="#2e7d32" opacity=".9" />
+                <path d="M13.8 13.8 A30 30 0 0 1 35 5 L35 35 Z" fill="rgba(30,30,30,.5)" opacity=".7" />
+                <!-- Inner ring divider -->
+                <circle cx="35" cy="35" r="22" stroke="currentColor" stroke-width="1.5" fill="rgba(0,0,0,.3)"
+                  opacity=".6" />
+                <!-- Spoke lines -->
+                <line x1="35" y1="13" x2="35" y2="57" stroke="currentColor" stroke-width="1" opacity=".25" />
+                <line x1="13" y1="35" x2="57" y2="35" stroke="currentColor" stroke-width="1" opacity=".25" />
+                <line x1="19.9" y1="19.9" x2="50.1" y2="50.1" stroke="currentColor" stroke-width="1" opacity=".25" />
+                <line x1="50.1" y1="19.9" x2="19.9" y2="50.1" stroke="currentColor" stroke-width="1" opacity=".25" />
+                <!-- Center hub -->
+                <circle cx="35" cy="35" r="7" fill="currentColor" opacity=".9" />
+                <circle cx="35" cy="35" r="3.5" fill="rgba(255,45,120,.3)" />
+                <!-- Ball indicator -->
+                <circle cx="35" cy="9" r="3.5" fill="currentColor" />
+                <!-- Needle pointing down from top -->
+                <path d="M33 5 L37 5 L35 18 Z" fill="currentColor" opacity=".7" />
+              </svg>
+            </div>
+            <div class="ccard-name">ROLETA</div>
+            <div class="ccard-desc">
+              Vermelho, preto
+              <br />
+              ou verde?
+            </div>
+            <div class="ccard-cta">JOGAR</div>
+          </div>
+        </div>
+
+        <!-- CRASH -->
+        <div class="ccard ccard-crash" data-goto="crash-game" aria-label="Crash">
+          <div class="ccard-inner">
+            <div class="ccard-glow"></div>
+            <div class="ccard-icon" style="color: var(--blue)">
+              <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Chart axes -->
+                <rect x="8" y="56" width="54" height="2.5" rx="1.2" fill="currentColor" opacity=".35" />
+                <rect x="8" y="12" width="2.5" height="46" rx="1.2" fill="currentColor" opacity=".35" />
+                <!-- Y axis ticks -->
+                <line x1="8" y1="44" x2="13" y2="44" stroke="currentColor" stroke-width="1.2" opacity=".3" />
+                <line x1="8" y1="32" x2="13" y2="32" stroke="currentColor" stroke-width="1.2" opacity=".3" />
+                <line x1="8" y1="20" x2="13" y2="20" stroke="currentColor" stroke-width="1.2" opacity=".3" />
+                <!-- Multiplier labels -->
+                <text x="15" y="47" font-family="monospace" font-size="6" fill="currentColor" opacity=".4">1x</text>
+                <text x="15" y="35" font-family="monospace" font-size="6" fill="currentColor" opacity=".4">2x</text>
+                <text x="15" y="23" font-family="monospace" font-size="6" fill="currentColor" opacity=".4">3x</text>
+                <!-- Rising curve fill -->
+                <path d="M11 56 Q22 54 30 46 Q40 34 48 22 L48 56 Z" fill="currentColor" opacity=".1" />
+                <!-- Rising curve line -->
+                <path d="M11 56 Q22 54 30 46 Q40 34 48 22" stroke="currentColor" stroke-width="2.8"
+                  stroke-linecap="round" fill="none" />
+                <!-- Rocket at top of curve -->
+                <g transform="translate(48,22) rotate(-45)">
+                  <rect x="-4" y="-9" width="8" height="14" rx="4" fill="currentColor" opacity=".9" />
+                  <path d="M-4 5 L-7 11 L0 8 L7 11 L4 5 Z" fill="currentColor" opacity=".6" />
+                  <rect x="-5" y="-1" width="3" height="6" rx="1" fill="currentColor" opacity=".5" />
+                  <rect x="2" y="-1" width="3" height="6" rx="1" fill="currentColor" opacity=".5" />
+                  <circle cx="0" cy="-4" r="2" fill="rgba(0,200,255,.8)" />
+                </g>
+                <!-- Explosion / crash bang -->
+                <g opacity=".85">
+                  <path
+                    d="M54 10 L57 6 L58 10 L62 8 L60 12 L64 13 L60 15 L62 19 L58 17 L57 21 L55 17 L51 19 L53 15 L49 13 L53 12 L51 8 Z"
+                    fill="currentColor" opacity=".7" />
+                  <circle cx="57" cy="13" r="3" fill="rgba(255,200,50,.6)" />
+                </g>
+                <!-- Current multiplier badge -->
+                <rect x="26" y="26" width="18" height="10" rx="3" fill="rgba(0,136,255,.2)" stroke="currentColor"
+                  stroke-width="1.2" />
+                <text x="35" y="34" text-anchor="middle" font-family="monospace" font-size="7" font-weight="700"
+                  fill="currentColor" opacity=".9">2.4x</text>
+              </svg>
+            </div>
+            <div class="ccard-name">CRASH</div>
+            <div class="ccard-desc">
+              Saque antes do
+              <br />
+              crash!
+            </div>
+            <div class="ccard-cta">JOGAR</div>
+          </div>
+        </div>
+      </div>
+      <!-- /casino-grid -->
+    </div>
+    <!-- /casino-wrap -->
+  </section>
+
+  <!-- =====================================================================
+     CASINO — CAÇA-NÍQUEL
+     ===================================================================== -->
+  <section id="slots" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="slots-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color: var(--orange)">CAÇA-NÍQUEL</span>
+      <div class="spacer"></div>
+      <div class="casino-bal-pill">
+        💰
+        <span id="slots-bal">$500</span>
+      </div>
+    </nav>
+    <div class="slots-arena">
+      <div class="slot-machine">
+        <div class="slot-machine-title">🎰 SLOT MACHINE 🎰</div>
+        <div class="slot-reels">
+          <div class="slot-reel-wrap">
+            <div class="slot-sym-display" id="reel-0">🍒</div>
+            <div class="slot-win-line"></div>
+          </div>
+          <div class="slot-reel-wrap">
+            <div class="slot-sym-display" id="reel-1">🍋</div>
+            <div class="slot-win-line"></div>
+          </div>
+          <div class="slot-reel-wrap">
+            <div class="slot-sym-display" id="reel-2">🔔</div>
+            <div class="slot-win-line"></div>
+          </div>
+        </div>
+        <div class="slot-info-row">
+          <span>
+            <span class="lbl">APOSTA:</span>
+            <span class="val" id="slot-bet-amount">$10</span>
+          </span>
+          <span>
+            <span class="lbl">SALDO:</span>
+            <span class="val" id="slots-bal2">$500</span>
+          </span>
+        </div>
+        <div class="slot-win-msg" id="slot-msg">Pressione GIRAR para jogar!</div>
+        <div class="btn-arc btn-dice kb-focus" id="btn-spin" role="button"
+          style="margin-top: 14px; width: 100%; text-align: center">
+          GIRAR — $10
+        </div>
+      </div>
+      <div class="slot-paytable">
+        <h4>TABELA DE PRÊMIOS</h4>
+        <div class="pay-row">
+          <span class="syms">&#127920; &#127920; &#127920;</span>
+          <span class="mult">JACKPOT — $500</span>
+        </div>
+        <div class="pay-row">
+          <span class="syms">💎 💎 💎</span>
+          <span class="mult">×20 — $200</span>
+        </div>
+        <div class="pay-row">
+          <span class="syms">🔔 🔔 🔔</span>
+          <span class="mult">×10 — $100</span>
+        </div>
+        <div class="pay-row">
+          <span class="syms">⭐ ⭐ ⭐</span>
+          <span class="mult">×8 — $80</span>
+        </div>
+        <div class="pay-row">
+          <span class="syms">🍒 🍒 🍒</span>
+          <span class="mult">×5 — $50</span>
+        </div>
+        <div class="pay-row">
+          <span class="syms">🍋 🍋 🍋</span>
+          <span class="mult">×3 — $30</span>
+        </div>
+        <div class="pay-row">
+          <span class="syms">Qualquer par</span>
+          <span class="mult">×1.5 — $15</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     CASINO — ROLETA
+     ===================================================================== -->
+  <section id="roulette-game" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="rlt-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color: var(--pink)">ROLETA</span>
+      <div class="spacer"></div>
+      <div class="casino-bal-pill">
+        💰
+        <span id="rlt-bal">$500</span>
+      </div>
+    </nav>
+    <div class="roulette-arena">
+      <p class="game-sub">— Faça sua aposta e gire —</p>
+      <div class="roulette-top">
+        <div class="roulette-wheel-wrap">
+          <canvas id="roulette-canvas" class="roulette-canvas" width="280" height="280"></canvas>
+          <div class="roulette-needle"></div>
+          <div class="roulette-center-dot">
+            <div class="roulette-result-num" id="rlt-num">—</div>
+          </div>
+        </div>
+        <div class="roulette-bet-panel">
+          <div>
+            <div class="roulette-bet-label">VALOR DA APOSTA</div>
+            <input class="roulette-bet-input" id="rlt-bet-input" type="number" min="1" max="1000" value="20" readonly />
+          </div>
+          <div>
+            <div class="roulette-bet-label">APOSTE EM</div>
+            <div class="rlt-colors">
+              <div class="rc-btn red" id="rc-red" role="button">
+                🔴
+                <br />
+                VERMELHO
+                <span class="mult-lbl">×2</span>
+              </div>
+              <div class="rc-btn black" id="rc-black" role="button">
+                ⚫
+                <br />
+                PRETO
+                <span class="mult-lbl">×2</span>
+              </div>
+              <div class="rc-btn grn" id="rc-green" role="button">
+                🟢
+                <br />
+                VERDE
+                <span class="mult-lbl">×14</span>
+              </div>
+            </div>
+          </div>
+          <div class="btn-arc btn-jkp kb-focus" id="btn-spin-rlt" role="button">GIRAR</div>
+        </div>
+      </div>
+      <div class="rlt-result-box" id="rlt-result">Escolha uma cor e gire a roleta</div>
+      <div class="rlt-history" id="rlt-history"></div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     CASINO — CRASH GAME
+     ===================================================================== -->
+  <section id="crash-game" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="crash-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color: var(--blue)">CRASH</span>
+      <div class="spacer"></div>
+      <div class="casino-bal-pill">
+        💰
+        <span id="crash-bal">$500</span>
+      </div>
+    </nav>
+    <div class="crash-arena">
+      <p class="game-sub">— Saque antes do crash! —</p>
+      <div class="crash-display">
+        <canvas id="crash-canvas" height="240"></canvas>
+        <div class="crash-mult-overlay" id="crash-mult">1.00×</div>
+      </div>
+      <div class="crash-controls">
+        <div class="crash-input-grp">
+          <label class="crash-lbl">APOSTA ($)</label>
+          <input class="crash-input" id="crash-bet-input" type="text" inputmode="numeric" min="1" max="1000" value="50"
+            readonly />
+        </div>
+        <div class="crash-input-grp">
+          <label class="crash-lbl">AUTO-SAQUE (×)</label>
+          <label class="auto-toggle" id="crash-auto-toggle" role="checkbox" aria-checked="false"
+            aria-label="Ativar auto-saque">
+            <input id="crash-auto-enabled" type="checkbox" />
+            <span class="auto-toggle-box"></span>
+          </label>
+          <input class="crash-input" id="crash-auto-input" type="text" inputmode="decimal" min="1.1" max="100"
+            step="0.1" value="2.0" readonly />
+        </div>
+        <div class="btn-arc btn-bet kb-focus" id="btn-crash-bet" role="button">APOSTAR</div>
+        <div class="btn-arc btn-cashout disabled" id="btn-crash-out" role="button">SACAR</div>
+      </div>
+      <div class="crash-result-box" id="crash-result">Aposte e espere o multiplicador subir!</div>
+      <div class="crash-history" id="crash-history"></div>
+    </div>
+  </section>
+  <!-- =====================================================================
+     UNDERTALE - HUB
+     ===================================================================== -->
+  <section id="undertale-hub" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="ut-hub-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        VOLTAR
+      </div>
+      <span class="nav-logo" style="color:#ff4040">UNDERTALE</span>
+      <div class="spacer"></div>
+    </nav>
+    <div class="ut-hub-wrap">
+      <div class="hub-hero" style="margin-bottom:12px">
+        <p class="hub-sub" style="color:#ff4040;text-shadow:0 0 10px #ff4040">ESCOLHA SEU INIMIGO</p>
+      </div>
+      <div class="ut-boss-grid" id="ut-boss-grid">
+        <div class="ut-boss-card" id="ut-card-toriel" role="button">
+          <div class="ut-boss-art"><canvas id="ut-art-toriel" width="80" height="88"></canvas></div>
+          <div class="ut-boss-label">BOSS 1</div>
+          <div class="ut-boss-name">TORIEL</div>
+          <div class="ut-boss-flavor">A guardia das Ruinas.<br>Usa magia de fogo.</div>
+          <div class="ut-boss-badge" id="ut-badge-toriel">LUTAR</div>
+          <div class="ut-boss-cta">ENTRAR</div>
+        </div>
+        <div class="ut-boss-card ut-boss-locked" id="ut-card-final" role="button">
+          <div class="ut-lock-symbol" id="ut-lock-symbol">🔒</div>
+          <div class="ut-boss-art" id="ut-art-final-wrap" style="display:none"><canvas id="ut-art-final" width="80"
+              height="88"></canvas></div>
+          <div class="ut-boss-label">FINAL</div>
+          <div class="ut-boss-name" id="ut-final-name" style="color:var(--muted)">???</div>
+          <div class="ut-boss-flavor" id="ut-final-flavor">Derrote os dois bosses<br>para desbloquear.</div>
+          <div class="ut-boss-cta" id="ut-final-cta" style="border-color:var(--muted);color:var(--muted)">BLOQUEADO
+          </div>
+        </div>
+        <div class="ut-boss-card" id="ut-card-sans" role="button">
+          <div class="ut-boss-art"><canvas id="ut-art-sans" width="80" height="88"></canvas></div>
+          <div class="ut-boss-label">BOSS 2</div>
+          <div class="ut-boss-name">SANS</div>
+          <div class="ut-boss-flavor">O juiz da humanidade.<br>Usa ataques de ossos.</div>
+          <div class="ut-boss-badge" id="ut-badge-sans">LUTAR</div>
+          <div class="ut-boss-cta">ENTRAR</div>
+        </div>
+      </div>
+      <div class="ut-progress-bar-wrap">
+        <div class="ut-progress-text" id="ut-progress-text">0 / 2 BOSSES DERROTADOS</div>
+        <div class="ut-progress-track">
+          <div class="ut-progress-fill" id="ut-progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     UNDERTALE — BATTLE SCREEN
+     ===================================================================== -->
+  <!-- ===================================================
+     UNDERTALE — BATTLE SCREEN
+     =================================================== -->
+  <section id="undertale-battle" class="screen">
+    <nav class="nav">
+      <div class="nav-back" id="ut-battle-back" role="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10.5 3L5.5 8l5 5" />
+        </svg>
+        FUGIR
+      </div>
+      <span class="nav-logo" id="ut-battle-title" style="color:#ff4040">BATALHA</span>
+      <div class="spacer"></div>
+      <div class="score-badge">
+        <div class="score-pill" style="border-color:rgba(255,64,64,0.4);color:#ff4040">
+          &#10084; <span id="ut-hp-pill">5/5</span>
+        </div>
+      </div>
+    </nav>
+    <div class="ut-battle-wrap" id="ut-battle-wrap">
+
+      <!-- Boss sprite -->
+      <div class="ut-boss-sprite-area">
+        <canvas id="ut-boss-sprite-canvas" width="320" height="160"></canvas>
+      </div>
+
+      <!-- HP bars -->
+      <div class="ut-hpbars">
+        <div class="ut-hpbar-row">
+          <div class="ut-hpbar-lbl">BOSS</div>
+          <div class="ut-hpbar-track">
+            <div class="ut-hpbar-fill boss" id="ut-boss-hpbar" style="width:100%"></div>
+          </div>
+          <div class="ut-hpbar-val" id="ut-boss-hp-val">10/10</div>
+        </div>
+        <div class="ut-hpbar-row">
+          <div class="ut-hpbar-lbl">HP</div>
+          <div class="ut-hpbar-track">
+            <div class="ut-hpbar-fill player" id="ut-player-hpbar" style="width:100%"></div>
+          </div>
+          <div class="ut-hpbar-val" id="ut-player-hp-val">5/5</div>
+        </div>
+      </div>
+
+      <!-- Dialog box -->
+      <div class="ut-dialog" id="ut-dialog">
+        <div class="ut-dialog-text" id="ut-dialog-text"></div>
+        <div class="ut-dialog-cursor" id="ut-dialog-cursor">&#9660;</div>
+      </div>
+
+      <!-- Bullet-hell arena -->
+      <div class="ut-arena-container" id="ut-arena-container" style="display:none">
+        <canvas id="ut-arena-canvas" width="320" height="240"
+          style="border:3px solid #fff;background:#000;display:block"></canvas>
+      </div>
+
+      <!-- Action menu: LUTAR / AGIR (+ MISERICORDIA) -->
+      <div class="ut-action-menu" id="ut-action-menu" style="display:none">
+        <div class="ut-action-btn" id="ut-btn-fight" role="button">&#9876; LUTAR</div>
+        <div class="ut-action-btn" id="ut-btn-act" role="button">&#9829; AGIR</div>
+        <div class="ut-action-btn ut-mercy-btn" id="ut-btn-mercy" role="button" style="display:none">&#9790;
+          MISERICORDIA</div>
+      </div>
+
+      <!-- ACT sub-menu: 4 interaction options -->
+      <div class="ut-act-menu" id="ut-act-menu" style="display:none">
+        <div class="ut-action-btn" id="ut-act-0" role="button">...</div>
+        <div class="ut-action-btn" id="ut-act-1" role="button">...</div>
+        <div class="ut-action-btn" id="ut-act-2" role="button">...</div>
+        <div class="ut-action-btn" id="ut-act-3" role="button">...</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =====================================================================
+     UNDERTALE -- ENDING SCREEN
+     ===================================================================== -->
+  <section id="ut-ending" class="screen" style="position:relative;overflow:hidden">
+    <div class="ut-ending-bg" style="position:absolute;inset:0;transition:background 1.5s"></div>
+    <canvas id="ut-ending-canvas" width="480" height="640"
+      style="position:absolute;inset:0;width:100%;height:100%;opacity:0.5;pointer-events:none"></canvas>
+    <div
+      style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:22px;padding:40px 20px;text-align:center">
+      <div class="ut-ending-title"
+        style="font-family:var(--fp);font-size:clamp(0.9rem,4vw,1.5rem);letter-spacing:4px;color:#fff;text-shadow:0 0 20px currentColor">
+      </div>
+      <div class="ut-ending-sub"
+        style="font-family:var(--fp);font-size:0.42rem;color:var(--text);line-height:2.4;max-width:380px;white-space:pre-wrap">
+      </div>
+      <div role="button" id="ut-ending-back"
+        style="font-family:var(--fp);font-size:0.42rem;letter-spacing:2px;border:1px solid rgba(255,255,255,0.4);color:#fff;padding:12px 28px;border-radius:2px;margin-top:10px;cursor:pointer">
+        VOLTAR AO MENU
+      </div>
+    </div>
+  </section>
+
+  <div class="ut-overlay" id="ut-win-overlay">
+    <div class="ut-overlay-title win" id="ut-win-title">VITÓRIA!</div>
+    <div class="ut-overlay-sub" id="ut-win-sub">Você derrotou o boss!</div>
+    <div class="ut-overlay-btn" id="ut-win-btn" role="button">CONTINUAR</div>
+  </div>
+  <div class="ut-overlay" id="ut-lose-overlay">
+    <div class="ut-overlay-title lose">GAME OVER</div>
+    <div class="ut-overlay-sub">Você foi derrotado...<br>Mas pode tentar de novo.</div>
+    <div class="ut-overlay-btn" id="ut-lose-btn" role="button">TENTAR NOVAMENTE</div>
+  </div>
+
+  <!-- =====================================================================
+     CHATBOT ARCADE AI
+     ===================================================================== -->
+  <aside class="ai-chat" id="ai-chat" aria-label="Chat Arcade">
+    <button class="ai-chat-toggle" id="ai-chat-toggle" type="button" aria-label="Abrir chat pela tecla I">
+      <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="9" y="13" width="24" height="19" rx="5" stroke="currentColor" stroke-width="2.6" />
+        <path d="M16 9 V13 M26 9 V13 M14 35 L17 32 M28 35 L25 32" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" />
+        <circle cx="17" cy="22" r="2" fill="currentColor" />
+        <circle cx="25" cy="22" r="2" fill="currentColor" />
+        <path d="M17 27 H25" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+    </button>
+    <section class="ai-chat-panel" id="ai-chat-panel" aria-hidden="true">
+      <header class="ai-chat-head">
+        <div>
+          <div class="ai-chat-title">ARCADE AI</div>
+          <div class="ai-chat-sub">ONLINE</div>
+        </div>
+        <button class="ai-chat-close" id="ai-chat-close" type="button" aria-label="Fechar chat">
+          X
+        </button>
+      </header>
+      <div class="ai-chat-log" id="ai-chat-log" aria-live="polite">
+        <div class="ai-msg bot">Pergunte sobre os jogos ou mude a facilidade do Casino JS.</div>
+      </div>
+      <form class="ai-chat-form" id="ai-chat-form">
+        <textarea id="ai-chat-input" rows="1" maxlength="500" placeholder="Digite sua mensagem"
+          aria-label="Mensagem para o chatbot"></textarea>
+        <button class="ai-chat-send" id="ai-chat-send" type="submit" aria-label="Enviar">
+          &gt;
+        </button>
+      </form>
+    </section>
+  </aside>
+
+  <div id="global-input-numpad" class="input-numpad hidden" aria-hidden="true">
+    <div class="numpad-title">Numpad</div>
+    <div class="numpad-value" id="numpad-value">$0</div>
+    <div class="numpad-grid">
+      <button class="numpad-key" type="button" data-key="7">7</button>
+      <button class="numpad-key" type="button" data-key="8">8</button>
+      <button class="numpad-key" type="button" data-key="9">9</button>
+      <button class="numpad-key" type="button" data-key="4">4</button>
+      <button class="numpad-key" type="button" data-key="5">5</button>
+      <button class="numpad-key" type="button" data-key="6">6</button>
+      <button class="numpad-key" type="button" data-key="1">1</button>
+      <button class="numpad-key" type="button" data-key="2">2</button>
+      <button class="numpad-key" type="button" data-key="3">3</button>
+      <button class="numpad-key" type="button" data-key="0">0</button>
+      <button class="numpad-key" type="button" data-key=".">.</button>
+      <button class="numpad-key" type="button" data-key="backspace">DEL</button>
+      <button class="numpad-key wide" type="button" data-key="enter">ENTER</button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+     JAVASCRIPT
+     ===================================================================== -->
+  <script src="https://js.puter.com/v2/"></script>
+  <script src="/vendor/phaser/phaser.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>
