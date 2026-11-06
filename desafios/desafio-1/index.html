@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS - Primeiros Passos</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+  </head>
+
+  <body>
+    <main class="container">
+      <section class="principal">
+        <i class="devicon-javascript-plain colored"></i>
+        <h1 class="titulo-principal">JavaScript</h1>
+      </section>
+
+      <!-- LISTA 1 -->
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            1. Saída -> Alert()
+            <span>- Mostra uma msg numa caixa de diálogo</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" onclick="alert('Olá mundo')">Clique aq</button>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            2. Saída - document.write() <span>- Escrever texto na pág</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="escrever">Clique aq</button>
+          <p id="tes" class="resultado"></p>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            3. Entrada - prompt() <span>- Pede uma informação do usuário</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="perguntar">Clique aq</button>
+          <div id="res1" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            4. Entrada - input HTML <span>- Campo de entrada tradicional</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="mostrarTexto">Clique aq</button>
+          <input type="text" id="entrada" placeholder="Digite algo..." />
+          <div id="res2" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            5. Somar dois valores <span>- Calculadora Simples</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="num1" placeholder="numero 1" />
+          <input type="number" id="num2" placeholder="numero 2" />
+          <button class="btn" data-action="somar">Somar</button>
+          <div id="res3" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            6. Média Escolar <span>- Calculadora de média</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="num1Es" placeholder="nota 1" />
+          <input type="number" id="num2Es" placeholder="nota 2" />
+          <input type="number" id="num3Es" placeholder="nota 3" />
+          <button class="btn" data-action="calcularMedia">Calcular</button>
+          <div id="res4" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            7. Conversor de Dólar <span>- Converte valores para dólar</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="cotacao" placeholder="Cotação do dólar" />
+          <input type="number" id="valor" placeholder="Valor a converter" />
+          <button class="btn" data-action="converterDolar">Calcular</button>
+          <div id="res5" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            8. Área de Terreno <span>- Calcula área de um terreno</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="largura" placeholder="Largura" />
+          <input type="number" id="altura" placeholder="Altura" />
+          <button class="btn" data-action="calcularTerreno">Calcular</button>
+          <div id="res6" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            9. Antecessor e Sucessor
+            <span>- Mostra números anterior e posterior</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="numAS" placeholder="Digite um número" />
+          <button class="btn" data-action="mostrarVizinhos">Verificar</button>
+          <div id="res7" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            10. Par ou Ímpar <span>- Verifica se o número é par ou ímpar</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="parImpar" placeholder="Digite um número" />
+          <button class="btn" data-action="verificarParImpar">Verificar</button>
+          <div id="res8" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            11. Radar de Velocidade <span>- Verifica se houve multa</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input
+            type="number"
+            id="velocidade"
+            placeholder="Digite a velocidade"
+          />
+          <button class="btn" data-action="verificarVelocidade">
+            Verificar
+          </button>
+          <div id="res9" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            12. Habilitação <span>- Verifica se pode dirigir</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input
+            type="number"
+            id="anoNascimento"
+            placeholder="Ano de nascimento"
+          />
+          <input type="number" id="anoAtual" placeholder="Ano atual" />
+          <button class="btn" data-action="verificarHabilitacao">
+            Verificar
+          </button>
+          <div id="res10" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            13. IMC <span>- Calcula índice de massa corporal</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="pesoIMC" placeholder="Peso (kg)" />
+          <input
+            type="number"
+            id="alturaIMC"
+            placeholder="Altura (m)"
+            step="0.01"
+          />
+          <button class="btn" data-action="calcularIMC">Calcular</button>
+          <div id="res11" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            14. Desconto <span>- Calcula desconto de 10%</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="valorCompra" placeholder="Valor da compra" />
+          <button class="btn" data-action="calcularDesconto">Calcular</button>
+          <div id="res12" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            15. Comparador <span>- Compara dois números</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="numA" placeholder="Primeiro número" />
+          <input type="number" id="numB" placeholder="Segundo número" />
+          <button class="btn" data-action="compararNumeros">Comparar</button>
+          <div id="res13" class="resultado"></div>
+        </div>
+      </section>
+
+      <!-- LISTA 2 -->
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            16. Classificação de Triângulos
+            <span>- Equilátero, Isósceles ou Escaleno</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="lado1" placeholder="Lado 1" />
+          <input type="number" id="lado2" placeholder="Lado 2" />
+          <input type="number" id="lado3" placeholder="Lado 3" />
+          <button class="btn" data-action="classificarTriangulo">
+            Verificar
+          </button>
+          <div id="res16" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">17. Menu de Bebidas <span>- Switch Case</span></h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <p for="menuBebidas">Escolha sua bebida:</p>
+          <select id="menuBebidas" class="entrada-dropdown">
+            <option>Suco</option>
+            <option>Refrigerante</option>
+            <option>Água</option>
+          </select>
+          <button class="btn" data-action="escolherBebida">Escolher</button>
+          <div id="res17" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            18. Vogal ou Consoante <span>- Verifica o tipo da letra</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input
+            type="text"
+            id="letraInformada"
+            maxlength="1"
+            placeholder="Digite uma letra"
+          />
+          <button class="btn" data-action="verificarVogalConsoante">
+            Verificar
+          </button>
+          <div id="res18" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            19. Calculadora Simples <span>- Switch Case</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="calcN1" placeholder="Número 1" />
+          <select id="selecionarOperacao">
+            <option>+</option>
+            <option>-</option>
+            <option>*</option>
+            <option>/</option>
+          </select>
+          <input type="number" id="calcN2" placeholder="Número 2" />
+          <button class="btn" data-action="calcularCalculadora">
+            Calcular
+          </button>
+          <div id="res19" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            20. Conversor de Moedas Pro <span>- Escolha a moeda</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="valorReal" placeholder="Valor em R$" />
+          <select id="moedaDestino" class="entrada-dropdown">
+            <option>Dólar</option>
+            <option>Euro</option>
+            <option>Peso Argentino</option>
+          </select>
+          <button class="btn" data-action="converterMoedaPro">Converter</button>
+          <div id="res20" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            21. Contagem Progressiva <span>- Loop 1 a 50</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="contarAte50">
+            Iniciar Contagem
+          </button>
+          <div id="res21" class="resultado" style="word-wrap: break-word"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">22. Tabuada Dinâmica <span>- Loop For</span></h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="numTabuada" placeholder="Digite um número" />
+          <button class="btn" data-action="gerarTabuada">Gerar Tabuada</button>
+          <div id="res22" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            23. Somador de Números <span>- Soma de 5 valores</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <p>Clique no botão para digitar os 5 números:</p>
+          <input type="text" id="numsSoma" placeholder="Ex: 14,44,33,16" />
+          <button class="btn" data-action="somarCincoNumeros">
+            Iniciar Soma
+          </button>
+          <div id="res23" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            24. Apenas os Pares <span>- Números de 1 a 100</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="listarPares">Mostrar Pares</button>
+          <div id="res24" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">25. Fatorial <span>- Cálculo Matemático</span></h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="numFatorial" placeholder="Número" />
+          <button class="btn" data-action="calcularFatorial">Calcular !</button>
+          <div id="res25" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            26. Validação de Dados <span>- Loop de 0-10</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="number" id="nota" placeholder="Nota (0-10)" />
+          <button class="btn" data-action="validarNota">Validar Nota</button>
+          <div id="res26" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            27. Média de Idades <span>- Para ao digitar 0</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="text" id="idades" placeholder="Ex: 14,44,33,16" />
+          <button class="btn" data-action="calcularMediaIdades">
+            Iniciar Coleta
+          </button>
+          <div id="res27" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            28. Lista de Nomes <span>- Percorrendo Array</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="listarAlunos">Ver Lista</button>
+          <div id="res28" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            29. Maior Valor <span>- Descobrir maior de 10 números</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="text" id="dezNumeros" placeholder="Ex: 14,44,33,16" />
+          <button class="btn" data-action="encontrarMaior">
+            Digitar 10 Números
+          </button>
+          <div id="res29" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">30. Inversor de Ordem <span>- Arrays</span></h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <p>Digite 5 números</p>
+          <input
+            type="text"
+            id="cincoNumeros"
+            placeholder="Ex: 10,20,30,40,50"
+          />
+          <button class="btn" data-action="inverterArray">Inverter</button>
+          <div id="res30" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            31. Localizador de Nomes <span>- Verificar presença no Array</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input
+            type="text"
+            id="nomeBusca"
+            placeholder="Digite um nome para buscar"
+          />
+          <button class="btn" data-action="buscarNome">Buscar</button>
+          <div id="res31" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            32. Filtro de Notas <span>- Notas acima de 7.0</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="text" id="dezNotas" placeholder="Ex: 14,44,33,16" />
+          <button class="btn" data-action="filtrarNotas">
+            Analisar 10 Notas
+          </button>
+          <div id="res32" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            33. Login de Acesso <span>- Verificação em Array</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <input type="text" id="loginUsuario" placeholder="Seu login" />
+          <button class="btn" data-action="verificarLogin">Entrar</button>
+          <div id="res33" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            34. Média de Vendas Mensais <span>- Relatório Anual</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <p>
+            Clique abaixo para calcular o total e a média das vendas dos 12
+            meses:
+          </p>
+          <button class="btn" data-action="calcularVendasAnuais">
+            Calcular Vendas
+          </button>
+          <div id="res34" class="resultado"></div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="info">
+          <h2 class="titulo">
+            35. Carrinho de Compras <span>- Nota Fiscal</span>
+          </h2>
+          <button class="btnToggle">+</button>
+        </div>
+        <div class="interacoes hidden">
+          <button class="btn" data-action="addInput">+</button>
+          <div id="res35" class="resultado"></div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/script.js"></script>
+  </body>
+</html>
