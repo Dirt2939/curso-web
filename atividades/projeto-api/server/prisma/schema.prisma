@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model user {
+  uuid      String    @id @default(dbgenerated("(uuid())"))
+  name      String
+  password  String    @db.VarChar(255)
+  email     String    @unique(map: "User_email_key")
+  phone     String?
+  role      user_role @default(CUSTOMER)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+}
+
+enum user_role {
+  CUSTOMER
+  DELIVERER
+  MERCHANT
+  ADMIN
+}
