@@ -2,7 +2,7 @@
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB6dzVVc4k06tvj9cmNf4oJBZfp3qgG3sA",
+  apiKey: "COLE_SUA_API_KEY_AQUI",
   authDomain: "dashboard-25794.firebaseapp.com",
   projectId: "dashboard-25794",
   storageBucket: "dashboard-25794.firebasestorage.app",
